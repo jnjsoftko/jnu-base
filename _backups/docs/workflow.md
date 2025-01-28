@@ -2,20 +2,8 @@
 
 ## 템플릿 복사
 
-source: "{{template-path}}/ts-swc-npm"
-destination: "{{parent-path}}/{{project-name}}"
-
 source:"/Users/moon/JnJ-soft/Projects/@utils/_templates/ts-swc-npm"
-destination: "/Users/moon/JnJ-soft/Projects/@utils/node-utils/{{project-name}}"
-
-## macos / linux
-```sh
-# 템플릿 복사
-$ cp -r /Users/moon/JnJ-soft/Projects/@utils/_templates/ts-swc-npm/ /Users/moon/JnJ-soft/Projects/@utils/node-utils/{{project-name}}
-# $ cp -r /Users/moon/JnJ-soft/Projects/@utils/_templates/ts-swc-npm/ /Users/moon/JnJ-soft/Projects/@utils/node-utils/jnu-base
-$ cd /Users/moon/JnJ-soft/Projects/@utils/node-utils/jnu-base
-$ ./install.sh
-```
+destination: "/Users/moon/JnJ-soft/Projects/@utils/node-utils/[project-name]"
 
 ## 프로젝트 설치
 
@@ -23,11 +11,9 @@ $ ./install.sh
 
 ```markdown:README.md
 ---
-- name: "jnu-base"  // 프로젝트 이름
-- description: "Jnjsoft Nodejs Utility Library for Base Functions in Typescript"  // 프로젝트 설명
-- author: "jnjsoftko(Jnj Soft Ko) <jnjsoft.ko@gmail.com>"  // 저자
-- github-id: "jnjsoftko"  // github 아이디
-- npm-id: "jnjsoftko"  // npm 아이디
+- name: "jnu-base"
+- description: "Jnjsoft Nodejs Utility Library for Base Functions in Typescript"
+- author: "jnjsoftko(Jnj Soft Ko) <jnjsoft.ko@gmail.com>"
 ---
 ```
 

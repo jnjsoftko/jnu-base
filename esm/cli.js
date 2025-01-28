@@ -1,0 +1,1 @@
+import{execSync as e}from"child_process";let r=r=>e(r,{encoding:"utf8"}).toString().trim(),t=e=>{let t=[];return e.forEach(e=>t.push(r(e))),t};export{r as exec,t as exe};

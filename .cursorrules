@@ -3,6 +3,7 @@
 ```
 .
 ├── .env # environment variables
+├── .cursorrules # cursor rules
 ├── LICENSE
 ├── README.md # readme
 ├── install.bat # windows install script
@@ -11,22 +12,31 @@
 ├── publish.bat # windows publish script
 ├── publish.sh # linux publish script
 ├── _backups # backup files
-│   └── package_0.json
+│   └── README.md
+├── _drafts # draft files
+│   └── README.md
 ├── cjs # commonjs build
-│   └── index.js
+│   ├── .swcrc
+│   └── package.json
 ├── docs # documentations
+│   ├── client # documents for client(user)
+│   │   └── 사용자_매뉴얼.md
 │   ├── cursor # documents with cursor
+│   │   ├── history.md
 │   │   └── requirements.md
-│   └── team # documents with team
-│       └── 기획.md
+│   ├── dev # reference for development team(기획,디자인,개발)
+│   │   ├── 00_README.md
+│   │   ├── 01_0_프로젝트 제안서.md
+│   │   ├── ...
+│   │   └── 17_사용자_매뉴얼.md
+│   └── reference # reference documents
+│       ├── github.md
+│       └── npmjs.md
 ├── esm # es module build
-│   └── index.js
+│   ├── .swcrc
+│   └── package.json
 ├── src # typescript source code
-│   ├── index.ts
-│   ├── test
-│   │   └── index.ts
-│   └── types
-│       └── index.ts
+│   └── index.ts
 └── types # types for build
     ├── index.d.ts
     └── index.d.ts.map
@@ -43,6 +53,7 @@
   - prettier
 - Package Manager
   - npm
+  - yarn
 - Build Tool
   - SWC
 - Basic Package
@@ -54,17 +65,21 @@
 ## Code Guidelines
 
 ### TypeScript Guidelines
+- Code AREA 표시
+  - Import AREA
+  - Types AREA (새로 추가)
+  - Functions AREA
+  - Export AREA
+- type에 `any` 사용 가능
 - arrow function 사용
 - 함수 개별적으로 export 하지 않고, 파일 하단에 모아서, `export { fun1, fun2, fun3, ... }`
 - index.ts 가 있는 경우, 폴더 내의 다른 함수들은 모두 index.ts 에서 export
 
-### 네이밍 컨벤션
-naming:
+### Naming Conventions
   - Use camelCase for functions and variables
   - Use UPPER_CASE for constants
   - Use kebab-case for file names
 
-#### 문서화
-documentation:
-  - Add JSDoc comments for functions
-  - Add usage examples in comments
+### Documentation
+- Add JSDoc comments for functions
+- Add usage examples in comments

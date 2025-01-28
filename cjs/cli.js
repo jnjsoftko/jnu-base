@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),!function(e,r){for(var t in r)Object.defineProperty(e,t,{enumerable:!0,get:r[t]})}(exports,{exe:function(){return t},exec:function(){return r}});const e=require("child_process"),r=r=>(0,e.execSync)(r,{encoding:"utf8"}).toString().trim(),t=e=>{let t=[];return e.forEach(e=>t.push(r(e))),t};
