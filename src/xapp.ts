@@ -122,7 +122,7 @@ const updatePackageJsonForGithub = (userName: string, repoName: string, json: an
 
 const execOptions: ExecSyncOptionsWithStringEncoding = {
   encoding: 'utf8',
-  shell: true
+  shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh'
 };
 
 /**

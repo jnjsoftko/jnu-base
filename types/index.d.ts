@@ -44,4 +44,6 @@ moveFile, // 파일 이동
 moveFiles, } from './builtin.js';
 export { exec, // 단일 명령어 실행
 exe, } from './cli.js';
+export { findGithubAccount, // Github 계정 정보 조회
+Github, } from './github.js';
 //# sourceMappingURL=index.d.ts.map
