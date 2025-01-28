@@ -1,0 +1,130 @@
+import { findGithubAccount, Github } from '../../src/github';
+import { loadJson } from '../../src/builtin';
+
+// Mock loadJson function
+jest.mock('../../src/builtin', () => ({
+  loadJson: jest.fn()
+}));
+
+describe('Github Functions', () => {
+  describe('findGithubAccount', () => {
+    beforeEach(() => {
+      // Mock data setup
+      (loadJson as jest.Mock).mockReturnValue({
+        testUser: {
+          userName: 'testUser',
+          fullName: 'Test User',
+          email: 'test@example.com',
+          token: 'test-token'
+        }
+      });
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should return github account info for given username', () => {
+      const account = findGithubAccount('testUser');
+      expect(account).toEqual({
+        userName: 'testUser',
+        fullName: 'Test User',
+        email: 'test@example.com',
+        token: 'test-token'
+      });
+      expect(loadJson).toHaveBeenCalled();
+    });
+  });
+});
+
+describe('Github Class', () => {
+  let github: Github;
+  const mockAccount = {
+    userName: 'testUser',
+    fullName: 'Test User',
+    email: 'test@example.com',
+    token: 'test-token'
+  };
+
+  beforeEach(() => {
+    (loadJson as jest.Mock).mockReturnValue({
+      testUser: mockAccount
+    });
+    github = new Github('testUser');
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('constructor', () => {
+    it('should initialize github instance with correct account info', () => {
+      expect(github.userName).toBe('testUser');
+      expect(github.account).toEqual(mockAccount);
+      expect(github.octokit).toBeDefined();
+    });
+  });
+
+  describe('createRepo', () => {
+    it('should call createForAuthenticatedUser with correct options', () => {
+      const createRepoSpy = jest.spyOn(github.octokit.rest.repos, 'createForAuthenticatedUser')
+        .mockImplementation(() => Promise.resolve({ data: {} } as any));
+
+      const options = {
+        name: 'test-repo',
+        description: 'Test repository'
+      };
+
+      github.createRepo(options);
+
+      expect(createRepoSpy).toHaveBeenCalledWith({
+        name: 'test-repo',
+        description: 'Test repository',
+        auto_init: true,
+        private: false,
+        license_template: 'MIT'
+      });
+    });
+  });
+
+  describe('cloneRepo', () => {
+    it('should execute git clone command with correct url', () => {
+      const execSyncSpy = jest.spyOn(require('child_process'), 'execSync')
+        .mockImplementation(() => '');
+
+      github.cloneRepo({ name: 'test-repo' });
+
+      expect(execSyncSpy).toHaveBeenCalledWith(
+        'git clone https://github.com/testUser/test-repo.git'
+      );
+    });
+  });
+
+  describe('setConfigRepo', () => {
+    it('should execute git config commands with correct values', () => {
+      const execSyncSpy = jest.spyOn(require('child_process'), 'execSync')
+        .mockImplementation(() => '');
+
+      github.setConfigRepo({ name: 'test-repo' });
+
+      const expectedCmd = 
+        'cd test-repo && ' +
+        'git config user.name "Test User" && ' +
+        'git config user.email "test@example.com" && ' +
+        'git remote set-url origin https://test-token@github.com/testUser/test-repo.git';
+
+      expect(execSyncSpy).toHaveBeenCalledWith(expectedCmd);
+    });
+  });
+
+  describe('deleteRepo', () => {
+    it('should call delete with correct options', () => {
+      const deleteRepoSpy = jest.spyOn(github.octokit.rest.repos, 'delete')
+        .mockImplementation(() => Promise.resolve({ data: {} } as any));
+
+      github.deleteRepo({ name: 'test-repo' });
+
+      expect(deleteRepoSpy).toHaveBeenCalledWith({ name: 'test-repo' });
+    });
+  });
+}); 

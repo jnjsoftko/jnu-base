@@ -52,3 +52,8 @@ export {
   exec, // 단일 명령어 실행
   exe, // 여러 명령어 순차 실행
 } from './cli.js';
+
+export {
+  findGithubAccount, // Github 계정 정보 조회
+  Github, // Github API 작업을 위한 클래스
+} from './github.js';
