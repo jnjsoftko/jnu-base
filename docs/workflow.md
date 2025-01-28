@@ -22,9 +22,11 @@ destination: "/Users/moon/JnJ-soft/Projects/@utils/node-utils/[project-name]"
 ```sh:install.sh, install.bat
 # windows
 ./install.bat
+npm install
 
 # macos / linux
 ./install.sh
+npm install
 ```
 
 ### cursor.ai 용 문서 수정

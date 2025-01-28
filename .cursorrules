@@ -19,7 +19,7 @@
 │   │   └── requirements.md
 │   └── team # documents with team
 │       └── 기획.md
-├── ems # es module build
+├── esm # es module build
 │   └── index.js
 ├── src # typescript source code
 │   ├── index.ts
