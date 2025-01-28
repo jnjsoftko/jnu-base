@@ -7,7 +7,25 @@
  * ```ts
  * hello("홍길동") // "Hello, 홍길동!"
  * ```
- */ const hello = (name)=>{
+ */ "use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
+}
+_export(exports, {
+    good: function() {
+        return good;
+    },
+    hello: function() {
+        return hello;
+    }
+});
+const hello = (name)=>{
     return `Hello, ${name}!`;
 };
 /**
@@ -23,5 +41,3 @@
  */ const good = (score)=>{
     return score >= 80;
 };
-// 모든 함수를 하단에서 한번에 export
-export { hello, good };

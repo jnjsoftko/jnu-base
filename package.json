@@ -14,10 +14,10 @@
     }
   },
   "scripts": {
-    "build": "npm run build:types && npm run build:cjs & npm run build:esm",
-    "build:types": "tsc --emitDeclarationOnly --outDir types",
+    "build": "npm run build:types && npm run build:cjs && npm run build:esm",
+    "build:types": "tsc -p tsconfig.json --emitDeclarationOnly --outDir types",
     "build:watch": "npm run build:types && concurrently \"npm run build:cjs:watch\" \"npm run build:esm:watch\"",
-    "build:cjs": "swc ./src -d cjs --config-file ./cjs/.swcrc  --strip-leading-paths",
+    "build:cjs": "swc ./src -d cjs --config-file ./cjs/.swcrc --strip-leading-paths",
     "build:esm": "swc ./src -d esm --config-file ./esm/.swcrc --strip-leading-paths",
     "build:cjs:watch": "swc ./src -d cjs --config-file ./cjs/.swcrc  --strip-leading-paths -w",
     "build:esm:watch": "swc ./src -d esm --config-file ./esm/.swcrc --strip-leading-paths -w",
