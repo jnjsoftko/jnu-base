@@ -61,14 +61,18 @@ const isEmpty = (v: any) => JSON.stringify(v) === '{}' || JSON.stringify(v) === 
  * ```
  */
 const isFalsy = (v: any) => {
+  if (v === true) return false;
+  if (typeof v === 'number' && v !== 0) return false;
+  
   return (
     v === false ||
     v === undefined ||
     v === null ||
     Number.isNaN(v) ||
     v === 0 ||
-    v.length === 0 ||
-    Object.keys(v).length === 0
+    v === '' ||
+    (Array.isArray(v) && v.length === 0) ||
+    (typeof v === 'object' && v !== null && Object.keys(v).length === 0)
   );
 };
 
@@ -84,7 +88,12 @@ const isFalsy = (v: any) => {
  * isValidStr(null) // false
  * ```
  */
-const isValidStr = (s: any) => !(s === null || s.trim() === '' || typeof s !== 'string');
+const isValidStr = (s: any) => {
+  if (s === null || s === undefined || typeof s !== 'string') {
+    return false;
+  }
+  return s.trim() !== '';
+};
 
 // * Convert Functions
 /**
