@@ -1,14 +1,5 @@
 /// <reference types="node" />
-type FileOptions = {
-    encoding?: BufferEncoding;
-    overwrite?: boolean;
-    newFile?: boolean;
-};
-type JsonOptions = {
-    indent?: number;
-    overwrite?: boolean;
-    newFile?: boolean;
-};
+import type { FileOptions, JsonOptions } from './types';
 /**
  * 폴더이름에 포함된 "\\" => "/"
  */

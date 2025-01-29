@@ -1,5 +1,8 @@
-type ExecResult = string;
-type ExecResults = string[];
+/// <reference types="node" />
+import { ExecSyncOptionsWithStringEncoding } from "child_process";
+import type { ExecResult, ExecResults, CliOptions } from './types';
+declare const TEMPLATES_ROOT: string;
+declare const PLATFORM: string;
 /**
  * 단일 명령어 실행
  * @param cmd 실행할 명령어
@@ -25,5 +28,18 @@ declare const exec: (cmd: string) => ExecResult;
  * ```
  */
 declare const exe: (cmds: string[]) => ExecResults;
-export { exec, exe };
+declare const execOptions: ExecSyncOptionsWithStringEncoding;
+/**
+ * 현재 디렉토리의 부모 디렉토리 경로 반환
+ */
+declare const getParentDir: () => string;
+/**
+ * 앱 제거 (로컬 + 원격 저장소)
+ */
+declare const removeApp: (options: CliOptions) => void;
+/**
+ * 템플릿 기반 앱 초기화
+ */
+declare const initApp: (options: CliOptions) => void;
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, initApp, removeApp };
 //# sourceMappingURL=cli.d.ts.map

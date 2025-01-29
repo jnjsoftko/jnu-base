@@ -45,6 +45,5 @@ moveFiles, // 여러 파일 이동
 substituteInFile, } from './builtin.js';
 export { exec, // 단일 명령어 실행
 exe, } from './cli.js';
-export { findGithubAccount, // Github 계정 정보 조회
-Github, } from './github.js';
+export { findGithubAccount, findAllRepos, createRepo, cloneRepo, setConfigRepo, copyRepo, initRepo, pushRepo, deleteRepo, makeRepo, emptyRepo, removeRepo } from './git.js';
 //# sourceMappingURL=index.d.ts.map

@@ -1,5 +1,5 @@
 /// <reference types="node" />
-type Dict = Record<string, any>;
+import type { Dict } from './types';
 /**
  * 간단한 테스트용 함수
  * @returns 'pong'
