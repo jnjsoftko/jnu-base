@@ -6,8 +6,9 @@ import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
 import Path from "path";
 import { sleep } from './basic'
 import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin'
-import { Github, findGithubAccount } from "./github";
-import dotenv from "dotenv";
+import { findGithubAccount } from "./git";
+import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp } from "./cli";
+import type { CliOptions } from './types';
 
 // & Types AREA
 //&============================================================================
@@ -22,11 +23,6 @@ interface CommandOptions {
 
 // & CONSTS / VARIABLES
 //&============================================================================
-const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? "C:/JnJ-soft/Developments/Templates";
-const PLATFORM = process.platform === 'win32' ? 'win' : 
-                process.platform === 'darwin' ? 'mac' : 
-                process.platform === 'linux' ? 'linux' : 
-                process.platform;
 
 // * cli options
 // --no-github
@@ -71,7 +67,7 @@ const argv = yargs
   })
   .parseSync();
 
-const options: CommandOptions = {
+const options: CliOptions = {
   exec: argv.e as string,
   userName: argv.u as string,
   template: argv.t as string,
@@ -82,57 +78,15 @@ const options: CommandOptions = {
 
 // & FUNCTIONS
 //&============================================================================
-const execOptions: ExecSyncOptionsWithStringEncoding = {
-  encoding: 'utf8',
-  shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh'
-};
 
-// & MAIN
-//&============================================================================
-const account = findGithubAccount(options.userName);
-
-const initTsSwcNpm = (account) => {
-  switch (PLATFORM) {
-    case "win":
-      console.log("win");
-      break;
-    default:
-      execSync(`cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`, execOptions);
-      const currentDir = execSync('pwd', execOptions).toString().trim();
-      const parentDir = Path.dirname(currentDir);
-
-      substituteInFile(`${options.repoName}/package.json`, {
-        "{{name}}": options.repoName,
-        "{{author}}": `${account.fullName} <${account.email}>`, 
-        "{{description}}": options.description || "",
-      });
-
-      substituteInFile(`${options.repoName}/README.md`, {
-        "{{name}}": options.repoName,
-        "{{author}}": `${account.fullName} <${account.email}>`, 
-        "{{github-id}}": account.userName,
-        "{{description}}": options.description || "",
-        "{{parent-dir}}": parentDir,
-      });
-      execSync(`cd ${options.repoName} && npm install`, execOptions);
-      break;
-  }
-}
 
 // * exec
 switch (options.exec) {
   case "init":
-    switch (options.template) {
-      case "node-simple":
-        break;
-      case "ts-swc-npm":
-        initTsSwcNpm(account)
-        break;
-      case "python-pipenv":
-        break;
-      case "flutter":
-        break;
-    };
+    initApp(options);
+    break;
+  case "remove":
+    removeApp(options);
     break;
   default:
     console.log("Invalid command");

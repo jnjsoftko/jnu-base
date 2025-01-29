@@ -1,5 +1,13 @@
 #!/usr/bin/env node
-import { Github } from "./github";
+import { 
+  findGithubAccount,
+  createRepo, 
+  initRepo, 
+  copyRepo, 
+  makeRepo,
+  deleteRepo 
+} from "./git";
+import { Octokit } from "@octokit/rest";
 import yargs from "yargs";
 import { execSync } from "child_process";
 
@@ -7,7 +15,7 @@ import { execSync } from "child_process";
 // &---------------------------------------------------------------------------
 interface CommandOptions {
   userName: string;
-  exec: 'createRepo' | 'initRepo' | 'copyRepo' | 'emptyRepo' | 'pushRepo' | 'deleteRepo';
+  exec: 'createRepo' | 'initRepo' | 'copyRepo' | 'emptyRepo' | 'makeRepo' | 'deleteRepo';
   repoName: string;
   description?: string;
 }
@@ -26,7 +34,7 @@ const options = yargs
   })
   .option("e", {
     alias: "exec",
-    choices: ['createRepo', 'initRepo', 'copyRepo', 'emptyRepo', 'pushRepo', 'deleteRepo'] as const,
+    choices: ['createRepo', 'initRepo', 'copyRepo', 'emptyRepo', 'pushRepo', 'deleteRepo', 'makeRepo'] as const,
     default: "createRepo",
     describe: "exec command createRepo/inintRepo(create+clone+config)/copyRepo(clone+config)/deleteRepo",
     type: "string",
@@ -45,53 +53,49 @@ const options = yargs
   })
   .argv as unknown as CommandOptions;
 
-// * github instance
-const github = new Github(options.userName);
+// * github account setup
+const account = findGithubAccount(options.userName);
+const octokit = new Octokit({ auth: account.token });
 
 // * exec
 switch (options.exec) {
   case "initRepo":
-    github.initRepo({
+    initRepo({
       name: options.repoName,
       description: options.description,
-    });
+    }, options.userName, account, octokit);
     break;
   case "createRepo":
-    github.createRepo({
+    createRepo(octokit, {
       name: options.repoName,
       description: options.description,
     });
     break;
   case "copyRepo":
-    github.copyRepo({
+    copyRepo({
       name: options.repoName,
       description: options.description,
-    });
+    }, options.userName, account);
     break;
   case "emptyRepo":
-    github.createRepo({
+    createRepo(octokit, {
       name: options.repoName,
       description: options.description,
       auto_init: false,
       license_template: undefined,
     });
     break;
-  case "pushRepo": // only push
-    const { repoName, description, userName } = options;
-    let cmd = `github -u ${userName} -n ${repoName} -e emptyRepo -d "${description}"`;
-    console.log(cmd);
-    execSync(cmd);
-
-    github.pushRepo({
+  case "makeRepo":
+    makeRepo({
       name: options.repoName,
       description: options.description,
-    });
+    }, options.userName, account, octokit);
     break;
   case "deleteRepo":
-    github.deleteRepo({
+    deleteRepo(octokit, options.userName, {
       name: options.repoName,
     });
     break;
 }
 
-// github -u mooninlearn -n udemy-test -e pushRepo -d "test pushRepo"
+// github -u mooninlearn -n udemy-test -e makeRepo -d "test makeRepo"

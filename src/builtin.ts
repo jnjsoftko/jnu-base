@@ -3,20 +3,8 @@
 // ? Builtin Modules
 import * as fs from 'fs';
 import Path from 'path';
+import type { FileOptions, JsonOptions } from './types';
 
-// & Types AREA
-// &---------------------------------------------------------------------------
-type FileOptions = {
-  encoding?: BufferEncoding;
-  overwrite?: boolean;
-  newFile?: boolean;
-};
-
-type JsonOptions = {
-  indent?: number;
-  overwrite?: boolean;
-  newFile?: boolean;
-};
 
 // & Functions AREA
 // &---------------------------------------------------------------------------

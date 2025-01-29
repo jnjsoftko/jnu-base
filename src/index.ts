@@ -55,6 +55,16 @@ export {
 } from './cli.js';
 
 export {
-  findGithubAccount, // Github 계정 정보 조회
-  Github, // Github API 작업을 위한 클래스
-} from './github.js';
+  findGithubAccount,
+  findAllRepos,
+  createRepo,
+  cloneRepo,
+  setConfigRepo,
+  copyRepo,
+  initRepo,
+  pushRepo,
+  deleteRepo,
+  makeRepo,
+  emptyRepo,
+  removeRepo
+} from './git.js';
