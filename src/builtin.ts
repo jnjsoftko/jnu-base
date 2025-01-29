@@ -311,6 +311,19 @@ const renameFilesInFolder = (
     .map((name) => mapCb(name));
 };
 
+/**
+ * substitute in file
+ * @param filePath
+ * @param replacements {k1: v1, k2: v2, ...} ("search" -> "replace")
+ */
+const substituteInFile = (filePath: string, replacements: Record<string, string>) => {
+  let content = loadFile(filePath);
+  for (const [key, value] of Object.entries(replacements)) {
+    content = content.replace(new RegExp(key, 'g'), value);
+  }
+  saveFile(filePath, content, { overwrite: true, newFile: false });
+}
+
 // & Export AREA
 // &---------------------------------------------------------------------------
 export {
@@ -330,4 +343,5 @@ export {
   exists, // 존재여부
   moveFile,
   moveFiles,
+  substituteInFile
 };

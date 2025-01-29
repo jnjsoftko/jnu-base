@@ -5,7 +5,7 @@ import yargs from "yargs";
 import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
 import Path from "path";
 import { sleep } from './basic'
-import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile } from './builtin'
+import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin'
 import { Github, findGithubAccount } from "./github";
 import dotenv from "dotenv";
 
@@ -87,14 +87,6 @@ const execOptions: ExecSyncOptionsWithStringEncoding = {
   shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh'
 };
 
-const substituteInFile = (filePath: string, replacements: Record<string, string>) => {
-  let content = loadFile(filePath);
-  for (const [key, value] of Object.entries(replacements)) {
-    content = content.replace(key, value);
-  }
-  saveFile(filePath, content);
-}
-
 // & MAIN
 //&============================================================================
 const account = findGithubAccount(options.userName);
@@ -106,15 +98,21 @@ const initTsSwcNpm = (account) => {
       break;
     default:
       execSync(`cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`, execOptions);
+      const currentDir = execSync('pwd', execOptions).toString().trim();
+      const parentDir = Path.dirname(currentDir);
+
       substituteInFile(`${options.repoName}/package.json`, {
         "{{name}}": options.repoName,
         "{{author}}": `${account.fullName} <${account.email}>`, 
         "{{description}}": options.description || "",
       });
+
       substituteInFile(`${options.repoName}/README.md`, {
         "{{name}}": options.repoName,
-        "{{version}}": "1.0.0", 
+        "{{author}}": `${account.fullName} <${account.email}>`, 
+        "{{github-id}}": account.userName,
         "{{description}}": options.description || "",
+        "{{parent-dir}}": parentDir,
       });
       execSync(`cd ${options.repoName} && npm install`, execOptions);
       break;

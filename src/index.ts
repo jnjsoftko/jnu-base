@@ -46,6 +46,7 @@ export {
   exists, // 파일/폴더 존재 여부 확인
   moveFile, // 파일 이동
   moveFiles, // 여러 파일 이동
+  substituteInFile, // 파일 내용 치환
 } from './builtin.js';
 
 export {

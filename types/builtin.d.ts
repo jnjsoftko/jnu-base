@@ -77,6 +77,12 @@ declare const moveFile: (srcFolderName: string, dstFolderName: string, srcFileNa
  * moveFiles
  */
 declare const moveFiles: (srcFolderName: string, dstFolderName: string, srcFileNames: string[], dstFileNames: string[]) => void;
+/**
+ * substitute in file
+ * @param filePath
+ * @param replacements {k1: v1, k2: v2, ...} ("search" -> "replace")
+ */
+declare const substituteInFile: (filePath: string, replacements: Record<string, string>) => void;
 export { slashedFolder, //
 setPath, // 상대경로->절대경로(실행 폴더 기준) './dir1/dir2' =>
 sanitizeName, // 파일명으로 사용가능하도록 문자열 변경
@@ -91,5 +97,5 @@ findFolders, // 하위 folder 목록
 existsFolder, // 폴더 존재여부
 existsFile, // 파일 존재여부
 exists, // 존재여부
-moveFile, moveFiles, };
+moveFile, moveFiles, substituteInFile };
 //# sourceMappingURL=builtin.d.ts.map
