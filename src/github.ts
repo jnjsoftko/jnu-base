@@ -8,7 +8,6 @@
 // ? External Modules
 import { execSync } from "child_process";
 import { Octokit } from "@octokit/rest";
-import dotenv from "dotenv";
 
 // ? Internal Modules
 import { loadJson } from "./builtin.js";
@@ -33,8 +32,7 @@ type RepoOptions = {
 
 // & Variables AREA
 // &---------------------------------------------------------------------------
-dotenv.config();
-const settingsPath = process.env.DEV_SETTINGS ?? "C:/JnJ-soft/Developments/_Settings";
+const settingsPath = `${process.env.DEV_CONFIG_ROOT}/Environments` ?? "C:/JnJ-soft/Developments/Environments";
 
 // & Functions AREA
 // &---------------------------------------------------------------------------
