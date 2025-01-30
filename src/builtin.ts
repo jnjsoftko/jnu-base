@@ -3,7 +3,7 @@
 // ? Builtin Modules
 import * as fs from 'fs';
 import Path from 'path';
-import type { FileOptions, JsonOptions } from './types';
+import type { FileOptions, JsonOptions } from './types.js';
 
 
 // & Functions AREA

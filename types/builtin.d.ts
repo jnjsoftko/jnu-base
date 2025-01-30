@@ -1,6 +1,6 @@
 /// <reference types="node" />
 /// <reference types="node" />
-import type { FileOptions, JsonOptions } from './types';
+import type { FileOptions, JsonOptions } from './types.js';
 /**
  * 폴더이름에 포함된 "\\" => "/"
  */

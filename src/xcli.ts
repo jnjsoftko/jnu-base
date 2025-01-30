@@ -4,7 +4,7 @@
 import yargs from "yargs";
 import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
 import Path from "path";
-import { sleep } from './basic'
+import { sleep } from "./basic"
 import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin'
 import { findGithubAccount } from "./git";
 import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip, tree } from "./cli";

@@ -10,12 +10,12 @@ import { execSync } from "child_process";
 import { Octokit } from "@octokit/rest";
 
 // ? Internal Modules
-import { loadJson } from "./builtin";
-import { sleep } from "./basic";
+import { loadJson } from "./builtin.js";
+import { sleep } from "./basic.js";
 
 // & Types AREA
 // &---------------------------------------------------------------------------
-import type { GithubAccount, RepoOptions } from './types';
+import type { GithubAccount, RepoOptions } from './types.js';
 
 // & Variables AREA
 // &---------------------------------------------------------------------------

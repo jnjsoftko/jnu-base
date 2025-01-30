@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import type { Dict } from './types';
+import type { Dict } from './types.js';
 /**
  * 간단한 테스트용 함수
  * @returns 'pong'

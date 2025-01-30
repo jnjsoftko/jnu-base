@@ -3,7 +3,7 @@
  *   - [create repository](https://octokit.github.io/rest.js/v19#repos-create-for-authenticated-user)
  */
 import { Octokit } from "@octokit/rest";
-import type { GithubAccount, RepoOptions } from './types';
+import type { GithubAccount, RepoOptions } from './types.js';
 /**
  * Github 계정 정보 조회
  * @param userName - Github 사용자명

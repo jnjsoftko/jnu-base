@@ -1,9 +1,9 @@
 import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
 import Path from "path";
-import { sleep } from './basic';
+import { sleep } from "./basic.js";
 import { composeHangul, makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin';
-import { findGithubAccount } from "./git";
-import type { ExecResult, ExecResults, CliOptions } from './types';
+import { findGithubAccount } from "./git.js";
+import type { ExecResult, ExecResults, CliOptions } from './types.js';
 
 // & Variables AREA
 // &---------------------------------------------------------------------------
