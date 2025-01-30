@@ -25,7 +25,7 @@ removeDictKeys, // 객체에서 특정 키들 제거
 now, // 현재 날짜와 시간 반환
 delay, // 지정된 시간 후 함수 실행
 sleep, // 지정된 시간 동안 대기
-sleepAsync, } from './basic';
+sleepAsync, } from './basic.js';
 export { composeHangul, // 한글 조합형 -> 완성형
 slashedFolder, // 경로의 백슬래시를 슬래시로 변환
 setPath, // 상대 경로를 절대 경로로 변환
@@ -43,8 +43,8 @@ existsFile, // 파일 존재 여부 확인
 exists, // 파일/폴더 존재 여부 확인
 moveFile, // 파일 이동
 moveFiles, // 여러 파일 이동
-substituteInFile, } from './builtin';
+substituteInFile, } from './builtin.js';
 export { exec, // 단일 명령어 실행
-exe, } from './cli';
-export { findGithubAccount, findAllRepos, createRepo, cloneRepo, setConfigRepo, copyRepo, initRepo, pushRepo, deleteRepo, makeRepo, emptyRepo, removeRepo } from './git';
+exe, } from './cli.js';
+export { findGithubAccount, findAllRepos, createRepo, cloneRepo, setConfigRepo, copyRepo, initRepo, pushRepo, deleteRepo, makeRepo, emptyRepo, removeRepo } from './git.js';
 //# sourceMappingURL=index.d.ts.map
