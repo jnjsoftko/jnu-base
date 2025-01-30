@@ -5,9 +5,6 @@ import { composeHangul, makeDir, copyDir, loadJson, saveJson, loadFile, saveFile
 import { findGithubAccount } from "./git";
 import type { ExecResult, ExecResults, CliOptions } from './types';
 
-// & Types AREA
-// &---------------------------------------------------------------------------
-
 // & Variables AREA
 // &---------------------------------------------------------------------------
 const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? "C:/JnJ-soft/Developments/Templates";
@@ -102,6 +99,7 @@ const initTsSwcNpm = (options: CliOptions) => {
       substituteInFile(`${options.repoName}/docs/workflow.md`, {
         "{{name}}": options.repoName ?? '',
         "{{project-name}}": options.repoName ?? '',
+        "{{email}}": account.email ?? '',
         "{{github-id}}": options.userName ?? '',
         "{{description}}": options.description || "",
         "{{parent-dir}}": parentDir,
