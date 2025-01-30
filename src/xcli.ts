@@ -14,9 +14,9 @@ import type { CliOptions } from './types';
 //&============================================================================
 interface CommandOptions {
   exec: string;
-  userName: string;
-  template: string;
-  repoName: string;
+  userName?: string;
+  template?: string;
+  repoName?: string;
   description?: string;
   github?: boolean;
 }
@@ -39,7 +39,6 @@ const argv = yargs
     default: "mooninlearn",
     describe: "Name of User",
     type: "string",
-    demandOption: true,
   })
   .option("t", {
     // - template: (node-simple|python|go|flutter|)
@@ -52,7 +51,6 @@ const argv = yargs
     alias: "repoName",
     describe: "Repository Name(Project Name)", // project name
     type: "string",
-    demandOption: true,
   })
   .option("d", {
     alias: "description",

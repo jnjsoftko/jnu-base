@@ -2,10 +2,11 @@
 import { 
   findGithubAccount,
   createRepo, 
-  initRepo, 
+  initRepo,
+  deleteRepo,  
   copyRepo, 
   makeRepo,
-  deleteRepo 
+  removeRepo
 } from "./git";
 import { Octokit } from "@octokit/rest";
 import yargs from "yargs";
@@ -14,9 +15,9 @@ import { execSync } from "child_process";
 // & Types AREA
 // &---------------------------------------------------------------------------
 interface CommandOptions {
-  userName: string;
-  exec: 'createRepo' | 'initRepo' | 'copyRepo' | 'emptyRepo' | 'makeRepo' | 'deleteRepo';
-  repoName: string;
+  exec: string; // 'copyRepo' | 'makeRepo' | 'removeRepo'
+  userName?: string;
+  repoName?: string;
   description?: string;
 }
 
@@ -25,13 +26,6 @@ interface CommandOptions {
 // * cli options
 const options = yargs
   .usage("Usage: -u <url> -s <keyword>")
-  .option("u", {
-    alias: "userName",
-    default: "mooninlearn",
-    describe: "Name of User",
-    type: "string",
-    demandOption: true,
-  })
   .option("e", {
     alias: "exec",
     choices: ['copyRepo', 'makeRepo', 'removeRepo'] as const,
@@ -40,11 +34,16 @@ const options = yargs
     type: "string",
     demandOption: true,
   })
+  .option("u", {
+    alias: "userName",
+    default: "mooninlearn",
+    describe: "Name of User",
+    type: "string"
+  })
   .option("n", {
     alias: "repoName",
     describe: "NameOfRepository",
-    type: "string",
-    demandOption: true,
+    type: "string"
   })
   .option("d", {
     alias: "description",
@@ -54,46 +53,51 @@ const options = yargs
   .argv as unknown as CommandOptions;
 
 // * github account setup
-const account = findGithubAccount(options.userName);
+const account = findGithubAccount(options.userName ?? '');
 const octokit = new Octokit({ auth: account.token });
 
 // * exec
 switch (options.exec) {
   case "initRepo":
     initRepo({
-      name: options.repoName,
-      description: options.description,
-    }, options.userName, account, octokit);
+      name: options.repoName ?? '',
+      description: options.description ?? '',
+    }, options.userName ?? '', account, octokit);
     break;
   case "createRepo":
     createRepo(octokit, {
-      name: options.repoName,
-      description: options.description,
+      name: options.repoName ?? '',
+      description: options.description ?? '',
     });
-    break;
-  case "copyRepo":
-    copyRepo({
-      name: options.repoName,
-      description: options.description,
-    }, options.userName, account);
     break;
   case "emptyRepo":
     createRepo(octokit, {
-      name: options.repoName,
-      description: options.description,
+      name: options.repoName ?? '',
+      description: options.description ?? '',
       auto_init: false,
       license_template: undefined,
     });
     break;
+  case "deleteRepo":
+    deleteRepo(octokit, options.userName ?? '', {
+      name: options.repoName ?? '',
+    });
+    break;
+  case "copyRepo":
+    copyRepo({
+      name: options.repoName ?? '',
+      description: options.description ?? '',
+    }, options.userName ?? '', account);
+    break;
   case "makeRepo":
     makeRepo({
-      name: options.repoName,
-      description: options.description,
-    }, options.userName, account, octokit);
+      name: options.repoName ?? '',
+      description: options.description ?? '',
+    }, options.userName ?? '', account, octokit);
     break;
-  case "deleteRepo":
-    deleteRepo(octokit, options.userName, {
-      name: options.repoName,
+  case "removeRepo":
+    removeRepo(octokit, options.userName ?? '', {
+      name: options.repoName ?? '',
     });
     break;
 }
