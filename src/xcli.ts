@@ -78,7 +78,8 @@ const options: CliOptions = {
   template: argv.t as string,
   repoName: argv.n as string,
   description: argv.d,
-  github: argv.g as boolean
+  github: argv.g as boolean,
+  excluded: argv.x as string
 };
 
 // & FUNCTIONS
