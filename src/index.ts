@@ -53,7 +53,6 @@ export {
 export {
   TEMPLATES_ROOT,
   PLATFORM,
-  execOptions,
   exec, // 단일 명령어 실행
   exe, // 여러 명령어 순차 실행
   getParentDir,
