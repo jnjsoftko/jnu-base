@@ -13,7 +13,7 @@ import type { CliOptions } from './types';
 // & Types AREA
 //&============================================================================
 interface CommandOptions {
-  exec: string;
+  exec?: string;
   userName?: string;
   template?: string;
   repoName?: string;

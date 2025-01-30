@@ -75,6 +75,29 @@
 │       ├── e2e.setup.ts
 │       ├── integration.setup.ts
 │       └── unit.setup.ts
+├── types
+│   ├── basic.d.ts
+│   ├── basic.d.ts.map
+│   ├── builtin.d.ts
+│   ├── builtin.d.ts.map
+│   ├── cli.d.ts
+│   ├── cli.d.ts.map
+│   ├── git.d.ts
+│   ├── git.d.ts.map
+│   ├── gitexe.d.ts
+│   ├── gitexe.d.ts.map
+│   ├── github.d.ts
+│   ├── github.d.ts.map
+│   ├── index.d.ts
+│   ├── index.d.ts.map
+│   ├── types.d.ts
+│   ├── types.d.ts.map
+│   ├── xapp.d.ts
+│   ├── xapp.d.ts.map
+│   ├── xcli.d.ts
+│   ├── xcli.d.ts.map
+│   ├── xgit.d.ts
+│   └── xgit.d.ts.map
 ├── LICENSE
 ├── README.md
 ├── jest.config.js
@@ -88,4 +111,4 @@
 ├── tree.txt
 └── tsconfig.json
 
-18 directories, 71 files
+19 directories, 93 files

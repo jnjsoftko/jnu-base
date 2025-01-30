@@ -149,6 +149,7 @@ const tree = (options: CliOptions): string => {
     case "win":
       return '';
     default:
+      console.log('options.excluded: ', options.excluded);
       const excluded = options.excluded ? 
         `"${options.excluded.split(',').join('|')}"` :  // 따옴표 처리 수정
         '"node_modules|dist|_backups|_drafts|types|docs"';

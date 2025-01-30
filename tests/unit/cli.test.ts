@@ -9,7 +9,7 @@ describe('CLI Functions', () => {
       // 실제 tree 함수 실행
       const result = tree({
         exec: '',
-        excluded: 'node_modules,dist,_backups,_drafts,types'
+        excluded: 'node_modules,dist,_backups,_drafts'
       });
       
       // 실행 결과 출력
