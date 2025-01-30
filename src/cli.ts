@@ -134,8 +134,23 @@ const zip = (options: CliOptions) => {
       execSync(`powershell -Command \"Compress-Archive -Path ${options.repoName} -DestinationPath ${options.repoName}.zip -Exclude ${excludedWin}\"`, execOptions);
       break;
     default:
-      const excluded = options.excluded ? options.excluded.split(',').map(item => `"${item}"`).join(' ') : '"*/node_modules/*",".git/*"';
+      const excluded = options.excluded ? options.excluded.split(',').map(item => `"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
       execSync(`zip -r ${options.repoName}.zip ${options.repoName} -x ${excluded}`, execOptions);
+      break;
+  }
+};
+
+/**
+ * 프로젝트 구조 분석
+ */
+const tree = (options: CliOptions) => {
+  switch (PLATFORM) {
+    case "win":
+      break;
+    default:
+      const excluded = options.excluded ? options.excluded.split(',').map(item => `"${item}"`).join('|') : '"node_modules,.git,cjs/*,esm/*,dist/*,_*"';
+      const result = execSync(`tree -I ${excluded} --dirsfirst -L 3`, execOptions);
+      saveFile(`tree.txt`, result);
       break;
   }
 };
