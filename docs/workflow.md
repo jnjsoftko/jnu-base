@@ -1,94 +1,62 @@
-1. 프로젝트 생성/설정
+0. Requirements
 
-## 템플릿 복사
-
-source: "{{template-path}}/ts-swc-npm"
-destination: "{{parent-path}}/{{project-name}}"
-
-source:"/Users/moon/JnJ-soft/Projects/@utils/_templates/ts-swc-npm"
-destination: "/Users/moon/JnJ-soft/Projects/@utils/node-utils/{{project-name}}"
-
-## macos / linux
-```sh
-# 템플릿 복사
-$ cp -r /Users/moon/JnJ-soft/Projects/@utils/_templates/ts-swc-npm/ /Users/moon/JnJ-soft/Projects/@utils/node-utils/{{project-name}}
-# $ cp -r /Users/moon/JnJ-soft/Projects/@utils/_templates/ts-swc-npm/ /Users/moon/JnJ-soft/Projects/@utils/node-utils/jnu-base
-$ cd /Users/moon/JnJ-soft/Projects/@utils/node-utils/jnu-base
-$ ./install.sh
-```
-
-## 프로젝트 설치
-
-### `README.md` 수정
-
-```markdown:README.md
----
-- name: "jnu-base"  // 프로젝트 이름
-- description: "Jnjsoft Nodejs Utility Library for Base Functions in Typescript"  // 프로젝트 설명
-- author: "jnjsoftko(Jnj Soft Ko) <jnjsoft.ko@gmail.com>"  // 저자
-- github-id: "jnjsoftko"  // github 아이디
-- npm-id: "jnjsoftko"  // npm 아이디
----
-```
-
-## install 실행
-
-```sh:install.sh, install.bat
-# windows
-./install.bat
-npm install
-
-# macos / linux
-./install.sh
-npm install
-```
-
-## github 연동
-
-```sh
-# github remote repository 생성 & push
-github -e pushRepo -n jnu-base -u jnjsoftko -d "Jnjsoft Nodejs Utility Library for Base Functions in Typescript"
-```
-
-## npmjs publish
-- build && git commit, push && npm publish
+## 환경 설정
 
 ### macos / linux
-
-```sh
-./publish.sh
+```ini:~/.zshrc
+export DEV_CONFIG_ROOT="/Users/moon/JnJ-soft/Developments"
 ```
 
-#### windows
+### windows
+> 시스템 환경 변수 편집
+DEV_CONFIG_ROOT="C:\Users\moon\JnJ-soft\Developments"
+
+
+## xapp 설치
 
 ```sh
-./publish.bat
+npm install -g jnu-base
 ```
 
-### cursor.ai 용 문서 수정
+1. 프로젝트 생성/설정
 
-#### `.cursorrules` 수정
+```sh
+cd {{parent-dir}}
+xapp -e init -t ts-swc-npm -u {{github-id}} -n {{project-name}} -d {{description}}
+```
+
+
+2. 프로젝트 개발
+
+## cursor.ai 용 문서 수정
+
+### `.cursorrules` 수정
 ```yaml:.cursorrules
 ```
 
-#### nodepads 용 파일 생성
+### nodepads 용 파일 생성
 
 ```md:docs/cursor/requirements.md
 ```
 
-#### nodepads 등록
+### nodepads 등록
+
+- cursor.ai > 설정 > NOTEPADS > '+ Create New Notepad'
 
 
-## 2. 프로젝트 개발
+3. 버전 관리
 
-### composer 사용
+## macos / linux
+```sh
+cd {{parent-dir}}/{{project-name}}
+./publish.sh
+```
 
-> 
+## windows
 
-## 3. 버전 관리
-### github
+```sh
+cd {{parent-dir}}/{{project-name}}
+./publish.bat
+```
 
 
-### npmjs
-
-https://www.npmjs.com/

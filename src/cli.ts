@@ -63,7 +63,12 @@ const execOptions: ExecSyncOptionsWithStringEncoding = {
  * 현재 디렉토리의 부모 디렉토리 경로 반환
  */
 const getParentDir = (): string => {
-  return Path.dirname(execSync('pwd', execOptions).toString().trim());
+  switch (PLATFORM) {
+    case "win":
+      return Path.dirname(execSync('cd', execOptions).toString().trim().replace(/\\/g, '/'));
+    default:
+      return Path.dirname(execSync('pwd', execOptions).toString().trim());
+  }
 };
 
 /**
@@ -87,7 +92,16 @@ const initTsSwcNpm = (options: CliOptions) => {
 
       substituteInFile(`${options.repoName}/README.md`, {
         "{{name}}": options.repoName ?? '',
+        "{{project-name}}": options.repoName ?? '',
         "{{author}}": `${account.fullName} <${account.email}>`, 
+        "{{github-id}}": options.userName ?? '',
+        "{{description}}": options.description || "",
+        "{{parent-dir}}": parentDir,
+      });
+
+      substituteInFile(`${options.repoName}/docs/workflow.md`, {
+        "{{name}}": options.repoName ?? '',
+        "{{project-name}}": options.repoName ?? '',
         "{{github-id}}": options.userName ?? '',
         "{{description}}": options.description || "",
         "{{parent-dir}}": parentDir,
@@ -149,7 +163,7 @@ const tree = (options: CliOptions): string => {
     case "win":
       return '';
     default:
-      console.log('options.excluded: ', options.excluded);
+      // console.log('options.excluded: ', options.excluded);
       const excluded = options.excluded ? 
         `"${options.excluded.split(',').join('|')}"` :  // 따옴표 처리 수정
         '"node_modules|dist|_backups|_drafts|types|docs"';

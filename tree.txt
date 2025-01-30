@@ -1,4 +1,22 @@
 .
+├── _backups
+│   ├── docs
+│   │   └── workflow.md
+│   ├── src
+│   │   ├── cli.ts
+│   │   ├── cli_0.ts
+│   │   ├── cli_1.ts
+│   │   ├── git.ts
+│   │   └── xapp.ts
+│   ├── README.md
+│   ├── install.bat
+│   └── install.sh
+├── _drafts
+│   ├── basic.ts
+│   ├── builtin.ts
+│   ├── cli.ts
+│   ├── github.ts
+│   └── index.ts
 ├── cjs
 │   ├── basic.js
 │   ├── builtin.js
@@ -9,6 +27,39 @@
 │   ├── types.js
 │   ├── xcli.js
 │   └── xgit.js
+├── docs
+│   ├── client
+│   │   └── 사용자_매뉴얼.md
+│   ├── configs
+│   │   ├── settings.md
+│   │   └── templates.md
+│   ├── cursor
+│   │   ├── docs.md
+│   │   └── requirements.md
+│   ├── dev
+│   │   ├── 00_README.md
+│   │   ├── 01_0_프로젝트 제안서.md
+│   │   ├── 02_0_요구사항 명세서.md
+│   │   ├── 02_2_API_문서.md
+│   │   ├── 02_3_데이터베이스_스키마.md
+│   │   ├── 04_2_마이크로서비스_패턴.md
+│   │   ├── 05_0_데이터베이스_설계서.md
+│   │   ├── 06_0_테스트_계획서.md
+│   │   ├── 10_0_환경_설정_가이드.md
+│   │   ├── 13_0_변경_요청서.md
+│   │   ├── 13_1_시스템_구성도.md
+│   │   ├── 13_3_테스트_계획서.md
+│   │   ├── 13_5_시스템_운영_매뉴얼.md
+│   │   ├── 16_0_프로젝트_완료_보고서.md
+│   │   └── 17_0_사용자_매뉴얼.md
+│   ├── reference
+│   │   ├── github.md
+│   │   ├── npmjs.md
+│   │   ├── swc.md
+│   │   ├── tests.md
+│   │   ├── tree.md
+│   │   └── zip.md
+│   └── workflow.md
 ├── esm
 │   ├── basic.js
 │   ├── builtin.js
@@ -42,6 +93,29 @@
 │       ├── e2e.setup.ts
 │       ├── integration.setup.ts
 │       └── unit.setup.ts
+├── types
+│   ├── basic.d.ts
+│   ├── basic.d.ts.map
+│   ├── builtin.d.ts
+│   ├── builtin.d.ts.map
+│   ├── cli.d.ts
+│   ├── cli.d.ts.map
+│   ├── git.d.ts
+│   ├── git.d.ts.map
+│   ├── gitexe.d.ts
+│   ├── gitexe.d.ts.map
+│   ├── github.d.ts
+│   ├── github.d.ts.map
+│   ├── index.d.ts
+│   ├── index.d.ts.map
+│   ├── types.d.ts
+│   ├── types.d.ts.map
+│   ├── xapp.d.ts
+│   ├── xapp.d.ts.map
+│   ├── xcli.d.ts
+│   ├── xcli.d.ts.map
+│   ├── xgit.d.ts
+│   └── xgit.d.ts.map
 ├── LICENSE
 ├── README.md
 ├── jest.config.js
@@ -55,4 +129,4 @@
 ├── tree.txt
 └── tsconfig.json
 
-12 directories, 44 files
+23 directories, 107 files
