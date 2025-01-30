@@ -105,7 +105,7 @@ const initTsSwcNpm = (options: CliOptions) => {
       });
 
       execSync(`cd ${options.repoName} && npm install`, execOptions);
-      execSync(`github -e pushRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`, execOptions);
+      execSync(`github -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`, execOptions);
       break;
   }
 };
