@@ -155,7 +155,7 @@ const tree = (options: CliOptions): string => {
       
       const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
       try {
-        // console.log('Command:', cmd);
+        console.log('Command: ', cmd);
         const result = execSync(cmd, { 
           encoding: 'utf8',
           stdio: 'pipe'
