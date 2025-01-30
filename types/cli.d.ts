@@ -41,5 +41,10 @@ declare const removeApp: (options: CliOptions) => void;
  * 템플릿 기반 앱 초기화
  */
 declare const initApp: (options: CliOptions) => void;
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, initApp, removeApp };
+/**
+ * 로컬 프로젝트 압축
+ *
+ */
+declare const zip: (options: CliOptions) => void;
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, initApp, removeApp, zip };
 //# sourceMappingURL=cli.d.ts.map
