@@ -19,6 +19,7 @@ interface CommandOptions {
   repoName?: string;
   description?: string;
   github?: boolean;
+  excluded?: string;
 }
 
 // & CONSTS / VARIABLES
