@@ -57,6 +57,18 @@ const execOptions: ExecSyncOptionsWithStringEncoding = {
 };
 
 /**
+ * 현재 디렉토리 경로 반환
+ */
+const getCurrentDir = (): string => {
+  switch (PLATFORM) {
+    case "win":
+      return execSync('cd', execOptions).toString().trim().replace(/\\/g, '/');
+    default:
+      return execSync('pwd', execOptions).toString().trim();
+  }
+};
+
+/**
  * 현재 디렉토리의 부모 디렉토리 경로 반환
  */
 const getParentDir = (): string => {
@@ -74,6 +86,7 @@ const getParentDir = (): string => {
 const initTsSwcNpm = (options: CliOptions) => {
   const account = findGithubAccount(options.userName ?? '');
   const parentDir = getParentDir();
+  const currentDir = getCurrentDir();
 
   switch (PLATFORM) {
     case "win":
@@ -95,6 +108,7 @@ const initTsSwcNpm = (options: CliOptions) => {
         "{{github-id}}": options.userName ?? '',
         "{{description}}": options.description || "",
         "{{parent-dir}}": parentDir,
+        "{{current-dir}}": currentDir,
       });
 
       substituteInFile(`${options.repoName}/docs/workflow.md`, {
@@ -103,12 +117,13 @@ const initTsSwcNpm = (options: CliOptions) => {
         "{{github-id}}": options.userName ?? '',
         "{{description}}": options.description || "",
         "{{parent-dir}}": parentDir,
+        "{{current-dir}}": currentDir,
       });
 
-      cmd = `cd ${parentDir}/${options.repoName} && npm install`;
+      cmd = `cd ${currentDir}/${options.repoName} && npm install`;
       console.log(cmd);
       execSync(cmd, execOptions);
-      cmd = `cd ${parentDir}/${options.repoName} && github -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`
+      cmd = `cd ${currentDir}/${options.repoName} && github -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`
       console.log(cmd);
       execSync(cmd, execOptions);
       break;
