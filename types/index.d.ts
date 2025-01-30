@@ -44,7 +44,8 @@ exists, // 파일/폴더 존재 여부 확인
 moveFile, // 파일 이동
 moveFiles, // 여러 파일 이동
 substituteInFile, } from './builtin.js';
-export { exec, // 단일 명령어 실행
-exe, } from './cli.js';
+export { TEMPLATES_ROOT, PLATFORM, execOptions, exec, // 단일 명령어 실행
+exe, // 여러 명령어 순차 실행
+getParentDir, initApp, removeApp, zip, tree } from './cli.js';
 export { findGithubAccount, findAllRepos, createRepo, cloneRepo, setConfigRepo, copyRepo, initRepo, pushRepo, deleteRepo, makeRepo, emptyRepo, removeRepo } from './git.js';
 //# sourceMappingURL=index.d.ts.map
