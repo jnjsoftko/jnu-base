@@ -41,6 +41,7 @@ export type GithubAccount = {
 };
 export type RepoOptions = {
     name: string;
+    userName?: string;
     description?: string;
     auto_init?: boolean;
     private?: boolean;

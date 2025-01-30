@@ -123,7 +123,7 @@ const initTsSwcNpm = (options: CliOptions) => {
       cmd = `cd ${currentDir}/${options.repoName} && npm install`;
       console.log(cmd);
       execSync(cmd, execOptions);
-      cmd = `cd ${currentDir}/${options.repoName} && github -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`
+      cmd = `cd ${currentDir}/${options.repoName} && xgit -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`
       console.log(cmd);
       execSync(cmd, execOptions);
       break;
@@ -134,7 +134,7 @@ const initTsSwcNpm = (options: CliOptions) => {
  * 앱 제거 (로컬 + 원격 저장소)
  */
 const removeApp = (options: CliOptions) => {
-  execSync(`github -e deleteRepo -u ${options.userName} -n ${options.repoName}`, execOptions);
+  execSync(`xgit -e deleteRepo -u ${options.userName} -n ${options.repoName}`, execOptions);
   execSync(`rm -rf ${options.repoName}`, execOptions);
 };
 

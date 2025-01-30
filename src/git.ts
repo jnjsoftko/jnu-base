@@ -153,6 +153,7 @@ const emptyRepo = (octokit: Octokit, options: RepoOptions) => {
  * 새 저장소 생성 및 초기 커밋
  */
 const makeRepo = async (options: RepoOptions, userName: string, account: GithubAccount, octokit: Octokit) => {
+  options.userName = userName;
   // 빈 저장소 생성
   await emptyRepo(octokit, options);
   await sleep(3);
