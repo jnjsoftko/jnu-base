@@ -10,17 +10,17 @@
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "import": {
-        "default": "./esm/index.js",
-        "types": "./types/index.d.ts"
-      },
-      "require": {
-        "default": "./cjs/index.js",
-        "types": "./types/index.d.ts"
-      }
+      "import": "./esm/index.js",
+      "require": "./cjs/index.js"
     },
-    "./esm/*": "./esm/*",
-    "./cjs/*": "./cjs/*"
+    "./esm/*": {
+      "import": "./esm/*.js",
+      "types": "./types/*.d.ts"
+    },
+    "./cjs/*": {
+      "require": "./cjs/*.js",
+      "types": "./types/*.d.ts"
+    }
   },
   "scripts": {
     "build": "npm run build:types && npm run build:cjs && npm run build:esm",

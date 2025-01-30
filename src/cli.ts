@@ -99,7 +99,6 @@ const initTsSwcNpm = (options: CliOptions) => {
       substituteInFile(`${options.repoName}/docs/workflow.md`, {
         "{{name}}": options.repoName ?? '',
         "{{project-name}}": options.repoName ?? '',
-        "{{email}}": account.email ?? '',
         "{{github-id}}": options.userName ?? '',
         "{{description}}": options.description || "",
         "{{parent-dir}}": parentDir,
