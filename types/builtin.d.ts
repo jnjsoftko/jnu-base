@@ -9,6 +9,10 @@ declare const slashedFolder: (folderName: string) => string;
  */
 declare const setPath: (path: string) => string;
 /**
+ * 한글 조합형 -> 완성형
+ */
+declare const composeHangul: (str: string) => string;
+/**
  * 파일명으로 사용가능하도록 문자열 변경
  */
 declare const sanitizeName: (name: string) => string;
@@ -75,7 +79,7 @@ declare const moveFiles: (srcFolderName: string, dstFolderName: string, srcFileN
  */
 declare const substituteInFile: (filePath: string, replacements: Record<string, string>) => void;
 export { slashedFolder, //
-setPath, // 상대경로->절대경로(실행 폴더 기준) './dir1/dir2' =>
+composeHangul, setPath, // 상대경로->절대경로(실행 폴더 기준) './dir1/dir2' =>
 sanitizeName, // 파일명으로 사용가능하도록 문자열 변경
 loadFile, //
 loadJson, //

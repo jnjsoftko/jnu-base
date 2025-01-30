@@ -26,7 +26,8 @@ now, // 현재 날짜와 시간 반환
 delay, // 지정된 시간 후 함수 실행
 sleep, // 지정된 시간 동안 대기
 sleepAsync, } from './basic.js';
-export { slashedFolder, // 경로의 백슬래시를 슬래시로 변환
+export { composeHangul, // 한글 조합형 -> 완성형
+slashedFolder, // 경로의 백슬래시를 슬래시로 변환
 setPath, // 상대 경로를 절대 경로로 변환
 loadFile, // 파일에서 데이터 읽기
 loadJson, // JSON 파일에서 데이터 읽기

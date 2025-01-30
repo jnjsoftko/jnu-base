@@ -30,6 +30,7 @@ export {
 } from './basic.js';
 
 export {
+  composeHangul, // 한글 조합형 -> 완성형
   slashedFolder, // 경로의 백슬래시를 슬래시로 변환
   setPath, // 상대 경로를 절대 경로로 변환
   loadFile, // 파일에서 데이터 읽기
