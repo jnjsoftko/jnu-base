@@ -80,7 +80,8 @@ const initTsSwcNpm = (options: CliOptions) => {
       console.log("win");
       break;
     default:
-      execSync(`cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`, execOptions);
+      let cmd = `cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`;
+      execSync(cmd, execOptions);
       substituteInFile(`${options.repoName}/package.json`, {
         "{{name}}": options.repoName ?? '',
         "{{author}}": `${account.fullName} <${account.email}>`,
@@ -104,8 +105,12 @@ const initTsSwcNpm = (options: CliOptions) => {
         "{{parent-dir}}": parentDir,
       });
 
-      execSync(`cd ${options.repoName} && npm install`, execOptions);
-      execSync(`cd ${options.repoName} && github -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`, execOptions);
+      cmd = `cd ${parentDir}/${options.repoName} && npm install`;
+      console.log(cmd);
+      execSync(cmd, execOptions);
+      cmd = `cd ${parentDir}/${options.repoName} && github -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`
+      console.log(cmd);
+      execSync(cmd, execOptions);
       break;
   }
 };

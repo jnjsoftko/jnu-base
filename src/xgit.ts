@@ -28,7 +28,7 @@ const options = yargs
   .usage("Usage: -u <url> -s <keyword>")
   .option("e", {
     alias: "exec",
-    choices: ['copyRepo', 'makeRepo', 'removeRepo'] as const,
+    // choices: ['copyRepo', 'makeRepo', 'removeRepo'] as const,
     default: "copyRepo",
     describe: "exec command copyRepo(clone+local config)/makeRepo(create remote+push)/removeRepo(delete remote+local)",
     type: "string",
