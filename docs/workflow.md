@@ -22,7 +22,7 @@ npm install -g jnu-base
 
 ```sh
 cd {{parent-dir}}
-xapp -e init -t ts-swc-npm -u {{github-id}} -n {{project-name}} -d {{description}}
+xcli -e init -t ts-swc-npm -u {{github-id}} -n {{project-name}} -d {{description}}
 ```
 
 

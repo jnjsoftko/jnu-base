@@ -6,12 +6,21 @@
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "types": "./types/index.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./esm/index.js",
-      "require": "./cjs/index.js",
-      "types": "./types/index.d.ts"
-    }
+      "types": "./types/index.d.ts",
+      "import": {
+        "default": "./esm/index.js",
+        "types": "./types/index.d.ts"
+      },
+      "require": {
+        "default": "./cjs/index.js",
+        "types": "./types/index.d.ts"
+      }
+    },
+    "./esm/*": "./esm/*",
+    "./cjs/*": "./cjs/*"
   },
   "scripts": {
     "build": "npm run build:types && npm run build:cjs && npm run build:esm",
@@ -47,7 +56,6 @@
     "ts-jest": "^29.1.1",
     "typescript": "^4.9.5"
   },
-  "type": "module",
   "bin": {
     "xcli": "./cjs/xcli.js",
     "xgit": "./cjs/xgit.js"
