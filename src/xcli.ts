@@ -7,7 +7,7 @@ import Path from "path";
 import { sleep } from './basic'
 import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin'
 import { findGithubAccount } from "./git";
-import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp } from "./cli";
+import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip } from "./cli";
 import type { CliOptions } from './types';
 
 // & Types AREA
@@ -50,20 +50,26 @@ const argv = yargs
   })
   .option("n", {
     alias: "repoName",
-    describe: "NameOfRepository", // project name
+    describe: "Repository Name(Project Name)", // project name
     type: "string",
     demandOption: true,
   })
   .option("d", {
     alias: "description",
-    describe: "Description For Repository",
+    describe: "ProjectDescription",
     type: "string",
   })
   .option("g", {
     alias: "github",
     default: true,
-    describe: "Use Github Repository",
+    describe: "Use Github Repository (--no-github: false)",
     type: "boolean",
+  })
+  .option("x", {
+    alias: "excluded",
+    default: "node_modules/,package-lock.json,package.json",
+    describe: "Excluded file/folder types For zip",
+    type: "string",
   })
   .parseSync();
 
@@ -87,6 +93,9 @@ switch (options.exec) {
     break;
   case "remove":
     removeApp(options);
+    break;
+  case "zip":
+    zip(options);
     break;
   default:
     console.log("Invalid command");

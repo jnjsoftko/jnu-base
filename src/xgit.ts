@@ -34,9 +34,9 @@ const options = yargs
   })
   .option("e", {
     alias: "exec",
-    choices: ['createRepo', 'initRepo', 'copyRepo', 'emptyRepo', 'pushRepo', 'deleteRepo', 'makeRepo'] as const,
-    default: "createRepo",
-    describe: "exec command createRepo/inintRepo(create+clone+config)/copyRepo(clone+config)/deleteRepo",
+    choices: ['copyRepo', 'makeRepo', 'removeRepo'] as const,
+    default: "copyRepo",
+    describe: "exec command copyRepo(clone+local config)/makeRepo(create remote+push)/removeRepo(delete remote+local)",
     type: "string",
     demandOption: true,
   })

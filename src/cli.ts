@@ -69,7 +69,7 @@ const getParentDir = (): string => {
  * TypeScript + SWC + NPM 프로젝트 초기화
  */
 const initTsSwcNpm = (options: CliOptions) => {
-  const account = findGithubAccount(options.userName);
+  const account = findGithubAccount(options.userName ?? '');
   const parentDir = getParentDir();
 
   switch (PLATFORM) {
@@ -78,17 +78,16 @@ const initTsSwcNpm = (options: CliOptions) => {
       break;
     default:
       execSync(`cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`, execOptions);
-
       substituteInFile(`${options.repoName}/package.json`, {
-        "{{name}}": options.repoName,
-        "{{author}}": `${account.fullName} <${account.email}>`, 
-        "{{description}}": options.description || "",
+        "{{name}}": options.repoName ?? '',
+        "{{author}}": `${account.fullName} <${account.email}>`,
+        "{{description}}": options.description ?? '',
       });
 
       substituteInFile(`${options.repoName}/README.md`, {
-        "{{name}}": options.repoName,
+        "{{name}}": options.repoName ?? '',
         "{{author}}": `${account.fullName} <${account.email}>`, 
-        "{{github-id}}": options.userName,
+        "{{github-id}}": options.userName ?? '',
         "{{description}}": options.description || "",
         "{{parent-dir}}": parentDir,
       });
@@ -124,6 +123,23 @@ const initApp = (options: CliOptions) => {
   }
 };
 
+/**
+ * 로컬 프로젝트 압축
+ * 
+ */
+const zip = (options: CliOptions) => {
+  switch (PLATFORM) {
+    case "win":
+      const excludedWin = options.excluded ? options.excluded.split(',').map(item => `"${item}"`).join(',') : '"*/node_modules/*",".git/*"';
+      execSync(`powershell -Command \"Compress-Archive -Path ${options.repoName} -DestinationPath ${options.repoName}.zip -Exclude ${excludedWin}\"`, execOptions);
+      break;
+    default:
+      const excluded = options.excluded ? options.excluded.split(',').map(item => `"${item}"`).join(' ') : '"*/node_modules/*",".git/*"';
+      execSync(`zip -r ${options.repoName}.zip ${options.repoName} -x ${excluded}`, execOptions);
+      break;
+  }
+};
+
 // & Export AREA
 // &---------------------------------------------------------------------------
 export { 
@@ -134,7 +150,8 @@ export {
   execOptions,
   getParentDir,
   initApp,
-  removeApp
+  removeApp,
+  zip
 };
 
 // & Test AREA
