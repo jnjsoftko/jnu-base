@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import type { FileOptions, JsonOptions } from './types';
 /**
  * 폴더이름에 포함된 "\\" => "/"
@@ -11,7 +12,7 @@ declare const setPath: (path: string) => string;
 /**
  * 한글 조합형 -> 완성형
  */
-declare const composeHangul: (str: string) => string;
+declare const composeHangul: (str: string | Buffer | undefined) => string;
 /**
  * 파일명으로 사용가능하도록 문자열 변경
  */

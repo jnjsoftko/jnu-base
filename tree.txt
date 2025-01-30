@@ -1,0 +1,58 @@
+.
+├── cjs
+│   ├── basic.js
+│   ├── builtin.js
+│   ├── cli.js
+│   ├── git.js
+│   ├── index.js
+│   ├── package.json
+│   ├── types.js
+│   ├── xcli.js
+│   └── xgit.js
+├── esm
+│   ├── basic.js
+│   ├── builtin.js
+│   ├── cli.js
+│   ├── git.js
+│   ├── index.js
+│   ├── package.json
+│   ├── types.js
+│   ├── xcli.js
+│   └── xgit.js
+├── src
+│   ├── basic.ts
+│   ├── builtin.ts
+│   ├── cli.ts
+│   ├── git.ts
+│   ├── index.ts
+│   ├── types.ts
+│   ├── xcli.ts
+│   └── xgit.ts
+├── tests
+│   ├── __fixtures__
+│   ├── __mocks__
+│   ├── e2e
+│   ├── integration
+│   ├── unit
+│   │   ├── __snapshots__
+│   │   ├── basic.test.ts
+│   │   ├── builtin.test.ts
+│   │   └── cli.test.ts
+│   └── utils
+│       ├── e2e.setup.ts
+│       ├── integration.setup.ts
+│       └── unit.setup.ts
+├── LICENSE
+├── README.md
+├── jest.config.js
+├── jest.e2e.js
+├── jest.integration.js
+├── jest.unit.js
+├── package-lock.json
+├── package.json
+├── publish.bat
+├── publish.sh
+├── tree.txt
+└── tsconfig.json
+
+12 directories, 44 files

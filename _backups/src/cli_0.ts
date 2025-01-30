@@ -1,9 +1,9 @@
 import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
 import Path from "path";
-import { sleep } from './basic';
-import { composeHangul, makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin';
-import { findGithubAccount } from "./git";
-import type { ExecResult, ExecResults, CliOptions } from './types';
+import { sleep } from '../../src/basic';
+import { composeHangul, makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from '../../src/builtin';
+import { findGithubAccount } from "../../src/git";
+import type { ExecResult, ExecResults, CliOptions } from '../../src/types';
 
 // & Types AREA
 // &---------------------------------------------------------------------------
@@ -144,32 +144,24 @@ const zip = (options: CliOptions) => {
 /**
  * 프로젝트 구조 분석
  */
-const tree = (options: CliOptions): string => {
+const tree = (options: CliOptions) => {
   switch (PLATFORM) {
     case "win":
-      return '';
+      break;
     default:
       const excluded = options.excluded ? 
-        `"${options.excluded.split(',').join('|')}"` :  // 따옴표 처리 수정
-        '"node_modules|dist|_backups|_drafts|types|docs"';
+        options.excluded.split(',').map(item => `"${item}"`).join('|') : 
+        '"node_modules|dist"';
       
       const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
       try {
-        // console.log('Command:', cmd);
-        const result = execSync(cmd, { 
-          encoding: 'utf8',
-          stdio: 'pipe'
-        });
-        
-        if (result) {
-          saveFile('tree.txt', result, { overwrite: true, newFile: false });
-        }
-        
-        return result || '';  // 항상 문자열 반환
+        const result = execSync(cmd, execOptions);  // 테스트를 위해 직접 execSync 호출
+        console.log(cmd, result);
+        saveFile(`tree.txt`, composeHangul(result));
       } catch (error) {
         console.error('Error executing tree command:', error);
-        return '';  // 에러 시에도 빈 문자열 반환
       }
+      break;
   }
 };
 

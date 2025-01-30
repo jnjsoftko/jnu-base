@@ -7,7 +7,7 @@ import Path from "path";
 import { sleep } from './basic'
 import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin'
 import { findGithubAccount } from "./git";
-import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip } from "./cli";
+import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip, tree } from "./cli";
 import type { CliOptions } from './types';
 
 // & Types AREA
@@ -94,6 +94,9 @@ switch (options.exec) {
     break;
   case "zip":
     zip(options);
+    break;
+  case "tree":
+    tree(options);
     break;
   default:
     console.log("Invalid command");

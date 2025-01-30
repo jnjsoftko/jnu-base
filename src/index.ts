@@ -27,7 +27,7 @@ export {
   delay, // 지정된 시간 후 함수 실행
   sleep, // 지정된 시간 동안 대기
   sleepAsync, // 비동기로 지정된 시간 동안 대기
-} from './basic.js';
+} from './basic';
 
 export {
   composeHangul, // 한글 조합형 -> 완성형
@@ -48,12 +48,12 @@ export {
   moveFile, // 파일 이동
   moveFiles, // 여러 파일 이동
   substituteInFile, // 파일 내용 치환
-} from './builtin.js';
+} from './builtin';
 
 export {
   exec, // 단일 명령어 실행
   exe, // 여러 명령어 순차 실행
-} from './cli.js';
+} from './cli';
 
 export {
   findGithubAccount,
@@ -68,4 +68,4 @@ export {
   makeRepo,
   emptyRepo,
   removeRepo
-} from './git.js';
+} from './git';

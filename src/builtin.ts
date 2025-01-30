@@ -40,8 +40,9 @@ const setPath = (path: string) => {
 /**
  * 한글 조합형 -> 완성형
  */
-const composeHangul = (str: string) => {
-  return str.normalize('NFKC');
+const composeHangul = (str: string | Buffer | undefined): string => {
+  if (!str) return '';
+  return str.toString().normalize('NFKC');
 };
 
 /**

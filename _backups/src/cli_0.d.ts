@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { ExecSyncOptionsWithStringEncoding } from "child_process";
-import type { ExecResult, ExecResults, CliOptions } from './types';
+import type { ExecResult, ExecResults, CliOptions } from '../../src/types';
 declare const TEMPLATES_ROOT: string;
 declare const PLATFORM: string;
 /**
@@ -49,6 +49,6 @@ declare const zip: (options: CliOptions) => void;
 /**
  * 프로젝트 구조 분석
  */
-declare const tree: (options: CliOptions) => string;
+declare const tree: (options: CliOptions) => void;
 export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, initApp, removeApp, zip, tree };
-//# sourceMappingURL=cli.d.ts.map
+//# sourceMappingURL=cli_0.d.ts.map

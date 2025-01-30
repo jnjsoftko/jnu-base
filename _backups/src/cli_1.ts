@@ -144,32 +144,28 @@ const zip = (options: CliOptions) => {
 /**
  * 프로젝트 구조 분석
  */
-const tree = (options: CliOptions): string => {
-  switch (PLATFORM) {
-    case "win":
-      return '';
-    default:
-      const excluded = options.excluded ? 
-        `"${options.excluded.split(',').join('|')}"` :  // 따옴표 처리 수정
-        '"node_modules|dist|_backups|_drafts|types|docs"';
-      
-      const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
-      try {
-        // console.log('Command:', cmd);
-        const result = execSync(cmd, { 
-          encoding: 'utf8',
-          stdio: 'pipe'
-        });
-        
-        if (result) {
-          saveFile('tree.txt', result, { overwrite: true, newFile: false });
-        }
-        
-        return result || '';  // 항상 문자열 반환
-      } catch (error) {
-        console.error('Error executing tree command:', error);
-        return '';  // 에러 시에도 빈 문자열 반환
-      }
+const tree = (options: CliOptions) => {
+  try {
+    // 간단한 ls -al 명령어로 테스트
+    const cmd = 'ls -al';
+    console.log('Executing command:', cmd);
+
+    const result = execSync(cmd, { 
+      encoding: 'utf8',
+      stdio: 'pipe'  // 출력을 캡처하기 위해 추가
+    });
+
+    // 실행 결과 상세 출력
+    console.log(result);
+    
+    if (result) {
+      saveFile('tree.txt', result, { overwrite: true, newFile: true });
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error executing command:', error);
+    return '';
   }
 };
 
