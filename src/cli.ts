@@ -1,17 +1,30 @@
-import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
-import Path from "path";
-import { sleep } from "./basic.js";
-import { composeHangul, makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from "./builtin.js";
-import { findGithubAccount } from "./git.js";
+import { execSync, ExecSyncOptionsWithStringEncoding } from 'child_process';
+import Path from 'path';
+import { sleep } from './basic.js';
+import {
+  composeHangul,
+  makeDir,
+  copyDir,
+  loadJson,
+  saveJson,
+  loadFile,
+  saveFile,
+  substituteInFile,
+} from './builtin.js';
+import { findGithubAccount } from './git.js';
 import type { ExecResult, ExecResults, CliOptions } from './types.js';
 
 // & Variables AREA
 // &---------------------------------------------------------------------------
-const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? "C:/JnJ-soft/Developments/Templates";
-const PLATFORM = process.platform === 'win32' ? 'win' : 
-                process.platform === 'darwin' ? 'mac' : 
-                process.platform === 'linux' ? 'linux' : 
-                process.platform;
+const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? 'C:/JnJ-soft/Developments/Templates';
+const PLATFORM =
+  process.platform === 'win32'
+    ? 'win'
+    : process.platform === 'darwin'
+    ? 'mac'
+    : process.platform === 'linux'
+    ? 'linux'
+    : process.platform;
 
 // & Functions AREA
 // &---------------------------------------------------------------------------
@@ -21,7 +34,7 @@ const PLATFORM = process.platform === 'win32' ? 'win' :
  * 단일 명령어 실행
  * @param cmd 실행할 명령어
  * @returns 명령어 실행 결과
- * 
+ *
  * @example
  * ```ts
  * exec('ls -la') // 디렉토리 목록 출력
@@ -30,15 +43,15 @@ const PLATFORM = process.platform === 'win32' ? 'win' :
  * ```
  */
 const exec = (cmd: string): ExecResult => {
-    const result = execSync(cmd, { encoding: 'utf8' });
-    return result ? result.toString().trim() : '';
+  const result = execSync(cmd, { encoding: 'utf8' });
+  return result ? result.toString().trim() : '';
 };
 
 /**
  * 여러 명령어 순차 실행
  * @param cmds 실행할 명령어 배열
  * @returns 각 명령어의 실행 결과 배열
- * 
+ *
  * @example
  * ```ts
  * exe(['pwd', 'ls -la']) // [현재 경로, 디렉토리 목록]
@@ -46,14 +59,14 @@ const exec = (cmd: string): ExecResult => {
  * ```
  */
 const exe = (cmds: string[]): ExecResults => {
-    const results: string[] = [];
-    cmds.forEach(cmd => results.push(exec(cmd)));
-    return results;
+  const results: string[] = [];
+  cmds.forEach((cmd) => results.push(exec(cmd)));
+  return results;
 };
 
 const execOptions: ExecSyncOptionsWithStringEncoding = {
   encoding: 'utf8',
-  shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh'
+  shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh',
 };
 
 /**
@@ -61,7 +74,7 @@ const execOptions: ExecSyncOptionsWithStringEncoding = {
  */
 const getCurrentDir = (): string => {
   switch (PLATFORM) {
-    case "win":
+    case 'win':
       return execSync('cd', execOptions).toString().trim().replace(/\\/g, '/');
     default:
       return execSync('pwd', execOptions).toString().trim();
@@ -73,7 +86,7 @@ const getCurrentDir = (): string => {
  */
 const getParentDir = (): string => {
   switch (PLATFORM) {
-    case "win":
+    case 'win':
       return Path.dirname(execSync('cd', execOptions).toString().trim().replace(/\\/g, '/'));
     default:
       return Path.dirname(execSync('pwd', execOptions).toString().trim());
@@ -89,41 +102,41 @@ const initTsSwcNpm = (options: CliOptions) => {
   const currentDir = getCurrentDir();
 
   switch (PLATFORM) {
-    case "win":
-      console.log("win");
+    case 'win':
+      console.log('win');
       break;
     default:
       let cmd = `cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`;
       execSync(cmd, execOptions);
       substituteInFile(`${options.repoName}/package.json`, {
-        "{{name}}": options.repoName ?? '',
-        "{{author}}": `${account.fullName} <${account.email}>`,
-        "{{description}}": options.description ?? '',
+        '{{name}}': options.repoName ?? '',
+        '{{author}}': `${account.fullName} <${account.email}>`,
+        '{{description}}': options.description ?? '',
       });
 
       substituteInFile(`${options.repoName}/README.md`, {
-        "{{name}}": options.repoName ?? '',
-        "{{project-name}}": options.repoName ?? '',
-        "{{author}}": `${account.fullName} <${account.email}>`, 
-        "{{github-id}}": options.userName ?? '',
-        "{{description}}": options.description || "",
-        "{{parent-dir}}": parentDir,
-        "{{current-dir}}": currentDir,
+        '{{name}}': options.repoName ?? '',
+        '{{project-name}}': options.repoName ?? '',
+        '{{author}}': `${account.fullName} <${account.email}>`,
+        '{{github-id}}': options.userName ?? '',
+        '{{description}}': options.description || '',
+        '{{parent-dir}}': parentDir,
+        '{{current-dir}}': currentDir,
       });
 
       substituteInFile(`${options.repoName}/docs/workflow.md`, {
-        "{{name}}": options.repoName ?? '',
-        "{{project-name}}": options.repoName ?? '',
-        "{{github-id}}": options.userName ?? '',
-        "{{description}}": options.description || "",
-        "{{parent-dir}}": parentDir,
-        "{{current-dir}}": currentDir,
+        '{{name}}': options.repoName ?? '',
+        '{{project-name}}': options.repoName ?? '',
+        '{{github-id}}': options.userName ?? '',
+        '{{description}}': options.description || '',
+        '{{parent-dir}}': parentDir,
+        '{{current-dir}}': currentDir,
       });
 
       cmd = `cd ${currentDir}/${options.repoName} && npm install`;
       console.log(cmd);
       execSync(cmd, execOptions);
-      cmd = `cd ${currentDir}/${options.repoName} && xgit -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`
+      cmd = `cd ${currentDir}/${options.repoName} && xgit -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`;
       console.log(cmd);
       execSync(cmd, execOptions);
       break;
@@ -134,7 +147,7 @@ const initTsSwcNpm = (options: CliOptions) => {
  * 앱 제거 (로컬 + 원격 저장소)
  */
 const removeApp = (options: CliOptions) => {
-  execSync(`xgit -e deleteRepo -u ${options.userName} -n ${options.repoName}`, execOptions);
+  execSync(`xgit -e deleteRemoteRepo -u ${options.userName} -n ${options.repoName}`, execOptions);
   execSync(`rm -rf ${options.repoName}`, execOptions);
 };
 
@@ -143,30 +156,43 @@ const removeApp = (options: CliOptions) => {
  */
 const initApp = (options: CliOptions) => {
   switch (options.template) {
-    case "node-simple":
+    case 'node-simple':
       break;
-    case "ts-swc-npm":
+    case 'ts-swc-npm':
       initTsSwcNpm(options);
       break;
-    case "python-pipenv":
+    case 'python-pipenv':
       break;
-    case "flutter":
+    case 'flutter':
       break;
   }
 };
 
 /**
  * 로컬 프로젝트 압축
- * 
+ *
  */
 const zip = (options: CliOptions) => {
   switch (PLATFORM) {
-    case "win":
-      const excludedWin = options.excluded ? options.excluded.split(',').map(item => `"${item}"`).join(',') : '"*/node_modules/*",".git/*"';
-      execSync(`powershell -Command \"Compress-Archive -Path ${options.repoName} -DestinationPath ${options.repoName}.zip -Exclude ${excludedWin}\"`, execOptions);
+    case 'win':
+      const excludedWin = options.excluded
+        ? options.excluded
+            .split(',')
+            .map((item) => `"${item}"`)
+            .join(',')
+        : '"*/node_modules/*",".git/*"';
+      execSync(
+        `powershell -Command \"Compress-Archive -Path ${options.repoName} -DestinationPath ${options.repoName}.zip -Exclude ${excludedWin}\"`,
+        execOptions
+      );
       break;
     default:
-      const excluded = options.excluded ? options.excluded.split(',').map(item => `"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
+      const excluded = options.excluded
+        ? options.excluded
+            .split(',')
+            .map((item) => `"${item}"`)
+            .join(' ')
+        : '"*/node_modules/*" ".git/*"';
       execSync(`zip -r ${options.repoName}.zip ${options.repoName} -x ${excluded}`, execOptions);
       break;
   }
@@ -177,48 +203,37 @@ const zip = (options: CliOptions) => {
  */
 const tree = (options: CliOptions): string => {
   switch (PLATFORM) {
-    case "win":
+    case 'win':
       return '';
     default:
       // console.log('options.excluded: ', options.excluded);
-      const excluded = options.excluded ? 
-        `"${options.excluded.split(',').join('|')}"` :  // 따옴표 처리 수정
-        '"node_modules|dist|_backups|_drafts|types|docs"';
-      
+      const excluded = options.excluded
+        ? `"${options.excluded.split(',').join('|')}"` // 따옴표 처리 수정
+        : '"node_modules|dist|_backups|_drafts|types|docs"';
+
       const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
       try {
         console.log('Command: ', cmd);
-        const result = execSync(cmd, { 
+        const result = execSync(cmd, {
           encoding: 'utf8',
-          stdio: 'pipe'
+          stdio: 'pipe',
         });
-        
+
         if (result) {
           saveFile('tree.txt', result, { overwrite: true, newFile: false });
         }
-        
-        return result || '';  // 항상 문자열 반환
+
+        return result || ''; // 항상 문자열 반환
       } catch (error) {
         console.error('Error executing tree command:', error);
-        return '';  // 에러 시에도 빈 문자열 반환
+        return ''; // 에러 시에도 빈 문자열 반환
       }
   }
 };
 
 // & Export AREA
 // &---------------------------------------------------------------------------
-export { 
-  TEMPLATES_ROOT,
-  PLATFORM,
-  exec, 
-  exe,
-  execOptions,
-  getParentDir,
-  initApp,
-  removeApp,
-  zip,
-  tree
-};
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree };
 
 // & Test AREA
 // &---------------------------------------------------------------------------

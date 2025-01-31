@@ -2,7 +2,7 @@
  * References
  *   - [create repository](https://octokit.github.io/rest.js/v19#repos-create-for-authenticated-user)
  */
-import { Octokit } from "@octokit/rest";
+import { Octokit } from '@octokit/rest';
 import type { GithubAccount, RepoOptions } from './types.js';
 /**
  * Github 계정 정보 조회
@@ -22,7 +22,7 @@ declare const findAllRepos: (octokit: Octokit) => void;
 /**
  * 새 저장소 생성
  */
-declare const createRepo: (octokit: Octokit, options: RepoOptions) => Promise<import("@octokit/types").OctokitResponse<{
+declare const createRemoteRepo: (octokit: Octokit, options: RepoOptions) => Promise<import("@octokit/types").OctokitResponse<{
     id: number;
     node_id: string;
     name: string;
@@ -608,34 +608,10 @@ declare const createRepo: (octokit: Octokit, options: RepoOptions) => Promise<im
         [key: string]: unknown;
     } | undefined;
 }, 201>>;
-/**
- * 저장소 복제
- */
-declare const cloneRepo: (userName: string, options: RepoOptions) => void;
-/**
- * Git 설정 변경
- */
-declare const setConfigRepo: (options: RepoOptions, account: GithubAccount) => void;
-/**
- * 저장소 복제 및 설정
- */
-declare const copyRepo: (options: RepoOptions, userName: string, account: GithubAccount) => void;
-/**
- * 저장소 초기화 (생성, 복제, 설정)
- */
-declare const initRepo: (options: RepoOptions, userName: string, account: GithubAccount, octokit: Octokit) => Promise<void>;
-/**
- * 저장소에 변경사항 푸시
- */
-declare const pushRepo: (options: RepoOptions, account: GithubAccount) => void;
-/**
- * 저장소 삭제
- */
-declare const deleteRepo: (octokit: Octokit, userName: string, options: RepoOptions) => Promise<import("@octokit/types").OctokitResponse<never, 204>>;
 /**
  * 빈 저장소 생성
  */
-declare const emptyRepo: (octokit: Octokit, options: RepoOptions) => Promise<import("@octokit/types").OctokitResponse<{
+declare const createRemoteRepoEmpty: (octokit: Octokit, options: RepoOptions) => Promise<import("@octokit/types").OctokitResponse<{
     id: number;
     node_id: string;
     name: string;
@@ -1222,13 +1198,37 @@ declare const emptyRepo: (octokit: Octokit, options: RepoOptions) => Promise<imp
     } | undefined;
 }, 201>>;
 /**
+ * 저장소 삭제
+ */
+declare const deleteRemoteRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount) => Promise<import("@octokit/types").OctokitResponse<never, 204>>;
+/**
+ * Git 설정 변경
+ */
+declare const setLocalConfig: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
+/**
+ * 저장소 복제
+ */
+declare const cloneRepo: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
+/**
+ * 저장소 복제 및 설정
+ */
+declare const copyRepo: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
+/**
+ * 저장소 초기화 (생성, 복제, 설정)
+ */
+declare const initRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => Promise<void>;
+/**
+ * 저장소에 변경사항 푸시
+ */
+declare const pushRepo: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
+/**
  * 새 저장소 생성 및 초기 커밋
  */
-declare const makeRepo: (options: RepoOptions, userName: string, account: GithubAccount, octokit: Octokit) => Promise<void>;
+declare const makeRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => Promise<void>;
 /**
  * 로컬 + 원격 저장소 삭제
  * @param options - 저장소 옵션
  */
-declare const removeRepo: (octokit: Octokit, userName: string, options: RepoOptions) => void;
-export { findGithubAccount, findAllRepos, createRepo, cloneRepo, setConfigRepo, copyRepo, initRepo, pushRepo, deleteRepo, makeRepo, emptyRepo, removeRepo };
+declare const removeRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => void;
+export { findGithubAccount, findAllRepos, createRemoteRepo, cloneRepo, setLocalConfig, copyRepo, initRepo, pushRepo, deleteRemoteRepo, makeRepo, createRemoteRepoEmpty, removeRepo, };
 //# sourceMappingURL=git.d.ts.map

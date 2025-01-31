@@ -59,20 +59,20 @@ export {
   initApp,
   removeApp,
   zip,
-  tree
+  tree,
 } from './cli.js';
 
 export {
   findGithubAccount,
   findAllRepos,
-  createRepo,
+  createRemoteRepo,
   cloneRepo,
-  setConfigRepo,
+  setLocalConfig,
   copyRepo,
   initRepo,
   pushRepo,
-  deleteRepo,
+  deleteRemoteRepo,
   makeRepo,
-  emptyRepo,
-  removeRepo
+  createRemoteRepoEmpty,
+  removeRepo,
 } from './git.js';

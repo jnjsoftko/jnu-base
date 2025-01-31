@@ -5,13 +5,15 @@
 
 // & Import AREA
 // &---------------------------------------------------------------------------
+import Path from 'path';
+
 // ? External Modules
-import { execSync } from "child_process";
-import { Octokit } from "@octokit/rest";
+import { execSync } from 'child_process';
+import { Octokit } from '@octokit/rest';
 
 // ? Internal Modules
-import { loadJson } from "./builtin.js";
-import { sleep } from "./basic.js";
+import { loadJson } from './builtin.js';
+import { sleep } from './basic.js';
 
 // & Types AREA
 // &---------------------------------------------------------------------------
@@ -19,7 +21,7 @@ import type { GithubAccount, RepoOptions } from './types.js';
 
 // & Variables AREA
 // &---------------------------------------------------------------------------
-const settingsPath = `${process.env.DEV_CONFIG_ROOT}/Environments` ?? "C:/JnJ-soft/Developments/Environments";
+const settingsPath = `${process.env.DEV_CONFIG_ROOT}/Environments` ?? 'C:/JnJ-soft/Developments/Environments';
 
 // & Functions AREA
 // &---------------------------------------------------------------------------
@@ -27,7 +29,7 @@ const settingsPath = `${process.env.DEV_CONFIG_ROOT}/Environments` ?? "C:/JnJ-so
  * Github 계정 정보 조회
  * @param userName - Github 사용자명
  * @returns Github 계정 정보
- * 
+ *
  * @example
  * ```ts
  * const account = findGithubAccount('username');
@@ -47,11 +49,11 @@ const findAllRepos = (octokit: Octokit) => {
 /**
  * 새 저장소 생성
  */
-const createRepo = (octokit: Octokit, options: RepoOptions) => {
+const createRemoteRepo = (octokit: Octokit, options: RepoOptions) => {
   const defaults = {
     auto_init: true,
     private: false,
-    license_template: "MIT",
+    license_template: 'MIT',
   };
   return octokit.rest.repos.createForAuthenticatedUser({
     ...defaults,
@@ -60,89 +62,10 @@ const createRepo = (octokit: Octokit, options: RepoOptions) => {
 };
 
 /**
- * 저장소 복제
- */
-const cloneRepo = (userName: string, options: RepoOptions) => {
-  const cmd = `git clone https://github.com/${userName}/${options.name}.git`;
-  console.log(cmd);
-  execSync(cmd);
-};
-
-/**
- * Git 설정 변경
- */
-const setConfigRepo = (options: RepoOptions, account: GithubAccount) => {
-  let cmd = `cd ${options.name} && git config user.name "${account.fullName}"`;
-  cmd += ` && git config user.email "${account.email}"`;
-  cmd += ` && git remote set-url origin https://${account.token}@github.com/${account.userName}/${options.name}.git`;
-  console.log(cmd);
-  execSync(cmd);
-};
-
-/**
- * 저장소 복제 및 설정
- */
-const copyRepo = (options: RepoOptions, userName: string, account: GithubAccount) => {
-  cloneRepo(userName, options);
-  setConfigRepo(options, account);
-};
-
-/**
- * 저장소 초기화 (생성, 복제, 설정)
- */
-const initRepo = async (options: RepoOptions, userName: string, account: GithubAccount, octokit: Octokit) => {
-  await createRepo(octokit, options);
-  await sleep(5000);
-  cloneRepo(userName, options);
-  setConfigRepo(options, account);
-};
-
-/**
- * 저장소에 변경사항 푸시
- */
-const pushRepo = (options: RepoOptions, account: GithubAccount) => {
-  const { name } = options;
-  const { fullName, email, token, userName } = account;
-
-  sleep(3);
-
-  let cmd = `git init`;
-  cmd += ` && git config user.name "${fullName}"`;
-  cmd += ` && git config user.email "${email}"`;
-  cmd += ` && git remote add origin https://${token}@github.com/${userName}/${name}.git`;
-  console.log(cmd);
-  execSync(cmd);
-
-  cmd = `git add . && git commit -m "Initial commit"`;
-  console.log(cmd);
-  execSync(cmd);
-
-  const branches = execSync("git branch");
-  if (branches.includes("main")) {
-    execSync("git push -u origin main");
-  } else if (branches.includes("master")) {
-    execSync("git push -u origin master");
-  } else {
-    console.log("main 또는 master 브랜치가 없습니다.");
-  }
-};
-
-/**
- * 저장소 삭제
- */
-const deleteRepo = (octokit: Octokit, userName: string, options: RepoOptions) => {
-  const { name } = options;
-  return octokit.rest.repos.delete({
-    owner: userName,
-    repo: name
-  });
-};
-
-/**
  * 빈 저장소 생성
  */
-const emptyRepo = (octokit: Octokit, options: RepoOptions) => {
-  return createRepo(octokit, {
+const createRemoteRepoEmpty = (octokit: Octokit, options: RepoOptions) => {
+  return createRemoteRepo(octokit, {
     ...options,
     auto_init: false,
     license_template: undefined,
@@ -150,25 +73,110 @@ const emptyRepo = (octokit: Octokit, options: RepoOptions) => {
 };
 
 /**
+ * 저장소 삭제
+ */
+const deleteRemoteRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount) => {
+  const { name } = options;
+  return octokit.rest.repos.delete({
+    owner: account.userName,
+    repo: name,
+  });
+};
+
+/**
+ * Git 설정 변경
+ */
+const setLocalConfig = (options: RepoOptions, account: GithubAccount, localPath: string) => {
+  let cmd = `cd ${localPath} && git config user.name "${account.fullName}"`;
+  cmd += ` && git config user.email "${account.email}"`;
+  cmd += ` && git remote set-url origin https://${account.token}@github.com/${account.userName}/${options.name}.git`;
+  console.log(cmd);
+  execSync(cmd);
+};
+
+/**
+ * 로컬 저장소 초기화
+ */
+const initLocalRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
+  const { name } = options;
+  const { fullName, email, token, userName } = account;
+
+  let cmd = `cd ${localPath} && git init`;
+  cmd += ` && git config user.name "${fullName}"`;
+  cmd += ` && git config user.email "${email}"`;
+  cmd += ` && git remote add origin https://${token}@github.com/${userName}/${name}.git`;
+  console.log(cmd);
+  execSync(cmd);
+};
+
+/**
+ * 저장소 복제
+ */
+const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
+  const cmd = `cd ${Path.dirname(localPath)} && git clone https://github.com/${account.userName}/${options.name}.git`;
+  console.log(cmd);
+  execSync(cmd);
+};
+
+/**
+ * 저장소 복제 및 설정
+ */
+const copyRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
+  cloneRepo(options, account, localPath);
+  setLocalConfig(options, account, localPath);
+};
+
+/**
+ * 저장소 초기화 (생성, 복제, 설정)
+ */
+const initRepo = async (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
+  await createRemoteRepo(octokit, options);
+  await sleep(5000);
+  cloneRepo(options, account, localPath);
+  setLocalConfig(options, account, localPath);
+};
+
+/**
+ * 저장소에 변경사항 푸시
+ */
+const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
+  // 로컬 저장소 디렉토리로 이동
+  execSync(`cd ${localPath}`);
+  const branches = execSync('git branch');
+  if (branches.includes('main')) {
+    execSync('git push -u origin main');
+  } else if (branches.includes('master')) {
+    execSync('git push -u origin master');
+  } else {
+    console.log('main 또는 master 브랜치가 없습니다.');
+  }
+};
+
+/**
  * 새 저장소 생성 및 초기 커밋
  */
-const makeRepo = async (options: RepoOptions, userName: string, account: GithubAccount, octokit: Octokit) => {
-  options.userName = userName;
+const makeRepo = async (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   // 빈 저장소 생성
-  await emptyRepo(octokit, options);
-  await sleep(3);
-  
+  await createRemoteRepoEmpty(octokit, options);
+  await sleep(2);
+  // 로컬 저장소 초기화
+  initLocalRepo(options, account, localPath);
+  await sleep(1);
+  // 로컬 저장소 디렉토리로 이동
+  execSync(`cd ${localPath}`);
   // 초기 커밋 및 푸시
-  pushRepo(options, account);
+  pushRepo(options, account, localPath);
 };
 
 /**
  * 로컬 + 원격 저장소 삭제
  * @param options - 저장소 옵션
  */
-const removeRepo = (octokit: Octokit, userName: string, options: RepoOptions) => {
-  deleteRepo(octokit, userName, options);
+const removeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
+  deleteRemoteRepo(octokit, options, account);
   const { name } = options;
+  // 로컬 저장소 부모 디렉토리로 이동
+  execSync(`cd ${Path.dirname(localPath)}`);
   const cmd = `rm -rf ${name}`;
   console.log(cmd);
   execSync(cmd);
@@ -179,14 +187,14 @@ const removeRepo = (octokit: Octokit, userName: string, options: RepoOptions) =>
 export {
   findGithubAccount,
   findAllRepos,
-  createRepo,
+  createRemoteRepo,
   cloneRepo,
-  setConfigRepo,
+  setLocalConfig,
   copyRepo,
   initRepo,
   pushRepo,
-  deleteRepo,
+  deleteRemoteRepo,
   makeRepo,
-  emptyRepo,
-  removeRepo
+  createRemoteRepoEmpty,
+  removeRepo,
 };

@@ -46,6 +46,6 @@ moveFiles, // 여러 파일 이동
 substituteInFile, } from './builtin.js';
 export { TEMPLATES_ROOT, PLATFORM, exec, // 단일 명령어 실행
 exe, // 여러 명령어 순차 실행
-getParentDir, initApp, removeApp, zip, tree } from './cli.js';
-export { findGithubAccount, findAllRepos, createRepo, cloneRepo, setConfigRepo, copyRepo, initRepo, pushRepo, deleteRepo, makeRepo, emptyRepo, removeRepo } from './git.js';
+getParentDir, initApp, removeApp, zip, tree, } from './cli.js';
+export { findGithubAccount, findAllRepos, createRemoteRepo, cloneRepo, setLocalConfig, copyRepo, initRepo, pushRepo, deleteRemoteRepo, makeRepo, createRemoteRepoEmpty, removeRepo, } from './git.js';
 //# sourceMappingURL=index.d.ts.map

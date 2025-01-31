@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { ExecSyncOptionsWithStringEncoding } from "child_process";
+import { ExecSyncOptionsWithStringEncoding } from 'child_process';
 import type { ExecResult, ExecResults, CliOptions } from './types.js';
 declare const TEMPLATES_ROOT: string;
 declare const PLATFORM: string;
@@ -30,6 +30,10 @@ declare const exec: (cmd: string) => ExecResult;
 declare const exe: (cmds: string[]) => ExecResults;
 declare const execOptions: ExecSyncOptionsWithStringEncoding;
 /**
+ * 현재 디렉토리 경로 반환
+ */
+declare const getCurrentDir: () => string;
+/**
  * 현재 디렉토리의 부모 디렉토리 경로 반환
  */
 declare const getParentDir: () => string;
@@ -50,5 +54,5 @@ declare const zip: (options: CliOptions) => void;
  * 프로젝트 구조 분석
  */
 declare const tree: (options: CliOptions) => string;
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, initApp, removeApp, zip, tree };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree };
 //# sourceMappingURL=cli.d.ts.map
