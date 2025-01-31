@@ -107,7 +107,8 @@ const initLocalRepo = (options: RepoOptions, account: GithubAccount, localPath: 
   let cmd = `cd ${localPath} && git init`;
   cmd += ` && git config user.name "${fullName}"`;
   cmd += ` && git config user.email "${email}"`;
-  cmd += ` && git remote add origin https://${token}@github.com/${userName}/${name}.git`;
+  // cmd += ` && git remote add origin https://${token}@github.com/${userName}/${name}.git`;
+  cmd += ` && git remote set-url origin https://${account.token}@github.com/${account.userName}/${options.name}.git`;
   cmd += ` && git add . && git commit -m "Initial commit"`;
   console.log(cmd);
   execSync(cmd);
@@ -117,7 +118,9 @@ const initLocalRepo = (options: RepoOptions, account: GithubAccount, localPath: 
  * 저장소 복제
  */
 const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
-  const cmd = `cd ${Path.dirname(localPath)} && git clone https://github.com/${account.userName}/${options.name}.git`;
+  const cmd = `cd ${Path.dirname(localPath)} && git clone https://${account.token}@github.com/${account.userName}/${
+    options.name
+  }.git`;
   console.log(cmd);
   execSync(cmd);
 };
@@ -148,6 +151,7 @@ const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: strin
   const branches = execSync('git branch');
   console.log(`#### pushRepo branches: ${branches}`);
   if (branches.includes('main')) {
+    // execSync(`git push https://${account.token}@github.com/${account.userName}/${options.name}.git main`);
     execSync('git push -u origin main');
   } else if (branches.includes('master')) {
     execSync('git push -u origin master');
