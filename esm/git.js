@@ -66,9 +66,9 @@ const initRepo = (octokit, options, account, localPath)=>{
     console.log(`initRepo cmd: ${cmd}`);
     execSync(cmd);
     sleep(5);
-    setLocalConfig(options, account, localPath);
-    sleep(5);
     cloneRepo(options, account, localPath);
+    sleep(5);
+    setLocalConfig(options, account, localPath);
 };
 const copyRepo = (options, account, localPath)=>{
     cloneRepo(options, account, localPath);

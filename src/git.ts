@@ -136,9 +136,9 @@ const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
   console.log(`initRepo cmd: ${cmd}`);
   execSync(cmd);
   sleep(5);
-  setLocalConfig(options, account, localPath);
-  sleep(5);
   cloneRepo(options, account, localPath);
+  sleep(5);
+  setLocalConfig(options, account, localPath);
 };
 
 /**
