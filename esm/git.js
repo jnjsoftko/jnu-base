@@ -77,15 +77,20 @@ const copyRepo = (options, account, localPath)=>{
 };
 const pushRepo = (options, account, localPath)=>{
     execSync(`cd ${localPath}`);
-    let cmd = `git add . && git commit -m "Initial commit"`;
-    console.log('#### ', cmd);
-    execSync(cmd);
+    const status = execSync('git status --porcelain', {
+        encoding: 'utf8'
+    });
+    if (status.length > 0) {
+        const cmd = `git add . && git commit -m "Initial commit"`;
+        console.log('#### ', cmd);
+        execSync(cmd);
+    }
     const branches = execSync('git branch');
     console.log(`#### pushRepo branches: ${branches}`);
     if (branches.includes('main')) {
-        execSync('git push -u origin main');
+        execSync('git push -u origin main --force');
     } else if (branches.includes('master')) {
-        execSync('git push -u origin master');
+        execSync('git push -u origin master --force');
     } else {
         console.log('main 또는 master 브랜치가 없습니다.');
     }

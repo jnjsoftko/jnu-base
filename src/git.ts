@@ -155,17 +155,24 @@ const copyRepo = (options: RepoOptions, account: GithubAccount, localPath: strin
  */
 const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
   execSync(`cd ${localPath}`);
-  // 초기 커밋
-  let cmd = `git add . && git commit -m "Initial commit"`;
-  console.log('#### ', cmd);
-  execSync(cmd);
+
+  // 변경사항이 있는지 확인
+  const status = execSync('git status --porcelain', { encoding: 'utf8' });
+
+  // 변경사항이 있으면 커밋
+  if (status.length > 0) {
+    const cmd = `git add . && git commit -m "Initial commit"`;
+    console.log('#### ', cmd);
+    execSync(cmd);
+  }
+
   const branches = execSync('git branch');
   console.log(`#### pushRepo branches: ${branches}`);
+
   if (branches.includes('main')) {
-    // execSync(`git push https://${account.token}@github.com/${account.userName}/${options.name}.git main`);
-    execSync('git push -u origin main');
+    execSync('git push -u origin main --force');
   } else if (branches.includes('master')) {
-    execSync('git push -u origin master');
+    execSync('git push -u origin master --force');
   } else {
     console.log('main 또는 master 브랜치가 없습니다.');
   }
