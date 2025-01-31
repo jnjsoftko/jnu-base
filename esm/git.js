@@ -63,7 +63,7 @@ const cloneRepo = (options, account, localPath)=>{
 };
 const initRepo = (octokit, options, account, localPath)=>{
     createRemoteRepo(octokit, options);
-    sleep(5);
+    sleep(10);
     cloneRepo(options, account, localPath);
     sleep(5);
     setLocalConfig(options, account, localPath);

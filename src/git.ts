@@ -134,7 +134,7 @@ const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
   // let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
   // console.log(`initRepo cmd: ${cmd}`);
   // execSync(cmd);
-  sleep(5);
+  sleep(10);
   cloneRepo(options, account, localPath);
   sleep(5);
   setLocalConfig(options, account, localPath);
