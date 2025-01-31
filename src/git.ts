@@ -182,7 +182,7 @@ const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
   // 로컬 저장소 초기화
   console.log(`=================== initLocalRepo: ${localPath}`);
   initLocalRepo(options, account, localPath);
-  sleep(3);
+  sleep(5);
   // 로컬 저장소 디렉토리로 이동
   // execSync(`cd ${localPath}`);
   // 초기 커밋 및 푸시

@@ -94,7 +94,7 @@ const makeRepo = (octokit, options, account, localPath)=>{
     sleep(15);
     console.log(`=================== initLocalRepo: ${localPath}`);
     initLocalRepo(options, account, localPath);
-    sleep(3);
+    sleep(5);
     console.log(`=================== pushRepo: ${localPath}`);
     pushRepo(options, account, localPath);
 };
