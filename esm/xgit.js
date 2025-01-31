@@ -1,2 +1,109 @@
 #!/usr/bin/env node
-var e;let o;import{Octokit as r}from"@octokit/rest";import i from"yargs";import{findGithubAccount as a,createRemoteRepo as p,createRemoteRepoEmpty as t,setLocalConfig as s,cloneRepo as n,initLocalRepo as c,deleteRemoteRepo as m,initRepo as d,copyRepo as l,pushRepo as N,makeRepo as R,removeRepo as b}from"./git.js";import{getCurrentDir as g}from"./cli.js";let k=i.usage("Usage: -u <url> -s <keyword>").option("e",{alias:"exec",default:"copyRepo",describe:"exec command copyRepo(clone+local config)/makeRepo(create remote+push)/removeRepo(delete remote+local)",type:"string",demandOption:!0}).option("u",{alias:"userName",default:"mooninlearn",describe:"Name of User",type:"string"}).option("n",{alias:"repoName",describe:"NameOfRepository",type:"string"}).option("d",{alias:"description",describe:"Description For Repository",type:"string"}).argv,u=a(k.userName??"");u.userName=k.userName??"",console.log(`#### git account: ${JSON.stringify(u)}`);let y=new r({auth:u.token}),f=(e=k.repoName??"",(o=g()).split("/").pop()!==e&&(o+=`/${e}`),o??"");switch(k.exec){case"createRemoteRepo":p(y,{name:k.repoName??"",description:k.description??""});break;case"createRemoteRepoEmpty":t(y,{name:k.repoName??"",description:k.description??""});break;case"deleteRemoteRepo":m(y,{name:k.repoName??""},u);break;case"setLocalConfig":s({name:k.repoName??"",description:k.description??""},u,f);break;case"cloneRepo":n({name:k.repoName??"",description:k.description??""},u,f);break;case"initLocalRepo":c({name:k.repoName??"",description:k.description??""},u,f);break;case"initRepo":console.log("====initRepo"),d(y,{name:k.repoName??"",description:k.description??""},u,f);break;case"pushRepo":N({name:k.repoName??"",description:k.description??""},u,f);break;case"copyRepo":l({name:k.repoName??"",description:k.description??"description"},u,f);break;case"makeRepo":R(y,{name:k.repoName??"",description:k.description??""},u,f);break;case"removeRepo":b(y,{name:k.repoName??""},u,f)}
+import { Octokit } from '@octokit/rest';
+import yargs from 'yargs';
+import { findGithubAccount, createRemoteRepo, createRemoteRepoEmpty, setLocalConfig, cloneRepo, initLocalRepo, deleteRemoteRepo, initRepo, copyRepo, pushRepo, makeRepo, removeRepo } from './git.js';
+import { getCurrentDir } from './cli.js';
+const options = yargs.usage('Usage: -u <url> -s <keyword>').option('e', {
+    alias: 'exec',
+    default: 'copyRepo',
+    describe: 'exec command copyRepo(clone+local config)/makeRepo(create remote+push)/removeRepo(delete remote+local)',
+    type: 'string',
+    demandOption: true
+}).option('u', {
+    alias: 'userName',
+    default: 'mooninlearn',
+    describe: 'Name of User',
+    type: 'string'
+}).option('n', {
+    alias: 'repoName',
+    describe: 'NameOfRepository',
+    type: 'string'
+}).option('d', {
+    alias: "description",
+    describe: "Description For Repository",
+    type: 'string'
+}).argv;
+function getLocalPath(repoName) {
+    let localPath = getCurrentDir();
+    const lastSlug = localPath.split('/').pop();
+    if (lastSlug !== repoName) {
+        localPath += `/${repoName}`;
+    }
+    return localPath;
+}
+const account = findGithubAccount(options.userName ?? '');
+account.userName = options.userName ?? '';
+console.log(`#### git account: ${JSON.stringify(account)}`);
+const octokit = new Octokit({
+    auth: account.token
+});
+const localPath = getLocalPath(options.repoName ?? '') ?? '';
+switch(options.exec){
+    case 'createRemoteRepo':
+        createRemoteRepo(octokit, {
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        });
+        break;
+    case 'createRemoteRepoEmpty':
+        createRemoteRepoEmpty(octokit, {
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        });
+        break;
+    case 'deleteRemoteRepo':
+        deleteRemoteRepo(octokit, {
+            name: options.repoName ?? ''
+        }, account);
+        break;
+    case 'setLocalConfig':
+        setLocalConfig({
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        }, account, localPath);
+        break;
+    case 'cloneRepo':
+        cloneRepo({
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        }, account, localPath);
+        break;
+    case 'initLocalRepo':
+        initLocalRepo({
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        }, account, localPath);
+        break;
+    case 'initRepo':
+        console.log('====initRepo');
+        initRepo(octokit, {
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        }, account, localPath);
+        break;
+    case 'pushRepo':
+        pushRepo({
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        }, account, localPath);
+        break;
+    case 'copyRepo':
+        copyRepo({
+            name: options.repoName ?? '',
+            description: options.description ?? "description"
+        }, account, localPath);
+        break;
+    case 'makeRepo':
+        makeRepo(octokit, {
+            name: options.repoName ?? '',
+            description: options.description ?? ''
+        }, account, localPath);
+        break;
+    case 'removeRepo':
+        removeRepo(octokit, {
+            name: options.repoName ?? ''
+        }, account, localPath);
+        break;
+}
+
+//# sourceMappingURL=xgit.js.map

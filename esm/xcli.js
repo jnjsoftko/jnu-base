@@ -1,2 +1,64 @@
 #!/usr/bin/env node
-import e from"yargs";import{initApp as a,removeApp as t,zip as o,tree as i}from"./cli.js";let s=e.usage("Usage: -e <command> -u <userName> -t <template> -n <repoName> -d <description> -g").option("e",{alias:"exec",describe:"Execute Command",type:"string",demandOption:!0}).option("u",{alias:"userName",default:"mooninlearn",describe:"Name of User",type:"string"}).option("t",{alias:"template",default:"node",describe:"developemnt template(language)",type:"string"}).option("n",{alias:"repoName",describe:"Repository Name(Project Name)",type:"string"}).option("d",{alias:"description",describe:"ProjectDescription",type:"string"}).option("g",{alias:"github",default:!0,describe:"Use Github Repository (--no-github: false)",type:"boolean"}).option("x",{alias:"excluded",default:"node_modules/,package-lock.json,package.json",describe:"Excluded file/folder types For zip",type:"string"}).parseSync(),r={exec:s.e,userName:s.u,template:s.t,repoName:s.n,description:s.d,github:s.g,excluded:s.x};switch(r.exec){case"init":a(r);break;case"remove":t(r);break;case"zip":o(r);break;case"tree":i(r);break;default:console.log("Invalid command")}
+import yargs from "yargs";
+import { initApp, removeApp, zip, tree } from "./cli.js";
+const argv = yargs.usage("Usage: -e <command> -u <userName> -t <template> -n <repoName> -d <description> -g").option("e", {
+    alias: "exec",
+    describe: "Execute Command",
+    type: "string",
+    demandOption: true
+}).option("u", {
+    alias: "userName",
+    default: "mooninlearn",
+    describe: "Name of User",
+    type: "string"
+}).option("t", {
+    alias: "template",
+    default: "node",
+    describe: "developemnt template(language)",
+    type: "string"
+}).option("n", {
+    alias: "repoName",
+    describe: "Repository Name(Project Name)",
+    type: "string"
+}).option("d", {
+    alias: "description",
+    describe: "ProjectDescription",
+    type: "string"
+}).option("g", {
+    alias: "github",
+    default: true,
+    describe: "Use Github Repository (--no-github: false)",
+    type: "boolean"
+}).option("x", {
+    alias: "excluded",
+    default: "node_modules/,package-lock.json,package.json",
+    describe: "Excluded file/folder types For zip",
+    type: "string"
+}).parseSync();
+const options = {
+    exec: argv.e,
+    userName: argv.u,
+    template: argv.t,
+    repoName: argv.n,
+    description: argv.d,
+    github: argv.g,
+    excluded: argv.x
+};
+switch(options.exec){
+    case "init":
+        initApp(options);
+        break;
+    case "remove":
+        removeApp(options);
+        break;
+    case "zip":
+        zip(options);
+        break;
+    case "tree":
+        tree(options);
+        break;
+    default:
+        console.log("Invalid command");
+}
+
+//# sourceMappingURL=xcli.js.map

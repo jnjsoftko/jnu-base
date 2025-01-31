@@ -1,1 +1,302 @@
-let e=()=>"pong",t=e=>"{}"===JSON.stringify(e),r=e=>"{}"===JSON.stringify(e)||"[]"===JSON.stringify(e),n=e=>!0!==e&&("number"!=typeof e||0===e)&&(!1===e||null==e||Number.isNaN(e)||0===e||""===e||Array.isArray(e)&&0===e.length||"object"==typeof e&&null!==e&&0===Object.keys(e).length),s=e=>null!=e&&"string"==typeof e&&""!==e.trim(),o=e=>structuredClone(e),i=(e,t)=>e.replace(/\${(.*?)}/g,(e,r)=>{let n=`return ${r}`;return Function(...Object.keys(t),n)(...Object.values(t))}),l=(e,t)=>{for(let r of t)if(e.includes(r))return!0;return!1},u=e=>"string"==typeof e?e.trim():JSON.stringify(e),a=(e,t=",",r=!0,n="\n")=>{let s=[];for(let o of e.split(n))r?s.push(o.slice(1,-1).split(`"${t}"`).map(e=>e.trim())):s.push(o.split(t).map(e=>e.trim()));return s},c=(e,t=",",r=!0,n="\n")=>{let s="";for(let o of e)r?s+=`"${o.join('"'+t+'"')}"${n}`:s+=`${o.join(t)}${n}`;return s},p=(e,t=0,r=!1)=>{let n=e.map(e=>e[t]);return r?n.slice(1):n},f=(e,t)=>(delete e[t],e),m=(e,t,r,n="")=>Object.keys(t).reduce(function(s,o){return s[t[o]]=e[o]??r[o]??n,s},{}),d=(e,t)=>Object.keys(e).reduce(function(r,n){return r[t[n]??n]=e[n],r},{}),y=(e,t,r,n="")=>Object.keys({...e,...r}).reduce(function(s,o){return s[t[o]??o]=e[o]??r[o]??n,s},{}),g=(e,t,r,n="",s="new")=>{let o=t;switch(s.toLowerCase()){case"rename":o=e;break;case"update":o={...e,...r}}return Object.keys(o).reduce(function(s,o){return s[t[o]??o]=e[o]??r[o]??n,s},{})},h=(e,t)=>e.map(e=>e[t]),O=(e,t)=>e.reduce((e,r,n)=>(e[r]=t[n],e),{}),w=(e,t)=>t.map(t=>e.reduce((e,r,n)=>(e[r]=t[n],e),{})),b=e=>null===e||"object"!=typeof e?[]:[Object.keys(e),Object.values(e)],D=(e,t={},r=!1)=>{let n=Object.keys(t),s=Object.values(t);return r?e.map((e,t)=>0===t?[...e,...n]:[...e,...s]):e.map((e,t)=>0===t?[...n,...e]:[...s,...e])},S=(e,t=[[]])=>{let r=e,n=[...Array(e.length).keys()];return t[0].length>0&&(r=t[1],n=t[0].map(t=>e.indexOf(t))),[r,n]},j=(e,t=[[]],r="")=>{if(!e||0==e.length)return[];let[n,s]=S(e.shift(),t);return e.map(e=>{let t={};return n.forEach((n,o)=>{t[n]=-1!=s[o]?e[s[o]]??r:r}),t})},F=(e,t=[[]],r="")=>{if(!e||0==e.length)return[];let n=Object.keys(e[0]),[s,o]=S(n,t),i=[s];for(let t of e){let e=[];for(let i=0;i<s.length;i++){let s=o[i];-1==s?e.push(r):e.push(t[n[s]])}i.push(e)}return i},k=e=>{let t=Object.keys(e[0]),r=[t];for(let n of e){let e=[];for(let r of t)e.push(n[r]);r.push(e)}return r},$=e=>{let t=e[0],r=[];for(let n=1;n<e.length;n++){let s=e[n],o={};for(let e=0;e<t.length;e++)o[t[e]]=s[e];r.push(o)}return r},v=e=>Object.keys(e).reduce((t,r)=>(t[e[r]]=r,t),{});function A(e=[],t=[],r){let n={adds:[],dels:[],upds:[]};return t.forEach(t=>{let s=e.find(e=>r.every(r=>t[r]===e[r]));s?Object.entries(t).every(([e,t])=>s[e]===t)||n.upds.push(t):n.adds.push(t)}),e.forEach(e=>{t.find(t=>r.every(r=>e[r]===t[r]))||n.dels.push(e)}),n}let K=(e,t)=>{for(let r of t)delete e[r];return e},N=e=>new Intl.DateTimeFormat("ko-KR",{year:"numeric",month:"numeric",day:"numeric",weekday:"short"}).format(new Date(e)),E=e=>{let t=e?.timeZone??"Asia/Seoul",r=e?.hour12??!1,n=e?.format??"basic",s=new Date(new Date().toLocaleString("en-US",{timeZone:t,hour12:r})).toISOString().replace(/T/," ").replace(/\..+/,"");if("KO"===n.toUpperCase()){let[e,t]=s.split(" ");s=`${N(e)} ${t}`}return s},T=e=>{let t=new Date(e);return`${t.getFullYear()}${String(t.getMonth()+1).padStart(2,"0")}${String(t.getDate()).padStart(2,"0")} ${t.getHours()}:${String(t.getMinutes()).padStart(2,"0")}:${String(t.getSeconds()).padStart(2,"0")}`},J=(e,t,...r)=>{if("function"!=typeof e)throw TypeError("Expected a function");return setTimeout(e,+t||0,...r)},C=e=>{let t=Date.now(),r=t;for(;r-t<1e3*e;)r=Date.now()},x=async e=>{await new Promise(t=>setTimeout(t,e))};export{e as ping,t as isEmptyDict,r as isEmpty,n as isFalsy,s as isValidStr,o as serializeNonPOJOs,i as evalStr,l as includesMulti,u as strFromAny,a as rowsFromCsv,c as csvFromRows,p as arrFromArrs,f as popDict,m as newKeys,d as renameKeys,y as overwriteKeys,g as updateKeys,h as arrFromDicts,O as dictFromDuo,w as dictsFromDuos,b as duoFromDict,F as rowsFromDicts,j as dictsFromRows,k as arrsFromDicts,$ as dictsFromArrs,D as rowsAddedDefaults,v as swapDict,A as getUpsertDicts,K as removeDictKeys,N as dateKo,E as now,T as timeFromTimestamp,J as delay,C as sleep,x as sleepAsync};
+const ping = ()=>'pong';
+const isEmptyDict = (obj)=>JSON.stringify(obj) === '{}';
+const isEmpty = (v)=>JSON.stringify(v) === '{}' || JSON.stringify(v) === '[]';
+const isFalsy = (v)=>{
+    if (v === true) return false;
+    if (typeof v === 'number' && v !== 0) return false;
+    return v === false || v === undefined || v === null || Number.isNaN(v) || v === 0 || v === '' || Array.isArray(v) && v.length === 0 || typeof v === 'object' && v !== null && Object.keys(v).length === 0;
+};
+const isValidStr = (s)=>{
+    if (s === null || s === undefined || typeof s !== 'string') {
+        return false;
+    }
+    return s.trim() !== '';
+};
+const serializeNonPOJOs = (obj)=>structuredClone(obj);
+const evalStr = (str, values)=>{
+    const regex = /\${(.*?)}/g;
+    return str.replace(regex, (match, expression)=>{
+        const code = `return ${expression}`;
+        const value = new Function(...Object.keys(values), code)(...Object.values(values));
+        return value;
+    });
+};
+const includesMulti = (s, arr)=>{
+    for (const a of arr){
+        if (s.includes(a)) return true;
+    }
+    return false;
+};
+const strFromAny = (s)=>typeof s === 'string' ? s.trim() : JSON.stringify(s);
+const rowsFromCsv = (csv, sep = ',', hasQuote = true, newline = '\n')=>{
+    const rows = [];
+    for (const line of csv.split(newline)){
+        if (hasQuote) {
+            rows.push(line.slice(1, -1).split(`"${sep}"`).map((s)=>s.trim()));
+        } else {
+            rows.push(line.split(sep).map((s)=>s.trim()));
+        }
+    }
+    return rows;
+};
+const csvFromRows = (rows, sep = ',', hasQuote = true, newline = '\n')=>{
+    let str = '';
+    for (const row of rows){
+        if (hasQuote) {
+            str += `"${row.join('"' + sep + '"')}"${newline}`;
+        } else {
+            str += `${row.join(sep)}${newline}`;
+        }
+    }
+    return str;
+};
+const arrFromArrs = (rows, index = 0, hasHeader = false)=>{
+    const arr = rows.map((row)=>row[index]);
+    return hasHeader ? arr.slice(1) : arr;
+};
+const popDict = (obj, key)=>{
+    delete obj[key];
+    return obj;
+};
+const newKeys = (obj, maps, valMap, dfault = '')=>{
+    return Object.keys(maps).reduce(function(obj_, key) {
+        obj_[maps[key]] = obj[key] ?? valMap[key] ?? dfault;
+        return obj_;
+    }, {});
+};
+const renameKeys = (obj, maps)=>{
+    return Object.keys(obj).reduce(function(obj_, key) {
+        obj_[maps[key] ?? key] = obj[key];
+        return obj_;
+    }, {});
+};
+const overwriteKeys = (obj, maps, valMap, dfault = '')=>{
+    return Object.keys({
+        ...obj,
+        ...valMap
+    }).reduce(function(obj_, key) {
+        obj_[maps[key] ?? key] = obj[key] ?? valMap[key] ?? dfault;
+        return obj_;
+    }, {});
+};
+const updateKeys = (obj, maps, valMap, dfault = '', method = 'new')=>{
+    let _obj = maps;
+    switch(method.toLowerCase()){
+        case 'rename':
+            _obj = obj;
+            break;
+        case 'update':
+            _obj = {
+                ...obj,
+                ...valMap
+            };
+            break;
+    }
+    return Object.keys(_obj).reduce(function(obj_, key) {
+        obj_[maps[key] ?? key] = obj[key] ?? valMap[key] ?? dfault;
+        return obj_;
+    }, {});
+};
+const arrFromDicts = (dicts, key)=>{
+    return dicts.map((dict)=>dict[key]);
+};
+const dictFromDuo = (keys, vals)=>{
+    return keys.reduce((dict, key, i)=>{
+        dict[key] = vals[i];
+        return dict;
+    }, {});
+};
+const dictsFromDuos = (keys, valss)=>{
+    return valss.map((vals)=>keys.reduce((dict, key, i)=>{
+            dict[key] = vals[i];
+            return dict;
+        }, {}));
+};
+const duoFromDict = (obj)=>{
+    if (obj === null || typeof obj !== 'object') {
+        return [];
+    }
+    return [
+        Object.keys(obj),
+        Object.values(obj)
+    ];
+};
+const rowsAddedDefaults = (rows, valMap = {}, isPush = false)=>{
+    const addKeys = Object.keys(valMap);
+    const addVals = Object.values(valMap);
+    if (isPush) {
+        return rows.map((arr, i)=>i === 0 ? [
+                ...arr,
+                ...addKeys
+            ] : [
+                ...arr,
+                ...addVals
+            ]);
+    } else {
+        return rows.map((arr, i)=>i === 0 ? [
+                ...addKeys,
+                ...arr
+            ] : [
+                ...addVals,
+                ...arr
+            ]);
+    }
+};
+const headerIndexArr = (oldHeader, keyDuo = [
+    []
+])=>{
+    let newHeader = oldHeader;
+    let indexArr = [
+        ...Array(oldHeader.length).keys()
+    ];
+    if (keyDuo[0].length > 0) {
+        newHeader = keyDuo[1];
+        indexArr = keyDuo[0].map((h)=>oldHeader.indexOf(h));
+    }
+    return [
+        newHeader,
+        indexArr
+    ];
+};
+const dictsFromRows = (rows, keyDuo = [
+    []
+], dfault = '')=>{
+    if (!rows || rows.length == 0) {
+        return [];
+    }
+    let [header, indexMaps] = headerIndexArr(rows.shift(), keyDuo);
+    return rows.map((arr)=>{
+        let dict = {};
+        header.forEach((h, i)=>{
+            dict[h] = indexMaps[i] != -1 ? arr[indexMaps[i]] ?? dfault : dfault;
+        });
+        return dict;
+    });
+};
+const rowsFromDicts = (dicts, keyDuo = [
+    []
+], dfault = '')=>{
+    if (!dicts || dicts.length == 0) {
+        return [];
+    }
+    const _header = Object.keys(dicts[0]);
+    let [header, indexMaps] = headerIndexArr(_header, keyDuo);
+    let rows = [
+        header
+    ];
+    for (let row of dicts){
+        let content = [];
+        for(let i = 0; i < header.length; i++){
+            const i_ = indexMaps[i];
+            i_ == -1 ? content.push(dfault) : content.push(row[_header[i_]]);
+        }
+        rows.push(content);
+    }
+    return rows;
+};
+const arrsFromDicts = (dicts)=>{
+    const keys = Object.keys(dicts[0]);
+    const result = [
+        keys
+    ];
+    for (const dict of dicts){
+        const values = [];
+        for (const key of keys){
+            values.push(dict[key]);
+        }
+        result.push(values);
+    }
+    return result;
+};
+const dictsFromArrs = (arrs)=>{
+    const keys = arrs[0];
+    const result = [];
+    for(let i = 1; i < arrs.length; i++){
+        const values = arrs[i];
+        const dict = {};
+        for(let j = 0; j < keys.length; j++){
+            dict[keys[j]] = values[j];
+        }
+        result.push(dict);
+    }
+    return result;
+};
+const swapDict = (obj)=>{
+    return Object.keys(obj).reduce((obj_, key)=>{
+        obj_[obj[key]] = key;
+        return obj_;
+    }, {});
+};
+function getUpsertDicts(olds = [], news = [], keys) {
+    const upserts = {
+        adds: [],
+        dels: [],
+        upds: []
+    };
+    news.forEach((newDict)=>{
+        const matchingOldDict = olds.find((oldDict)=>keys.every((key)=>newDict[key] === oldDict[key]));
+        if (!matchingOldDict) {
+            upserts.adds.push(newDict);
+        } else if (!Object.entries(newDict).every(([key, value])=>matchingOldDict[key] === value)) {
+            upserts.upds.push(newDict);
+        }
+    });
+    olds.forEach((oldDict)=>{
+        const matchingNewDict = news.find((newDict)=>keys.every((key)=>oldDict[key] === newDict[key]));
+        if (!matchingNewDict) {
+            upserts.dels.push(oldDict);
+        }
+    });
+    return upserts;
+}
+const removeDictKeys = (dict, keys)=>{
+    for (let key of keys){
+        delete dict[key];
+    }
+    return dict;
+};
+const dateKo = (dateStr)=>new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        weekday: 'short'
+    }).format(new Date(dateStr));
+const now = (options)=>{
+    const timeZone = options?.timeZone ?? 'Asia/Seoul';
+    const hour12 = options?.hour12 ?? false;
+    const format = options?.format ?? 'basic';
+    const date = new Date().toLocaleString('en-US', {
+        timeZone,
+        hour12
+    });
+    let now = new Date(date).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    switch(format.toUpperCase()){
+        case 'KO':
+            const [dateStr, timeStr] = now.split(' ');
+            now = `${dateKo(dateStr)} ${timeStr}`;
+            break;
+    }
+    return now;
+};
+const timeFromTimestamp = (timestamp)=>{
+    const date = new Date(timestamp);
+    return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+};
+const delay = (func, wait, ...args)=>{
+    if (typeof func !== 'function') {
+        throw new TypeError('Expected a function');
+    }
+    return setTimeout(func, +wait || 0, ...args);
+};
+const sleep = (sec)=>{
+    let start = Date.now(), now = start;
+    while(now - start < sec * 1000){
+        now = Date.now();
+    }
+};
+const sleepAsync = async (wait)=>{
+    await new Promise((resolve)=>setTimeout(resolve, wait));
+};
+export { ping, isEmptyDict, isEmpty, isFalsy, isValidStr, serializeNonPOJOs, evalStr, includesMulti, strFromAny, rowsFromCsv, csvFromRows, arrFromArrs, popDict, newKeys, renameKeys, overwriteKeys, updateKeys, arrFromDicts, dictFromDuo, dictsFromDuos, duoFromDict, rowsFromDicts, dictsFromRows, arrsFromDicts, dictsFromArrs, rowsAddedDefaults, swapDict, getUpsertDicts, removeDictKeys, dateKo, now, timeFromTimestamp, delay, sleep, sleepAsync };
+
+//# sourceMappingURL=basic.js.map

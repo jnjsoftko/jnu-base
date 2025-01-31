@@ -1,1 +1,111 @@
-import e from"path";import{execSync as o}from"child_process";import{loadJson as t}from"./builtin.js";import{sleep as i}from"./basic.js";import{PLATFORM as n}from"./cli.js";let s=`${process.env.DEV_CONFIG_ROOT}/Environments`??"C:/JnJ-soft/Developments/Environments",l=e=>t(`${s}/Apis/github.json`)[e],r=e=>{console.log(e.rest.repos)},m=(e,o)=>(console.log("#### createRemoteRepo options: ",o),e.rest.repos.createForAuthenticatedUser({auto_init:!0,private:!1,license_template:"MIT",...o})),c=(e,o)=>(console.log("#### createRemoteRepoEmpty options: ",o),m(e,{...o,auto_init:!1,license_template:void 0})),p=(e,o,t)=>{let{name:i}=o;return e.rest.repos.delete({owner:t.userName,repo:i})},a=(e,t,i)=>{let n=`cd ${i} && git config user.name "${t.fullName}"`;console.log(n+=` && git config user.email "${t.email}" && git remote set-url origin https://${t.token}@github.com/${t.userName}/${e.name}.git`),o(n)},g=(e,t,i)=>{let{name:n}=e,{fullName:s,email:l,token:r,userName:m}=t,c=`cd ${i} && git init`;console.log(c+=` && git config user.name "${s}" && git config user.email "${l}" && git remote set-url origin https://${t.token}@github.com/${t.userName}/${e.name}.git && git add . && git commit -m "Initial commit"`),o(c)},u=(t,i,n)=>{let s=`cd ${e.dirname(n)} && git clone https://${i.token}@github.com/${i.userName}/${t.name}.git`;console.log(s),o(s)},$=(e,o,t,n)=>{console.log("====GIT.TS initRepo"),m(e,o),i(5),u(o,t,n),a(o,t,n)},R=(e,o,t)=>{u(e,o,t),a(e,o,t)},d=(e,t,i)=>{o(`cd ${i}`);let n=o("git branch");console.log(`#### pushRepo branches: ${n}`),n.includes("main")?o("git push -u origin main"):n.includes("master")?o("git push -u origin master"):console.log("main 또는 master 브랜치가 없습니다.")},h=(e,o,t,n)=>{console.log(`=================== createRemoteRepoEmpty: ${n}`),c(e,o),i(5),console.log(`=================== initLocalRepo: ${n}`),g(o,t,n),i(3),console.log(`=================== pushRepo: ${n}`),d(o,t,n)},f=(t,i,s,l)=>{p(t,i,s);let{name:r}=i;if(o(`cd ${e.dirname(l)}`),"win"===n){let e=`rmdir /s /q ${r}`;console.log(e),o(e)}else{let e=`rm -rf ${r}`;console.log(e),o(e)}};export{l as findGithubAccount,r as findAllRepos,m as createRemoteRepo,c as createRemoteRepoEmpty,p as deleteRemoteRepo,u as cloneRepo,a as setLocalConfig,g as initLocalRepo,$ as initRepo,R as copyRepo,d as pushRepo,h as makeRepo,f as removeRepo};
+import Path from 'path';
+import { execSync } from 'child_process';
+import { loadJson } from './builtin.js';
+import { sleep } from './basic.js';
+import { PLATFORM } from './cli.js';
+const settingsPath = `${process.env.DEV_CONFIG_ROOT}/Environments` ?? 'C:/JnJ-soft/Developments/Environments';
+const findGithubAccount = (userName)=>{
+    return loadJson(`${settingsPath}/Apis/github.json`)[userName];
+};
+const findAllRepos = (octokit)=>{
+    console.log(octokit.rest.repos);
+};
+const createRemoteRepo = (octokit, options)=>{
+    console.log('#### createRemoteRepo options: ', options);
+    const defaults = {
+        auto_init: true,
+        private: false,
+        license_template: 'MIT'
+    };
+    return octokit.rest.repos.createForAuthenticatedUser({
+        ...defaults,
+        ...options
+    });
+};
+const createRemoteRepoEmpty = (octokit, options)=>{
+    console.log('#### createRemoteRepoEmpty options: ', options);
+    return createRemoteRepo(octokit, {
+        ...options,
+        auto_init: false,
+        license_template: undefined
+    });
+};
+const deleteRemoteRepo = (octokit, options, account)=>{
+    const { name } = options;
+    return octokit.rest.repos.delete({
+        owner: account.userName,
+        repo: name
+    });
+};
+const setLocalConfig = (options, account, localPath)=>{
+    let cmd = `cd ${localPath} && git config user.name "${account.fullName}"`;
+    cmd += ` && git config user.email "${account.email}"`;
+    cmd += ` && git remote set-url origin https://${account.token}@github.com/${account.userName}/${options.name}.git`;
+    console.log(cmd);
+    execSync(cmd);
+};
+const initLocalRepo = (options, account, localPath)=>{
+    const { name } = options;
+    const { fullName, email, token, userName } = account;
+    let cmd = `cd ${localPath} && git init`;
+    cmd += ` && git config user.name "${fullName}"`;
+    cmd += ` && git config user.email "${email}"`;
+    cmd += ` && git remote set-url origin https://${account.token}@github.com/${account.userName}/${options.name}.git`;
+    cmd += ` && git add . && git commit -m "Initial commit"`;
+    console.log(cmd);
+    execSync(cmd);
+};
+const cloneRepo = (options, account, localPath)=>{
+    const cmd = `cd ${Path.dirname(localPath)} && git clone https://${account.token}@github.com/${account.userName}/${options.name}.git`;
+    console.log(cmd);
+    execSync(cmd);
+};
+const initRepo = (octokit, options, account, localPath)=>{
+    console.log('====GIT.TS initRepo');
+    createRemoteRepo(octokit, options);
+    cloneRepo(options, account, localPath);
+    setLocalConfig(options, account, localPath);
+};
+const copyRepo = (options, account, localPath)=>{
+    cloneRepo(options, account, localPath);
+    setLocalConfig(options, account, localPath);
+};
+const pushRepo = (options, account, localPath)=>{
+    execSync(`cd ${localPath}`);
+    const branches = execSync('git branch');
+    console.log(`#### pushRepo branches: ${branches}`);
+    if (branches.includes('main')) {
+        execSync('git push -u origin main');
+    } else if (branches.includes('master')) {
+        execSync('git push -u origin master');
+    } else {
+        console.log('main 또는 master 브랜치가 없습니다.');
+    }
+};
+const makeRepo = (octokit, options, account, localPath)=>{
+    console.log(`=================== createRemoteRepoEmpty: ${localPath}`);
+    createRemoteRepoEmpty(octokit, options);
+    sleep(5);
+    console.log(`=================== initLocalRepo: ${localPath}`);
+    initLocalRepo(options, account, localPath);
+    sleep(3);
+    console.log(`=================== pushRepo: ${localPath}`);
+    pushRepo(options, account, localPath);
+};
+const removeRepo = (octokit, options, account, localPath)=>{
+    deleteRemoteRepo(octokit, options, account);
+    const { name } = options;
+    execSync(`cd ${Path.dirname(localPath)}`);
+    if (PLATFORM === 'win') {
+        const cmd = `rmdir /s /q ${name}`;
+        console.log(cmd);
+        execSync(cmd);
+    } else {
+        const cmd = `rm -rf ${name}`;
+        console.log(cmd);
+        execSync(cmd);
+    }
+};
+export { findGithubAccount, findAllRepos, createRemoteRepo, createRemoteRepoEmpty, deleteRemoteRepo, cloneRepo, setLocalConfig, initLocalRepo, initRepo, copyRepo, pushRepo, makeRepo, removeRepo };
+
+//# sourceMappingURL=git.js.map

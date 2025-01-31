@@ -1,1 +1,140 @@
-import{execSync as e}from"child_process";import r from"path";import{saveFile as t,substituteInFile as o}from"./builtin.js";import{findGithubAccount as i}from"./git.js";let p=`${process.env.DEV_CONFIG_ROOT}/Templates`??"C:/JnJ-soft/Developments/Templates",m="win32"===process.platform?"win":"darwin"===process.platform?"mac":"linux"===process.platform?"linux":process.platform,n=r=>{let t=e(r,{encoding:"utf8"});return t?t.toString().trim():""},a=e=>{let r=[];return e.forEach(e=>r.push(n(e))),r},s={encoding:"utf8",shell:"win32"===process.platform?"cmd.exe":"/bin/sh"},c=()=>"win"===m?e("cd",s).toString().trim().replace(/\\/g,"/"):e("pwd",s).toString().trim(),d=()=>"win"===m?r.dirname(e("cd",s).toString().trim().replace(/\\/g,"/")):r.dirname(e("pwd",s).toString().trim()),l=r=>{let t=i(r.userName??""),n=d(),a=c(),l="";"win"===m?e(l=`xcopy "${p}\\ts-swc-npm" "${r.repoName}\\" /E /I /H /Y`,s):e(l=`cp -r ${p}/ts-swc-npm ${r.repoName}`,s),o(`${r.repoName}/package.json`,{"{{name}}":r.repoName??"","{{author}}":`${t.fullName} <${t.email}>`,"{{description}}":r.description??""}),o(`${r.repoName}/README.md`,{"{{name}}":r.repoName??"","{{project-name}}":r.repoName??"","{{author}}":`${t.fullName} <${t.email}>`,"{{github-id}}":r.userName??"","{{description}}":r.description||"","{{parent-dir}}":n,"{{current-dir}}":a}),o(`${r.repoName}/docs/workflow.md`,{"{{name}}":r.repoName??"","{{project-name}}":r.repoName??"","{{github-id}}":r.userName??"","{{description}}":r.description||"","{{parent-dir}}":n,"{{current-dir}}":a}),console.log(l=`cd ${a}/${r.repoName} && npm install`),e(l,s),console.log(l=`cd ${a}/${r.repoName} && xgit -e makeRepo -u ${r.userName} -n ${r.repoName} -d "${r.description}"`),e(l,s)},u=r=>{e(`xgit -e deleteRemoteRepo -u ${r.userName} -n ${r.repoName}`,s),"win"===m?e(`rmdir /s /q ${r.repoName}`,s):e(`rm -rf ${r.repoName}`,s)},$=e=>{switch(e.template){case"node-simple":case"python-pipenv":break;case"ts-swc-npm":l(e)}},N=r=>{if("win"===m){let t=r.excluded?r.excluded.split(",").map(e=>`"${e}"`).join(","):'"*/node_modules/*",".git/*"';e(`powershell -Command "Compress-Archive -Path ${r.repoName} -DestinationPath ${r.repoName}.zip -Exclude ${t}"`,s)}else{let t=r.excluded?r.excluded.split(",").map(e=>`"${e}"`).join(" "):'"*/node_modules/*" ".git/*"';e(`zip -r ${r.repoName}.zip ${r.repoName} -x ${t}`,s)}},g=r=>{if("win"===m)return"";{let o=r.excluded?`"${r.excluded.split(",").join("|")}"`:'"node_modules|dist|_backups|_drafts|types|docs"',i=`tree -I ${o} --dirsfirst -L 3`;try{console.log("Command: ",i);let r=e(i,{encoding:"utf8",stdio:"pipe"});return r&&t("tree.txt",r,{overwrite:!0,newFile:!1}),r||""}catch(e){return console.error("Error executing tree command:",e),""}}};export{p as TEMPLATES_ROOT,m as PLATFORM,n as exec,a as exe,s as execOptions,d as getParentDir,c as getCurrentDir,$ as initApp,u as removeApp,N as zip,g as tree};
+import { execSync } from 'child_process';
+import Path from 'path';
+import { saveFile, substituteInFile } from './builtin.js';
+import { findGithubAccount } from './git.js';
+const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? 'C:/JnJ-soft/Developments/Templates';
+const PLATFORM = process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : process.platform === 'linux' ? 'linux' : process.platform;
+const exec = (cmd)=>{
+    const result = execSync(cmd, {
+        encoding: 'utf8'
+    });
+    return result ? result.toString().trim() : '';
+};
+const exe = (cmds)=>{
+    const results = [];
+    cmds.forEach((cmd)=>results.push(exec(cmd)));
+    return results;
+};
+const execOptions = {
+    encoding: 'utf8',
+    shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh'
+};
+const getCurrentDir = ()=>{
+    switch(PLATFORM){
+        case 'win':
+            return execSync('cd', execOptions).toString().trim().replace(/\\/g, '/');
+        default:
+            return execSync('pwd', execOptions).toString().trim();
+    }
+};
+const getParentDir = ()=>{
+    switch(PLATFORM){
+        case 'win':
+            return Path.dirname(execSync('cd', execOptions).toString().trim().replace(/\\/g, '/'));
+        default:
+            return Path.dirname(execSync('pwd', execOptions).toString().trim());
+    }
+};
+const initTsSwcNpm = (options)=>{
+    const account = findGithubAccount(options.userName ?? '');
+    const parentDir = getParentDir();
+    const currentDir = getCurrentDir();
+    let cmd = '';
+    if (PLATFORM === 'win') {
+        cmd = `xcopy "${TEMPLATES_ROOT}\\ts-swc-npm" "${options.repoName}\\" /E /I /H /Y`;
+        execSync(cmd, execOptions);
+    } else {
+        cmd = `cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`;
+        execSync(cmd, execOptions);
+    }
+    substituteInFile(`${options.repoName}/package.json`, {
+        '{{name}}': options.repoName ?? '',
+        '{{author}}': `${account.fullName} <${account.email}>`,
+        "{{description}}": options.description ?? ''
+    });
+    substituteInFile(`${options.repoName}/README.md`, {
+        '{{name}}': options.repoName ?? '',
+        '{{project-name}}': options.repoName ?? '',
+        '{{author}}': `${account.fullName} <${account.email}>`,
+        '{{github-id}}': options.userName ?? '',
+        "{{description}}": options.description || '',
+        '{{parent-dir}}': parentDir,
+        '{{current-dir}}': currentDir
+    });
+    substituteInFile(`${options.repoName}/docs/workflow.md`, {
+        '{{name}}': options.repoName ?? '',
+        '{{project-name}}': options.repoName ?? '',
+        '{{github-id}}': options.userName ?? '',
+        "{{description}}": options.description || '',
+        '{{parent-dir}}': parentDir,
+        '{{current-dir}}': currentDir
+    });
+    cmd = `cd ${currentDir}/${options.repoName} && npm install`;
+    console.log(cmd);
+    execSync(cmd, execOptions);
+    cmd = `cd ${currentDir}/${options.repoName} && xgit -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`;
+    console.log(cmd);
+    execSync(cmd, execOptions);
+};
+const removeApp = (options)=>{
+    execSync(`xgit -e deleteRemoteRepo -u ${options.userName} -n ${options.repoName}`, execOptions);
+    if (PLATFORM === 'win') {
+        execSync(`rmdir /s /q ${options.repoName}`, execOptions);
+    } else {
+        execSync(`rm -rf ${options.repoName}`, execOptions);
+    }
+};
+const initApp = (options)=>{
+    switch(options.template){
+        case 'node-simple':
+            break;
+        case 'ts-swc-npm':
+            initTsSwcNpm(options);
+            break;
+        case 'python-pipenv':
+            break;
+        case 'flutter':
+            break;
+    }
+};
+const zip = (options)=>{
+    switch(PLATFORM){
+        case 'win':
+            const excludedWin = options.excluded ? options.excluded.split(',').map((item)=>`"${item}"`).join(',') : '"*/node_modules/*",".git/*"';
+            execSync(`powershell -Command \"Compress-Archive -Path ${options.repoName} -DestinationPath ${options.repoName}.zip -Exclude ${excludedWin}\"`, execOptions);
+            break;
+        default:
+            const excluded = options.excluded ? options.excluded.split(',').map((item)=>`"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
+            execSync(`zip -r ${options.repoName}.zip ${options.repoName} -x ${excluded}`, execOptions);
+            break;
+    }
+};
+const tree = (options)=>{
+    switch(PLATFORM){
+        case 'win':
+            return '';
+        default:
+            const excluded = options.excluded ? `"${options.excluded.split(',').join('|')}"` : '"node_modules|dist|_backups|_drafts|types|docs"';
+            const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
+            try {
+                console.log('Command: ', cmd);
+                const result = execSync(cmd, {
+                    encoding: 'utf8',
+                    stdio: 'pipe'
+                });
+                if (result) {
+                    saveFile('tree.txt', result, {
+                        overwrite: true,
+                        newFile: false
+                    });
+                }
+                return result || '';
+            } catch (error) {
+                console.error('Error executing tree command:', error);
+                return '';
+            }
+    }
+};
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree };
+
+//# sourceMappingURL=cli.js.map
