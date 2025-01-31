@@ -107,8 +107,8 @@ const initLocalRepo = (options: RepoOptions, account: GithubAccount, localPath: 
   let cmd = `cd ${localPath} && git init`;
   cmd += ` && git config user.name "${fullName}"`;
   cmd += ` && git config user.email "${email}"`;
-  // cmd += ` && git remote add origin https://${token}@github.com/${userName}/${name}.git`;
-  cmd += ` && git remote set-url origin https://${account.token}@github.com/${account.userName}/${options.name}.git`;
+  cmd += ` && git remote add origin https://${token}@github.com/${userName}/${name}.git`;
+  // cmd += ` && git remote set-url origin https://${account.token}@github.com/${account.userName}/${options.name}.git`;
   cmd += ` && git add . && git commit -m "Initial commit"`;
   console.log(cmd);
   execSync(cmd);
