@@ -5,10 +5,13 @@ import { execSync } from 'child_process';
 import {
   findGithubAccount,
   createRemoteRepo,
-  initRepo,
+  createRemoteRepoEmpty,
+  setLocalConfig,
+  initLocalRepo,
   deleteRemoteRepo,
-  pushRepo,
+  initRepo,
   copyRepo,
+  pushRepo,
   makeRepo,
   removeRepo,
 } from './git.js';
@@ -72,19 +75,14 @@ const localPath = getLocalPath(options.repoName ?? '') ?? '';
 
 // * exec
 switch (options.exec) {
-  case 'initRepo':
-    initRepo(
-      octokit,
-      {
-        name: options.repoName ?? '',
-        description: options.description ?? '',
-      },
-      account,
-      localPath
-    );
-    break;
   case 'createRemoteRepo':
     createRemoteRepo(octokit, {
+      name: options.repoName ?? '',
+      description: options.description ?? '',
+    });
+    break;
+  case 'createRemoteRepoEmpty':
+    createRemoteRepoEmpty(octokit, {
       name: options.repoName ?? '',
       description: options.description ?? '',
     });
@@ -96,6 +94,36 @@ switch (options.exec) {
         name: options.repoName ?? '',
       },
       account
+    );
+    break;
+  case 'setLocalConfig':
+    setLocalConfig(
+      {
+        name: options.repoName ?? '',
+        description: options.description ?? '',
+      },
+      account,
+      localPath
+    );
+    break;
+  case 'initLocalRepo':
+    initLocalRepo(
+      {
+        name: options.repoName ?? '',
+        description: options.description ?? '',
+      },
+      account,
+      localPath
+    );
+    break;
+  case 'initRepo':
+    initLocalRepo(
+      {
+        name: options.repoName ?? '',
+        description: options.description ?? '',
+      },
+      account,
+      localPath
     );
     break;
   case 'pushRepo':

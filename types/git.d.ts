@@ -1206,17 +1206,21 @@ declare const deleteRemoteRepo: (octokit: Octokit, options: RepoOptions, account
  */
 declare const setLocalConfig: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
 /**
+ * 로컬 저장소 초기화
+ */
+declare const initLocalRepo: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
+/**
  * 저장소 복제
  */
 declare const cloneRepo: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
 /**
- * 저장소 복제 및 설정
- */
-declare const copyRepo: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
-/**
  * 저장소 초기화 (생성, 복제, 설정)
  */
 declare const initRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => void;
+/**
+ * 저장소 복제 및 설정
+ */
+declare const copyRepo: (options: RepoOptions, account: GithubAccount, localPath: string) => void;
 /**
  * 저장소에 변경사항 푸시
  */
@@ -1230,5 +1234,5 @@ declare const makeRepo: (octokit: Octokit, options: RepoOptions, account: Github
  * @param options - 저장소 옵션
  */
 declare const removeRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => void;
-export { findGithubAccount, findAllRepos, createRemoteRepo, cloneRepo, setLocalConfig, copyRepo, initRepo, pushRepo, deleteRemoteRepo, makeRepo, createRemoteRepoEmpty, removeRepo, };
+export { findGithubAccount, findAllRepos, createRemoteRepo, createRemoteRepoEmpty, deleteRemoteRepo, cloneRepo, setLocalConfig, initLocalRepo, initRepo, copyRepo, pushRepo, makeRepo, removeRepo, };
 //# sourceMappingURL=git.d.ts.map

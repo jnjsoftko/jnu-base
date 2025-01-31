@@ -69,7 +69,7 @@ export {
   cloneRepo,
   setLocalConfig,
   copyRepo,
-  initRepo,
+  initLocalRepo,
   pushRepo,
   deleteRemoteRepo,
   makeRepo,

@@ -121,19 +121,19 @@ const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: stri
 };
 
 /**
- * 저장소 복제 및 설정
- */
-const copyRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
-  cloneRepo(options, account, localPath);
-  setLocalConfig(options, account, localPath);
-};
-
-/**
  * 저장소 초기화 (생성, 복제, 설정)
  */
 const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   createRemoteRepo(octokit, options);
   sleep(5000);
+  cloneRepo(options, account, localPath);
+  setLocalConfig(options, account, localPath);
+};
+
+/**
+ * 저장소 복제 및 설정
+ */
+const copyRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
   cloneRepo(options, account, localPath);
   setLocalConfig(options, account, localPath);
 };
@@ -201,13 +201,14 @@ export {
   findGithubAccount,
   findAllRepos,
   createRemoteRepo,
+  createRemoteRepoEmpty,
+  deleteRemoteRepo,
   cloneRepo,
   setLocalConfig,
-  copyRepo,
+  initLocalRepo,
   initRepo,
+  copyRepo,
   pushRepo,
-  deleteRemoteRepo,
   makeRepo,
-  createRemoteRepoEmpty,
   removeRepo,
 };
