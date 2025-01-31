@@ -144,10 +144,12 @@ const tree = (options)=>{
                     encoding: 'utf8',
                     stdio: 'pipe'
                 });
+                console.log('Result: ', result);
                 if (result) {
                     saveFile('tree.txt', result, {
                         overwrite: true,
-                        newFile: false
+                        newFile: false,
+                        encoding: 'utf8'
                     });
                 }
                 return result || '';

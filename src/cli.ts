@@ -252,8 +252,9 @@ const tree = (options: CliOptions): string => {
           stdio: 'pipe',
         });
 
+        console.log('Result: ', result);
         if (result) {
-          saveFile('tree.txt', result, { overwrite: true, newFile: false });
+          saveFile('tree.txt', result, { overwrite: true, newFile: false, encoding: 'utf8' });
         }
 
         return result || '';
