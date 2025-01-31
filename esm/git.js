@@ -77,6 +77,9 @@ const copyRepo = (options, account, localPath)=>{
 };
 const pushRepo = (options, account, localPath)=>{
     execSync(`cd ${localPath}`);
+    let cmd = `git add . && git commit -m "Initial commit"`;
+    console.log('#### ', cmd);
+    execSync(cmd);
     const branches = execSync('git branch');
     console.log(`#### pushRepo branches: ${branches}`);
     if (branches.includes('main')) {
@@ -94,9 +97,6 @@ const makeRepo = (octokit, options, account, localPath)=>{
     sleep(15);
     console.log(`=================== initLocalRepo: ${localPath}`);
     initLocalRepo(options, account, localPath);
-    cmd = `git add . && git commit -m "Initial commit"`;
-    console.log('#### ', cmd);
-    execSync(cmd);
     sleep(5);
     console.log(`=================== pushRepo: ${localPath}`);
     pushRepo(options, account, localPath);
