@@ -113,7 +113,7 @@ const initLocalRepo = (options: RepoOptions, account: GithubAccount, localPath: 
  * 저장소 복제
  */
 const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
-  const cmd = `cd ${Path.dirname(localPath)} && git clone https://github.com/${account.userName}/${options.name}.git`;
+  const cmd = `cd ${localPath} && git clone https://github.com/${account.userName}/${options.name}.git .`;
   console.log(cmd);
   execSync(cmd);
 };
