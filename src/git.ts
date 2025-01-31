@@ -207,6 +207,7 @@ const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
  */
 const removeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   deleteRemoteRepo(octokit, options, account);
+  sleep(10);
   const { name } = options;
   // 로컬 저장소 부모 디렉토리로 이동
   // execSync(`cd ${Path.dirname(localPath)}`);

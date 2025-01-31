@@ -108,6 +108,7 @@ const makeRepo = (octokit, options, account, localPath)=>{
 };
 const removeRepo = (octokit, options, account, localPath)=>{
     deleteRemoteRepo(octokit, options, account);
+    sleep(10);
     const { name } = options;
     if (PLATFORM === 'win') {
         const cmd = `cd ${Path.dirname(localPath)} && rmdir /s /q ${name}`;
