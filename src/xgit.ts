@@ -7,6 +7,7 @@ import {
   createRemoteRepo,
   initRepo,
   deleteRemoteRepo,
+  pushRepo,
   copyRepo,
   makeRepo,
   removeRepo,
@@ -95,6 +96,16 @@ switch (options.exec) {
         name: options.repoName ?? '',
       },
       account
+    );
+    break;
+  case 'pushRepo':
+    pushRepo(
+      {
+        name: options.repoName ?? '',
+        description: options.description ?? '',
+      },
+      account,
+      localPath
     );
     break;
   case 'copyRepo':
