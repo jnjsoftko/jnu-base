@@ -138,10 +138,7 @@ const tree = (options)=>{
         case 'win':
             const excludedWin = options.excluded ? options.excluded.split(',').join('|') : 'node_modules|dist|_backups|_drafts|types|docs';
             try {
-                const cmd = `powershell -Command "& {
-          $OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8;
-          tree /F /A | Select-String -NotMatch '${excludedWin}'
-        }"`;
+                const cmd = `powershell -NoProfile -ExecutionPolicy Bypass -Command "$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; tree /F /A | Select-String -NotMatch '${excludedWin}'"`;
                 console.log('Command: ', cmd);
                 const result = execSync(cmd, {
                     encoding: 'utf8',

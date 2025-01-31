@@ -243,11 +243,8 @@ const tree = (options: CliOptions): string => {
         : 'node_modules|dist|_backups|_drafts|types|docs';
 
       try {
-        // PowerShell을 사용하여 tree 명령어 실행
-        const cmd = `powershell -Command "& {
-          $OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8;
-          tree /F /A | Select-String -NotMatch '${excludedWin}'
-        }"`;
+        // PowerShell 실행 정책 우회 및 단순화된 명령어
+        const cmd = `powershell -NoProfile -ExecutionPolicy Bypass -Command "$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; tree /F /A | Select-String -NotMatch '${excludedWin}'"`;
         console.log('Command: ', cmd);
 
         const result = execSync(cmd, {
