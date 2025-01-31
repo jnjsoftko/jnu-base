@@ -106,6 +106,7 @@ const initLocalRepo = (options: RepoOptions, account: GithubAccount, localPath: 
   cmd += ` && git config user.name "${fullName}"`;
   cmd += ` && git config user.email "${email}"`;
   cmd += ` && git remote add origin https://${token}@github.com/${userName}/${name}.git`;
+  cmd += ` && git add . && git commit -m "Initial commit"`;
   console.log(cmd);
   execSync(cmd);
 };
@@ -159,8 +160,8 @@ const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: strin
 const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   // 빈 저장소 생성
   console.log(`=================== createRemoteRepoEmpty: ${localPath}`);
-  // createRemoteRepoEmpty(octokit, options);
-  createRemoteRepo(octokit, options);
+  createRemoteRepoEmpty(octokit, options);
+  // createRemoteRepo(octokit, options);
   sleep(5);
   // 로컬 저장소 초기화
   console.log(`=================== initLocalRepo: ${localPath}`);
