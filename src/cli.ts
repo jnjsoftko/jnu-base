@@ -101,46 +101,47 @@ const initTsSwcNpm = (options: CliOptions) => {
   const parentDir = getParentDir();
   const currentDir = getCurrentDir();
 
-  switch (PLATFORM) {
-    case 'win':
-      console.log('win');
-      break;
-    default:
-      let cmd = `cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`;
-      execSync(cmd, execOptions);
-      substituteInFile(`${options.repoName}/package.json`, {
-        '{{name}}': options.repoName ?? '',
-        '{{author}}': `${account.fullName} <${account.email}>`,
-        '{{description}}': options.description ?? '',
-      });
+  let cmd = '';
 
-      substituteInFile(`${options.repoName}/README.md`, {
-        '{{name}}': options.repoName ?? '',
-        '{{project-name}}': options.repoName ?? '',
-        '{{author}}': `${account.fullName} <${account.email}>`,
-        '{{github-id}}': options.userName ?? '',
-        '{{description}}': options.description || '',
-        '{{parent-dir}}': parentDir,
-        '{{current-dir}}': currentDir,
-      });
-
-      substituteInFile(`${options.repoName}/docs/workflow.md`, {
-        '{{name}}': options.repoName ?? '',
-        '{{project-name}}': options.repoName ?? '',
-        '{{github-id}}': options.userName ?? '',
-        '{{description}}': options.description || '',
-        '{{parent-dir}}': parentDir,
-        '{{current-dir}}': currentDir,
-      });
-
-      cmd = `cd ${currentDir}/${options.repoName} && npm install`;
-      console.log(cmd);
-      execSync(cmd, execOptions);
-      cmd = `cd ${currentDir}/${options.repoName} && xgit -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`;
-      console.log(cmd);
-      execSync(cmd, execOptions);
-      break;
+  if (PLATFORM === 'win') {
+    cmd = `xcopy "${TEMPLATES_ROOT}\\ts-swc-npm" "${options.repoName}\\" /E /I /H /Y`;
+    execSync(cmd, execOptions);
+  } else {
+    cmd = `cp -r ${TEMPLATES_ROOT}/ts-swc-npm ${options.repoName}`;
+    execSync(cmd, execOptions);
   }
+
+  substituteInFile(`${options.repoName}/package.json`, {
+    '{{name}}': options.repoName ?? '',
+    '{{author}}': `${account.fullName} <${account.email}>`,
+    '{{description}}': options.description ?? '',
+  });
+
+  substituteInFile(`${options.repoName}/README.md`, {
+    '{{name}}': options.repoName ?? '',
+    '{{project-name}}': options.repoName ?? '',
+    '{{author}}': `${account.fullName} <${account.email}>`,
+    '{{github-id}}': options.userName ?? '',
+    '{{description}}': options.description || '',
+    '{{parent-dir}}': parentDir,
+    '{{current-dir}}': currentDir,
+  });
+
+  substituteInFile(`${options.repoName}/docs/workflow.md`, {
+    '{{name}}': options.repoName ?? '',
+    '{{project-name}}': options.repoName ?? '',
+    '{{github-id}}': options.userName ?? '',
+    '{{description}}': options.description || '',
+    '{{parent-dir}}': parentDir,
+    '{{current-dir}}': currentDir,
+  });
+
+  cmd = `cd ${currentDir}/${options.repoName} && npm install`;
+  console.log(cmd);
+  execSync(cmd, execOptions);
+  cmd = `cd ${currentDir}/${options.repoName} && xgit -e makeRepo -u ${options.userName} -n ${options.repoName} -d "${options.description}"`;
+  console.log(cmd);
+  execSync(cmd, execOptions);
 };
 
 /**
@@ -148,7 +149,11 @@ const initTsSwcNpm = (options: CliOptions) => {
  */
 const removeApp = (options: CliOptions) => {
   execSync(`xgit -e deleteRemoteRepo -u ${options.userName} -n ${options.repoName}`, execOptions);
-  execSync(`rm -rf ${options.repoName}`, execOptions);
+  if (PLATFORM === 'win') {
+    execSync(`rmdir /s /q ${options.repoName}`, execOptions);
+  } else {
+    execSync(`rm -rf ${options.repoName}`, execOptions);
+  }
 };
 
 /**
