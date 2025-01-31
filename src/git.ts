@@ -14,6 +14,7 @@ import { Octokit } from '@octokit/rest';
 // ? Internal Modules
 import { loadJson } from './builtin.js';
 import { sleep } from './basic.js';
+import { PLATFORM } from './cli.js';
 
 // & Types AREA
 // &---------------------------------------------------------------------------
@@ -113,7 +114,7 @@ const initLocalRepo = (options: RepoOptions, account: GithubAccount, localPath: 
  * 저장소 복제
  */
 const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
-  const cmd = `cd ${localPath} && git clone https://github.com/${account.userName}/${options.name}.git .`;
+  const cmd = `cd ${Path.dirname(localPath)} && git clone https://github.com/${account.userName}/${options.name}.git`;
   console.log(cmd);
   execSync(cmd);
 };
@@ -129,9 +130,9 @@ const copyRepo = (options: RepoOptions, account: GithubAccount, localPath: strin
 /**
  * 저장소 초기화 (생성, 복제, 설정)
  */
-const initRepo = async (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
-  await createRemoteRepo(octokit, options);
-  await sleep(5000);
+const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
+  createRemoteRepo(octokit, options);
+  sleep(5000);
   cloneRepo(options, account, localPath);
   setLocalConfig(options, account, localPath);
 };
@@ -140,9 +141,9 @@ const initRepo = async (octokit: Octokit, options: RepoOptions, account: GithubA
  * 저장소에 변경사항 푸시
  */
 const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
-  // 로컬 저장소 디렉토리로 이동
   execSync(`cd ${localPath}`);
   const branches = execSync('git branch');
+  console.log(`#### pushRepo branches: ${branches}`);
   if (branches.includes('main')) {
     execSync('git push -u origin main');
   } else if (branches.includes('master')) {
@@ -155,16 +156,19 @@ const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: strin
 /**
  * 새 저장소 생성 및 초기 커밋
  */
-const makeRepo = async (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
+const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   // 빈 저장소 생성
-  await createRemoteRepoEmpty(octokit, options);
-  await sleep(2);
+  console.log(`=================== createRemoteRepoEmpty: ${localPath}`);
+  createRemoteRepoEmpty(octokit, options);
+  sleep(5);
   // 로컬 저장소 초기화
+  console.log(`=================== initLocalRepo: ${localPath}`);
   initLocalRepo(options, account, localPath);
-  await sleep(1);
+  sleep(3);
   // 로컬 저장소 디렉토리로 이동
-  execSync(`cd ${localPath}`);
+  // execSync(`cd ${localPath}`);
   // 초기 커밋 및 푸시
+  console.log(`=================== pushRepo: ${localPath}`);
   pushRepo(options, account, localPath);
 };
 
@@ -177,9 +181,16 @@ const removeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccou
   const { name } = options;
   // 로컬 저장소 부모 디렉토리로 이동
   execSync(`cd ${Path.dirname(localPath)}`);
-  const cmd = `rm -rf ${name}`;
-  console.log(cmd);
-  execSync(cmd);
+
+  if (PLATFORM === 'win') {
+    const cmd = `rmdir /s /q ${name}`;
+    console.log(cmd);
+    execSync(cmd);
+  } else {
+    const cmd = `rm -rf ${name}`;
+    console.log(cmd);
+    execSync(cmd);
+  }
 };
 
 // & Export AREA

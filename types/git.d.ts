@@ -1216,7 +1216,7 @@ declare const copyRepo: (options: RepoOptions, account: GithubAccount, localPath
 /**
  * 저장소 초기화 (생성, 복제, 설정)
  */
-declare const initRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => Promise<void>;
+declare const initRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => void;
 /**
  * 저장소에 변경사항 푸시
  */
@@ -1224,7 +1224,7 @@ declare const pushRepo: (options: RepoOptions, account: GithubAccount, localPath
 /**
  * 새 저장소 생성 및 초기 커밋
  */
-declare const makeRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => Promise<void>;
+declare const makeRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => void;
 /**
  * 로컬 + 원격 저장소 삭제
  * @param options - 저장소 옵션
