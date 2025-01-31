@@ -91,7 +91,7 @@ const makeRepo = (octokit, options, account, localPath)=>{
     let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
     console.log(`initRepo cmd: ${cmd}`);
     execSync(cmd);
-    sleep(5);
+    sleep(15);
     console.log(`=================== initLocalRepo: ${localPath}`);
     initLocalRepo(options, account, localPath);
     sleep(3);

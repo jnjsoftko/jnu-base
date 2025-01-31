@@ -178,7 +178,7 @@ const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
   let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
   console.log(`initRepo cmd: ${cmd}`);
   execSync(cmd);
-  sleep(5);
+  sleep(15);
   // 로컬 저장소 초기화
   console.log(`=================== initLocalRepo: ${localPath}`);
   initLocalRepo(options, account, localPath);
