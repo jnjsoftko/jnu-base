@@ -1231,7 +1231,6 @@ declare const pushRepo: (options: RepoOptions, account: GithubAccount, localPath
 declare const makeRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => void;
 /**
  * 로컬 + 원격 저장소 삭제
- * @param options - 저장소 옵션
  */
 declare const removeRepo: (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => void;
 export { findGithubAccount, findAllRepos, createRemoteRepo, createRemoteRepoEmpty, deleteRemoteRepo, cloneRepo, setLocalConfig, initLocalRepo, initRepo, copyRepo, pushRepo, makeRepo, removeRepo, };

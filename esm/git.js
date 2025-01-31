@@ -32,6 +32,7 @@ const createRemoteRepoEmpty = (octokit, options)=>{
 };
 const deleteRemoteRepo = (octokit, options, account)=>{
     const { name } = options;
+    console.log(`### deleteRemoteRepo: ${name}`);
     return octokit.rest.repos.delete({
         owner: account.userName,
         repo: name
@@ -111,9 +112,23 @@ const removeRepo = (octokit, options, account, localPath)=>{
     sleep(10);
     const { name } = options;
     if (PLATFORM === 'win') {
-        const cmd = `cd ${Path.dirname(localPath)} && rmdir /s /q ${name}`;
-        console.log(cmd);
-        execSync(cmd);
+        try {
+            const cdCmd = `cd ${Path.dirname(localPath)}`;
+            console.log(cdCmd);
+            execSync(cdCmd);
+            const rmCmd = `rmdir /s /q ${name}`;
+            console.log(rmCmd);
+            execSync(rmCmd);
+        } catch (error) {
+            console.error('Failed to remove directory:', error);
+            try {
+                const altCmd = `rd /s /q "${localPath}"`;
+                console.log('Trying alternative command:', altCmd);
+                execSync(altCmd);
+            } catch (err) {
+                console.error('Alternative removal also failed:', err);
+            }
+        }
     } else {
         const cmd = `cd ${Path.dirname(localPath)} && rm -rf ${name}`;
         console.log(cmd);

@@ -80,6 +80,7 @@ const createRemoteRepoEmpty = (octokit: Octokit, options: RepoOptions) => {
  */
 const deleteRemoteRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount) => {
   const { name } = options;
+  console.log(`### deleteRemoteRepo: ${name}`);
   return octokit.rest.repos.delete({
     owner: account.userName,
     repo: name,
@@ -203,20 +204,35 @@ const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
 
 /**
  * 로컬 + 원격 저장소 삭제
- * @param options - 저장소 옵션
  */
 const removeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   deleteRemoteRepo(octokit, options, account);
   sleep(10);
   const { name } = options;
-  // 로컬 저장소 부모 디렉토리로 이동
-  // execSync(`cd ${Path.dirname(localPath)}`);
 
   if (PLATFORM === 'win') {
-    const cmd = `cd ${Path.dirname(localPath)} && rmdir /s /q ${name}`;
-    console.log(cmd);
-    execSync(cmd);
+    // Windows에서는 각 명령어를 개별적으로 실행
+    try {
+      const cdCmd = `cd ${Path.dirname(localPath)}`;
+      console.log(cdCmd);
+      execSync(cdCmd);
+
+      const rmCmd = `rmdir /s /q ${name}`;
+      console.log(rmCmd);
+      execSync(rmCmd);
+    } catch (error) {
+      console.error('Failed to remove directory:', error);
+      // 실패 시 대체 방법 시도
+      try {
+        const altCmd = `rd /s /q "${localPath}"`;
+        console.log('Trying alternative command:', altCmd);
+        execSync(altCmd);
+      } catch (err) {
+        console.error('Alternative removal also failed:', err);
+      }
+    }
   } else {
+    // Unix 계열은 한 번에 실행
     const cmd = `cd ${Path.dirname(localPath)} && rm -rf ${name}`;
     console.log(cmd);
     execSync(cmd);
