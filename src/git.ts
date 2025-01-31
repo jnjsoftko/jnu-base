@@ -130,11 +130,12 @@ const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: stri
  */
 const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   console.log('====GIT.TS initRepo');
-  createRemoteRepo(octokit, options);
-  sleep(10);
+  setTimeout(function () {
+    createRemoteRepo(octokit, options);
+    setLocalConfig(options, account, localPath);
+  }, 5000);
+  sleep(5);
   cloneRepo(options, account, localPath);
-  sleep(10);
-  setLocalConfig(options, account, localPath);
 };
 
 /**
