@@ -243,8 +243,11 @@ const tree = (options: CliOptions): string => {
         : 'node_modules|dist|_backups|_drafts|types|docs';
 
       try {
-        // Windows tree 명령어 실행 (UTF-8 출력)
-        const cmd = `chcp 65001>nul && tree /F /A | findstr /v "${excludedWin}"`;
+        // PowerShell을 사용하여 tree 명령어 실행
+        const cmd = `powershell -Command "& {
+          $OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8;
+          tree /F /A | Select-String -NotMatch '${excludedWin}'
+        }"`;
         console.log('Command: ', cmd);
 
         const result = execSync(cmd, {
