@@ -100,8 +100,32 @@ const initApp = (options)=>{
 const zip = (options)=>{
     switch(PLATFORM){
         case 'win':
-            const excludedWin = options.excluded ? options.excluded.split(',').map((item)=>`"${item}"`).join(',') : '"*/node_modules/*",".git/*"';
-            execSync(`powershell -Command \"Compress-Archive -Path ${options.repoName} -DestinationPath ${options.repoName}.zip -Exclude ${excludedWin}\"`, execOptions);
+            try {
+                const tempDir = `${options.repoName}_temp`;
+                execSync(`xcopy "${options.repoName}" "${tempDir}\\" /E /I /H /Y`, execOptions);
+                const excludedItems = options.excluded ? options.excluded.split(',') : [
+                    'node_modules',
+                    'package-lock.json',
+                    'package.json'
+                ];
+                for (const item of excludedItems){
+                    const itemPath = `${tempDir}/${item}`;
+                    try {
+                        if (item.includes('/')) {
+                            execSync(`rmdir /s /q "${itemPath}"`, execOptions);
+                        } else {
+                            execSync(`del /q "${itemPath}"`, execOptions);
+                        }
+                    } catch (err) {
+                        console.log(`Warning: Could not remove ${item}`);
+                    }
+                }
+                execSync(`powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${options.repoName}.zip -Force"`, execOptions);
+                execSync(`rmdir /s /q "${tempDir}"`, execOptions);
+            } catch (error) {
+                console.error('Error during zip operation:', error);
+                throw error;
+            }
             break;
         default:
             const excluded = options.excluded ? options.excluded.split(',').map((item)=>`"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
@@ -112,7 +136,25 @@ const zip = (options)=>{
 const tree = (options)=>{
     switch(PLATFORM){
         case 'win':
-            return '';
+            const excludedWin = options.excluded ? options.excluded.split(',').join('|') : 'node_modules|dist|_backups|_drafts|types|docs';
+            try {
+                const cmd = `tree /F /A | findstr /v "${excludedWin}"`;
+                console.log('Command: ', cmd);
+                const result = execSync(cmd, {
+                    encoding: 'utf8',
+                    stdio: 'pipe'
+                });
+                if (result) {
+                    saveFile('tree.txt', result, {
+                        overwrite: true,
+                        newFile: false
+                    });
+                }
+                return result || '';
+            } catch (error) {
+                console.error('Error executing tree command:', error);
+                return '';
+            }
         default:
             const excluded = options.excluded ? `"${options.excluded.split(',').join('|')}"` : '"node_modules|dist|_backups|_drafts|types|docs"';
             const cmd = `tree -I ${excluded} --dirsfirst -L 3`;

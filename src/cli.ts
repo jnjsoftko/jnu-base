@@ -175,22 +175,47 @@ const initApp = (options: CliOptions) => {
 
 /**
  * 로컬 프로젝트 압축
- *
  */
 const zip = (options: CliOptions) => {
   switch (PLATFORM) {
     case 'win':
-      const excludedWin = options.excluded
-        ? options.excluded
-            .split(',')
-            .map((item) => `"${item}"`)
-            .join(',')
-        : '"*/node_modules/*",".git/*"';
-      execSync(
-        `powershell -Command \"Compress-Archive -Path ${options.repoName} -DestinationPath ${options.repoName}.zip -Exclude ${excludedWin}\"`,
-        execOptions
-      );
+      try {
+        // 1. 임시 디렉토리 생성
+        const tempDir = `${options.repoName}_temp`;
+        execSync(`xcopy "${options.repoName}" "${tempDir}\\" /E /I /H /Y`, execOptions);
+
+        // 2. 제외할 파일/폴더 삭제
+        const excludedItems = options.excluded
+          ? options.excluded.split(',')
+          : ['node_modules', 'package-lock.json', 'package.json'];
+
+        for (const item of excludedItems) {
+          const itemPath = `${tempDir}/${item}`;
+          try {
+            if (item.includes('/')) {
+              execSync(`rmdir /s /q "${itemPath}"`, execOptions);
+            } else {
+              execSync(`del /q "${itemPath}"`, execOptions);
+            }
+          } catch (err) {
+            console.log(`Warning: Could not remove ${item}`);
+          }
+        }
+
+        // 3. 압축
+        execSync(
+          `powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${options.repoName}.zip -Force"`,
+          execOptions
+        );
+
+        // 4. 임시 디렉토리 삭제
+        execSync(`rmdir /s /q "${tempDir}"`, execOptions);
+      } catch (error) {
+        console.error('Error during zip operation:', error);
+        throw error;
+      }
       break;
+
     default:
       const excluded = options.excluded
         ? options.excluded
@@ -209,11 +234,33 @@ const zip = (options: CliOptions) => {
 const tree = (options: CliOptions): string => {
   switch (PLATFORM) {
     case 'win':
-      return '';
+      const excludedWin = options.excluded
+        ? options.excluded.split(',').join('|')
+        : 'node_modules|dist|_backups|_drafts|types|docs';
+
+      try {
+        // Windows tree 명령어 실행
+        const cmd = `tree /F /A | findstr /v "${excludedWin}"`;
+        console.log('Command: ', cmd);
+
+        const result = execSync(cmd, {
+          encoding: 'utf8',
+          stdio: 'pipe',
+        });
+
+        if (result) {
+          saveFile('tree.txt', result, { overwrite: true, newFile: false });
+        }
+
+        return result || '';
+      } catch (error) {
+        console.error('Error executing tree command:', error);
+        return '';
+      }
+
     default:
-      // console.log('options.excluded: ', options.excluded);
       const excluded = options.excluded
-        ? `"${options.excluded.split(',').join('|')}"` // 따옴표 처리 수정
+        ? `"${options.excluded.split(',').join('|')}"`
         : '"node_modules|dist|_backups|_drafts|types|docs"';
 
       const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
@@ -228,10 +275,10 @@ const tree = (options: CliOptions): string => {
           saveFile('tree.txt', result, { overwrite: true, newFile: false });
         }
 
-        return result || ''; // 항상 문자열 반환
+        return result || '';
       } catch (error) {
         console.error('Error executing tree command:', error);
-        return ''; // 에러 시에도 빈 문자열 반환
+        return '';
       }
   }
 };

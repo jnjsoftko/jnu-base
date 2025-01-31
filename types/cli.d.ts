@@ -47,7 +47,6 @@ declare const removeApp: (options: CliOptions) => void;
 declare const initApp: (options: CliOptions) => void;
 /**
  * 로컬 프로젝트 압축
- *
  */
 declare const zip: (options: CliOptions) => void;
 /**
