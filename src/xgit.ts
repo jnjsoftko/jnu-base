@@ -7,6 +7,7 @@ import {
   createRemoteRepo,
   createRemoteRepoEmpty,
   setLocalConfig,
+  cloneRepo,
   initLocalRepo,
   deleteRemoteRepo,
   initRepo,
@@ -98,6 +99,16 @@ switch (options.exec) {
     break;
   case 'setLocalConfig':
     setLocalConfig(
+      {
+        name: options.repoName ?? '',
+        description: options.description ?? '',
+      },
+      account,
+      localPath
+    );
+    break;
+  case 'cloneRepo':
+    cloneRepo(
       {
         name: options.repoName ?? '',
         description: options.description ?? '',

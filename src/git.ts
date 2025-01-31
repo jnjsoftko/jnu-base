@@ -51,6 +51,7 @@ const findAllRepos = (octokit: Octokit) => {
  * 새 저장소 생성
  */
 const createRemoteRepo = (octokit: Octokit, options: RepoOptions) => {
+  console.log('#### createRemoteRepo options: ', options);
   const defaults = {
     auto_init: true,
     private: false,
@@ -66,6 +67,7 @@ const createRemoteRepo = (octokit: Octokit, options: RepoOptions) => {
  * 빈 저장소 생성
  */
 const createRemoteRepoEmpty = (octokit: Octokit, options: RepoOptions) => {
+  console.log('#### createRemoteRepoEmpty options: ', options);
   return createRemoteRepo(octokit, {
     ...options,
     auto_init: false,
