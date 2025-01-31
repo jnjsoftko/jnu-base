@@ -88,8 +88,9 @@ const pushRepo = (options, account, localPath)=>{
     }
 };
 const makeRepo = (octokit, options, account, localPath)=>{
-    console.log(`=================== createRemoteRepoEmpty: ${localPath}`);
-    createRemoteRepoEmpty(octokit, options);
+    let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
+    console.log(`initRepo cmd: ${cmd}`);
+    execSync(cmd);
     sleep(5);
     console.log(`=================== initLocalRepo: ${localPath}`);
     initLocalRepo(options, account, localPath);

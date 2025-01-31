@@ -131,7 +131,7 @@ const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: stri
 const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   console.log('====GIT.TS initRepo');
 
-  // createRemoteRepo(octokit, options);   // !! 원격 저장소 생성 안됨
+  // createRemoteRepo(octokit, options); // !! 원격 저장소 생성 안됨
   let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
   console.log(`initRepo cmd: ${cmd}`);
   execSync(cmd);
@@ -171,10 +171,13 @@ const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: strin
  * 새 저장소 생성 및 초기 커밋
  */
 const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
-  // 빈 저장소 생성
-  console.log(`=================== createRemoteRepoEmpty: ${localPath}`);
-  createRemoteRepoEmpty(octokit, options);
+  // // 빈 저장소 생성
+  // console.log(`=================== createRemoteRepoEmpty: ${localPath}`);
+  // createRemoteRepoEmpty(octokit, options);
   // createRemoteRepo(octokit, options);
+  let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
+  console.log(`initRepo cmd: ${cmd}`);
+  execSync(cmd);
   sleep(5);
   // 로컬 저장소 초기화
   console.log(`=================== initLocalRepo: ${localPath}`);
