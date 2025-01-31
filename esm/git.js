@@ -63,6 +63,7 @@ const cloneRepo = (options, account, localPath)=>{
 const initRepo = (octokit, options, account, localPath)=>{
     console.log('====GIT.TS initRepo');
     let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
+    console.log(`initRepo cmd: ${cmd}`);
     execSync(cmd);
     sleep(5);
     setLocalConfig(options, account, localPath);
