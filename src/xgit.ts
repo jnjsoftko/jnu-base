@@ -128,7 +128,8 @@ switch (options.exec) {
     );
     break;
   case 'initRepo':
-    initLocalRepo(
+    initRepo(
+      octokit,
       {
         name: options.repoName ?? '',
         description: options.description ?? '',
