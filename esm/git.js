@@ -63,11 +63,14 @@ const cloneRepo = (options, account, localPath)=>{
 const initRepo = (octokit, options, account, localPath)=>{
     console.log('====GIT.TS initRepo');
     createRemoteRepo(octokit, options);
+    sleep(10);
     cloneRepo(options, account, localPath);
+    sleep(10);
     setLocalConfig(options, account, localPath);
 };
 const copyRepo = (options, account, localPath)=>{
     cloneRepo(options, account, localPath);
+    sleep(10);
     setLocalConfig(options, account, localPath);
 };
 const pushRepo = (options, account, localPath)=>{

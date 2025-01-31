@@ -131,7 +131,9 @@ const cloneRepo = (options: RepoOptions, account: GithubAccount, localPath: stri
 const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   console.log('====GIT.TS initRepo');
   createRemoteRepo(octokit, options);
+  sleep(10);
   cloneRepo(options, account, localPath);
+  sleep(10);
   setLocalConfig(options, account, localPath);
 };
 
@@ -140,6 +142,7 @@ const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
  */
 const copyRepo = (options: RepoOptions, account: GithubAccount, localPath: string) => {
   cloneRepo(options, account, localPath);
+  sleep(10);
   setLocalConfig(options, account, localPath);
 };
 
