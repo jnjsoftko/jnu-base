@@ -52,12 +52,22 @@ const options = yargs
     type: 'string',
   }).argv as unknown as CommandOptions;
 
+// * temp Function
+function getLocalPath(repoName: string) {
+  let localPath = getCurrentDir();
+  const lastSlug = localPath.split('/').pop();
+  if (lastSlug !== repoName) {
+    localPath += `/${repoName}`;
+  }
+  return localPath;
+}
+
 // * github account setup
 const account = findGithubAccount(options.userName ?? '');
 account.userName = options.userName ?? '';
 console.log(`#### git account: ${JSON.stringify(account)}`);
 const octokit = new Octokit({ auth: account.token });
-const localPath = `${getCurrentDir()}/${options.repoName ?? ''}`;
+const localPath = getLocalPath(options.repoName ?? '') ?? '';
 
 // * exec
 switch (options.exec) {
