@@ -54,7 +54,8 @@ const options = yargs
 
 // * github account setup
 const account = findGithubAccount(options.userName ?? '');
-console.log(`@@@@@@@@@@@@@@@@@account: ${JSON.stringify(account)}`);
+account.userName = options.userName ?? '';
+console.log(`@@@@@@@@@@@@@@@@@account: ${account}`);
 const octokit = new Octokit({ auth: account.token });
 const localPath = `${getCurrentDir()}/${options.repoName ?? ''}`;
 
