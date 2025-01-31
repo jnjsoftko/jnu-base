@@ -4,6 +4,10 @@ import { saveFile, substituteInFile } from './builtin.js';
 import { findGithubAccount } from './git.js';
 const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? 'C:/JnJ-soft/Developments/Templates';
 const PLATFORM = process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : process.platform === 'linux' ? 'linux' : process.platform;
+const execOptions = {
+    encoding: 'utf8',
+    shell: process.platform === 'win32' ? 'cmd.exe /d /s /c chcp 65001>nul &&' : '/bin/sh'
+};
 const exec = (cmd)=>{
     const result = execSync(cmd, {
         encoding: 'utf8'
@@ -14,10 +18,6 @@ const exe = (cmds)=>{
     const results = [];
     cmds.forEach((cmd)=>results.push(exec(cmd)));
     return results;
-};
-const execOptions = {
-    encoding: 'utf8',
-    shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh'
 };
 const getCurrentDir = ()=>{
     switch(PLATFORM){
@@ -138,7 +138,7 @@ const tree = (options)=>{
         case 'win':
             const excludedWin = options.excluded ? options.excluded.split(',').join('|') : 'node_modules|dist|_backups|_drafts|types|docs';
             try {
-                const cmd = `tree /F /A | findstr /v "${excludedWin}"`;
+                const cmd = `chcp 65001>nul && tree /F /A | findstr /v "${excludedWin}"`;
                 console.log('Command: ', cmd);
                 const result = execSync(cmd, {
                     encoding: 'utf8',

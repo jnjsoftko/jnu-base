@@ -26,6 +26,15 @@ const PLATFORM =
     ? 'linux'
     : process.platform;
 
+// Windows 실행 옵션에 코드페이지 변경 명령 추가
+const execOptions: ExecSyncOptionsWithStringEncoding = {
+  encoding: 'utf8',
+  shell:
+    process.platform === 'win32'
+      ? 'cmd.exe /d /s /c chcp 65001>nul &&' // UTF-8 코드페이지 설정
+      : '/bin/sh',
+};
+
 // & Functions AREA
 // &---------------------------------------------------------------------------
 
@@ -62,11 +71,6 @@ const exe = (cmds: string[]): ExecResults => {
   const results: string[] = [];
   cmds.forEach((cmd) => results.push(exec(cmd)));
   return results;
-};
-
-const execOptions: ExecSyncOptionsWithStringEncoding = {
-  encoding: 'utf8',
-  shell: process.platform === 'win32' ? 'cmd.exe' : '/bin/sh',
 };
 
 /**
@@ -239,8 +243,8 @@ const tree = (options: CliOptions): string => {
         : 'node_modules|dist|_backups|_drafts|types|docs';
 
       try {
-        // Windows tree 명령어 실행
-        const cmd = `tree /F /A | findstr /v "${excludedWin}"`;
+        // Windows tree 명령어 실행 (UTF-8 출력)
+        const cmd = `chcp 65001>nul && tree /F /A | findstr /v "${excludedWin}"`;
         console.log('Command: ', cmd);
 
         const result = execSync(cmd, {

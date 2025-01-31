@@ -3,6 +3,7 @@ import { ExecSyncOptionsWithStringEncoding } from 'child_process';
 import type { ExecResult, ExecResults, CliOptions } from './types.js';
 declare const TEMPLATES_ROOT: string;
 declare const PLATFORM: string;
+declare const execOptions: ExecSyncOptionsWithStringEncoding;
 /**
  * 단일 명령어 실행
  * @param cmd 실행할 명령어
@@ -28,7 +29,6 @@ declare const exec: (cmd: string) => ExecResult;
  * ```
  */
 declare const exe: (cmds: string[]) => ExecResults;
-declare const execOptions: ExecSyncOptionsWithStringEncoding;
 /**
  * 현재 디렉토리 경로 반환
  */
