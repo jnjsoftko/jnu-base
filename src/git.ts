@@ -159,7 +159,8 @@ const pushRepo = (options: RepoOptions, account: GithubAccount, localPath: strin
 const makeRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount, localPath: string) => {
   // 빈 저장소 생성
   console.log(`=================== createRemoteRepoEmpty: ${localPath}`);
-  createRemoteRepoEmpty(octokit, options);
+  // createRemoteRepoEmpty(octokit, options);
+  createRemoteRepo(octokit, options);
   sleep(5);
   // 로컬 저장소 초기화
   console.log(`=================== initLocalRepo: ${localPath}`);
