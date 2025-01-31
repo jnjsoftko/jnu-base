@@ -109,13 +109,12 @@ const makeRepo = (octokit, options, account, localPath)=>{
 const removeRepo = (octokit, options, account, localPath)=>{
     deleteRemoteRepo(octokit, options, account);
     const { name } = options;
-    execSync(`cd ${Path.dirname(localPath)}`);
     if (PLATFORM === 'win') {
-        const cmd = `rmdir /s /q ${name}`;
+        const cmd = `cd ${Path.dirname(localPath)} && rmdir /s /q ${name}`;
         console.log(cmd);
         execSync(cmd);
     } else {
-        const cmd = `rm -rf ${name}`;
+        const cmd = `cd ${Path.dirname(localPath)} && rm -rf ${name}`;
         console.log(cmd);
         execSync(cmd);
     }
