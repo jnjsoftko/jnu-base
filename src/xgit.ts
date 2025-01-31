@@ -128,6 +128,7 @@ switch (options.exec) {
     );
     break;
   case 'initRepo':
+    console.log('====initRepo');
     initRepo(
       octokit,
       {
