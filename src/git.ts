@@ -132,7 +132,8 @@ const initRepo = (octokit: Octokit, options: RepoOptions, account: GithubAccount
   console.log('====GIT.TS initRepo');
 
   // createRemoteRepo(octokit, options);   // !! 원격 저장소 생성 안됨
-  execSync(`xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`);
+  let cmd = `xgit -e createRemoteRepo -u ${account.userName} -n ${options.name}`;
+  execSync(cmd);
   sleep(5);
   setLocalConfig(options, account, localPath);
   sleep(5);
