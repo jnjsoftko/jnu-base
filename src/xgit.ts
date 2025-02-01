@@ -159,7 +159,7 @@ switch (options.exec) {
       localPath
     );
     break;
-  case 'makeRepo':
+  case 'makeRepo': // 리모트 저장소 생성, 로컬 저장소 push, ex) xgit -e makeRepo -n "video-stream-app" -u "jnjsoftko" -d "video stream app"
     makeRepo(
       octokit,
       {
@@ -170,7 +170,7 @@ switch (options.exec) {
       localPath
     );
     break;
-  case 'removeRepo':
+  case 'removeRepo': // 리모트 저장소 삭제, ex) xgit -e removeRepo -n "video-stream-app" -u "jnjsoftko"
     removeRepo(octokit, { name: options.repoName ?? '' }, account, localPath);
     break;
 }

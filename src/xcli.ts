@@ -89,16 +89,16 @@ const options: CliOptions = {
 // * exec
 switch (options.exec) {
   case "init":  // 프로젝트 초기화
-    initApp(options);
+    initApp(options); // ex) xcli -e init -t "node-simple" -n "video-stream-app" -u "jnjsoftko" -d "video stream app"
     break;
   case "remove": // 프로젝트 삭제
-    removeApp(options);
+    removeApp(options); // ex) xcli -e remove -n "video-stream-app" -u "jnjsoftko"
     break;
   case "zip": // 폴더 압축
-    zip(options);
+    zip(options);  // ex) xcli -e zip -n "video-stream-app" -x "node_modules/,package-lock.json,.next/"
     break;
   case "tree": // 폴더 트리
-    tree(options);
+    tree(options); // ex) xcli -e tree -n "video-stream-app"
     break;
   case "del": // 폴더 삭제
     del(options);  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -x "node_modules/,package-lock.json,.next/"
