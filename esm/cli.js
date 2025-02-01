@@ -136,18 +136,29 @@ const zip = (options)=>{
             break;
     }
 };
-const unzip = (folderPath)=>{
+const unzip = (folderPath, excluded = '__MACOSX/,node_modules/,.DS_Store,.git/')=>{
     const currentDir = getCurrentDir();
     const extractPaths = [];
     for (const zipPath of findFiles(folderPath, '*.zip')){
         try {
             const extractPath = `${currentDir}/_unzip/${Path.parse(zipPath).name}`;
+            console.log(`## extractPath: ${extractPath}`);
             makeDir(extractPath);
             let command;
             if (process.platform === 'win32') {
                 command = `powershell -command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractPath}' -Force"`;
+                const excludedItems = excluded.split(',').map((item)=>item.trim());
+                for (const item of excludedItems){
+                    const itemPath = Path.join(extractPath, item.replace('/', ''));
+                    if (item.endsWith('/')) {
+                        execSync(`if exist "${itemPath}" rmdir /s /q "${itemPath}"`, execOptions);
+                    } else {
+                        execSync(`if exist "${itemPath}" del /q "${itemPath}"`, execOptions);
+                    }
+                }
             } else {
-                command = `unzip -o "${zipPath}" -d "${extractPath}" -x "__MACOSX/*"`;
+                const excludeList = excluded.split(',').map((item)=>`"${item.trim()}"`).join(' ');
+                command = `unzip -o "${zipPath}" -d "${extractPath}" -x ${excludeList}`;
             }
             execSync(command);
             console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
@@ -156,6 +167,7 @@ const unzip = (folderPath)=>{
             console.error(`'${zipPath}' 압축 해제 중 오류 발생:`, err.message);
         }
     }
+    deleteFilesInFolder(currentDir, '__MACOSX/', true);
     return extractPaths.join(',');
 };
 const tree = (options)=>{

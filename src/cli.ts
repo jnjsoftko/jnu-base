@@ -266,13 +266,14 @@ const zip = (options: CliOptions) => {
  * unzip('./');
  * ```
  */
-const unzip = (folderPath: string): string => {
+const unzip = (folderPath: string, excluded: string = '__MACOSX/,node_modules/,.DS_Store,.git/'): string => {
   // 각 zip 파일에 대해 처리
   const currentDir = getCurrentDir();
   const extractPaths: string[] = [];
   for (const zipPath of findFiles(folderPath, '*.zip')) {
     try {
       const extractPath = `${currentDir}/_unzip/${Path.parse(zipPath).name}`;
+      console.log(`## extractPath: ${extractPath}`);
       makeDir(extractPath);
 
       // 운영체제에 따른 명령어 설정
@@ -280,9 +281,23 @@ const unzip = (folderPath: string): string => {
       if (process.platform === 'win32') {
         // Windows
         command = `powershell -command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractPath}' -Force"`;
+        // 압축 해제 후 제외할 파일/폴더 삭제
+        const excludedItems = excluded.split(',').map(item => item.trim());
+        for (const item of excludedItems) {
+          const itemPath = Path.join(extractPath, item.replace('/', ''));
+          if (item.endsWith('/')) {
+            execSync(`if exist "${itemPath}" rmdir /s /q "${itemPath}"`, execOptions);
+          } else {
+            execSync(`if exist "${itemPath}" del /q "${itemPath}"`, execOptions);
+          }
+        }
       } else {
-        // macOS, Linux - __MACOSX 폴더 제외
-        command = `unzip -o "${zipPath}" -d "${extractPath}" -x "__MACOSX/*"`;
+        // macOS, Linux - 불필요한 파일/폴더 제외
+        const excludeList = excluded
+          .split(',')
+          .map(item => `"${item.trim()}"`)
+          .join(' ');
+        command = `unzip -o "${zipPath}" -d "${extractPath}" -x ${excludeList}`;
       }
 
       // 압축 해제 실행
@@ -293,7 +308,7 @@ const unzip = (folderPath: string): string => {
       console.error(`'${zipPath}' 압축 해제 중 오류 발생:`, err.message);
     }
   }
-  // deleteFilesInFolder(currentDir, '__MACOSX/', true);
+  deleteFilesInFolder(currentDir, '__MACOSX/', true);
   return extractPaths.join(',');
 };
 
