@@ -9,6 +9,8 @@ import {
   saveJson,
   loadFile,
   saveFile,
+  deleteFilesInFolder,
+  renameFilesInFolder,
   substituteInFile,
 } from './builtin.js';
 import { findGithubAccount } from './git.js';
@@ -177,15 +179,23 @@ const initApp = (options: CliOptions) => {
   }
 };
 
+// /**
+//  * 폴더, 파일 삭제
+//  */
+// const del = (options: CliOptions) => {
+//   if (PLATFORM === 'win') {
+//     execSync(`rmdir /s /q ${options.repoName}`, execOptions);
+//   } else {
+//     execSync(`rm -rf ${options.repoName}`, execOptions);
+//   }
+// };
+
+
 /**
  * 폴더, 파일 삭제
  */
 const del = (options: CliOptions) => {
-  if (PLATFORM === 'win') {
-    execSync(`rmdir /s /q ${options.repoName}`, execOptions);
-  } else {
-    execSync(`rm -rf ${options.repoName}`, execOptions);
-  }
+  deleteFilesInFolder(options.repoName ?? '', options.excluded ?? '', true);
 };
 
 /**
@@ -301,7 +311,7 @@ const tree = (options: CliOptions): string => {
 
 // & Export AREA
 // &---------------------------------------------------------------------------
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del };
 
 // & Test AREA
 // &---------------------------------------------------------------------------

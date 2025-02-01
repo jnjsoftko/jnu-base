@@ -46,6 +46,10 @@ declare const removeApp: (options: CliOptions) => void;
  */
 declare const initApp: (options: CliOptions) => void;
 /**
+ * 폴더, 파일 삭제
+ */
+declare const del: (options: CliOptions) => void;
+/**
  * 로컬 프로젝트 압축
  */
 declare const zip: (options: CliOptions) => void;
@@ -53,5 +57,5 @@ declare const zip: (options: CliOptions) => void;
  * 프로젝트 구조 분석
  */
 declare const tree: (options: CliOptions) => string;
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del };
 //# sourceMappingURL=cli.d.ts.map

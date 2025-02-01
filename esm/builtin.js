@@ -134,6 +134,53 @@ const renameFilesInFolder = (folder, filterCb, mapCb)=>{
     mapCb = (name)=>`${folder}/${name}`;
     return fs.readdirSync(folder).filter((name)=>filterCb(name)).map((name)=>mapCb(name));
 };
+const deleteFilesInFolder = (folderPath, pattern = 'node_modules/,.git/.DS_Store', recursive = true)=>{
+    try {
+        if (!fs.existsSync(folderPath)) {
+            return;
+        }
+        const patterns = pattern.split(',').map((p)=>{
+            if (p.endsWith('/')) return p;
+            if (p.includes('*')) {
+                return new RegExp('^' + p.replace(/\*/g, '.*') + '$');
+            }
+            return p;
+        });
+        const files = fs.readdirSync(folderPath);
+        for (const file of files){
+            try {
+                const filePath = Path.join(folderPath, file);
+                const stat = fs.statSync(filePath);
+                if (stat.isDirectory() && recursive) {
+                    const isMatchDir = patterns.some((p)=>typeof p === 'string' && p.endsWith('/') && file + '/' === p);
+                    if (isMatchDir) {
+                        fs.rmSync(filePath, {
+                            recursive: true,
+                            force: true
+                        });
+                    } else {
+                        deleteFilesInFolder(filePath, pattern, recursive);
+                    }
+                } else if (stat.isFile()) {
+                    const isMatchFile = patterns.some((p)=>{
+                        if (p instanceof RegExp) {
+                            return p.test(file);
+                        }
+                        return file === p;
+                    });
+                    if (isMatchFile) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            } catch (err) {
+                console.error(`Error processing ${file}: ${err.message}`);
+                continue;
+            }
+        }
+    } catch (err) {
+        console.error(`Error processing folder ${folderPath}: ${err.message}`);
+    }
+};
 const substituteInFile = (filePath, replacements)=>{
     let content = loadFile(filePath);
     for (const [key, value] of Object.entries(replacements)){
@@ -144,6 +191,6 @@ const substituteInFile = (filePath, replacements)=>{
         newFile: false
     });
 };
-export { slashedFolder, composeHangul, setPath, sanitizeName, loadFile, loadJson, saveFile, saveJson, makeDir, copyDir, findFiles, findFolders, existsFolder, existsFile, exists, moveFile, moveFiles, substituteInFile };
+export { slashedFolder, composeHangul, setPath, sanitizeName, loadFile, loadJson, saveFile, saveJson, makeDir, copyDir, findFiles, findFolders, existsFolder, existsFile, exists, moveFile, moveFiles, renameFilesInFolder, deleteFilesInFolder, substituteInFile };
 
 //# sourceMappingURL=builtin.js.map

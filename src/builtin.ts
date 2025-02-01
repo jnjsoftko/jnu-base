@@ -300,6 +300,64 @@ const renameFilesInFolder = (
     .map((name) => mapCb(name));
 };
 
+/*
+ * 해당 폴더의 하위 디렉토리(recursive)에 있는 폴더, 파일 삭제
+ */
+const deleteFilesInFolder = (folderPath: string, pattern: string = 'node_modules/,.git/.DS_Store', recursive = true) => {
+  try {
+    // 폴더가 존재하지 않으면 종료
+    if (!fs.existsSync(folderPath)) {
+      return;
+    }
+
+    // 패턴을 배열로 변환하고 정규식으로 변환
+    const patterns = pattern.split(',').map((p) => {
+      // 디렉토리는 그대로 문자열 비교
+      if (p.endsWith('/')) return p;
+      // 와일드카드가 있는 경우 정규식으로 변환
+      if (p.includes('*')) {
+        return new RegExp('^' + p.replace(/\*/g, '.*') + '$');
+      }
+      // 일반 파일은 그대로 문자열 비교
+      return p;
+    });
+
+    const files = fs.readdirSync(folderPath);
+    for (const file of files) {
+      try {
+        const filePath = Path.join(folderPath, file);
+        const stat = fs.statSync(filePath);
+
+        if (stat.isDirectory() && recursive) {
+          // 디렉토리인 경우
+          const isMatchDir = patterns.some((p) => typeof p === 'string' && p.endsWith('/') && file + '/' === p);
+          if (isMatchDir) {
+            fs.rmSync(filePath, { recursive: true, force: true });
+          } else {
+            deleteFilesInFolder(filePath, pattern, recursive);
+          }
+        } else if (stat.isFile()) {
+          // 파일인 경우
+          const isMatchFile = patterns.some((p) => {
+            if (p instanceof RegExp) {
+              return p.test(file);
+            }
+            return file === p;
+          });
+          if (isMatchFile) {
+            fs.unlinkSync(filePath);
+          }
+        }
+      } catch (err: any) {
+        console.error(`Error processing ${file}: ${err.message}`);
+        continue;
+      }
+    }
+  } catch (err: any) {
+    console.error(`Error processing folder ${folderPath}: ${err.message}`);
+  }
+};
+
 /**
  * substitute in file
  * @param filePath
@@ -333,5 +391,7 @@ export {
   exists, // 존재여부
   moveFile,
   moveFiles,
+  renameFilesInFolder,
+  deleteFilesInFolder,
   substituteInFile
 };

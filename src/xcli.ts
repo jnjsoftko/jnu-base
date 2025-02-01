@@ -5,9 +5,9 @@ import yargs from "yargs";
 import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
 import Path from "path";
 import { sleep } from "./basic.js"
-import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, substituteInFile } from './builtin.js'
+import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, deleteFilesInFolder, substituteInFile } from './builtin.js'
 import { findGithubAccount } from "./git.js";
-import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip, tree } from "./cli.js";
+import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip, tree, del } from "./cli.js";
 import type { CliOptions } from './types.js';
 
 // & Types AREA
@@ -88,17 +88,20 @@ const options: CliOptions = {
 
 // * exec
 switch (options.exec) {
-  case "init":
+  case "init":  // 프로젝트 초기화
     initApp(options);
     break;
-  case "remove":
+  case "remove": // 프로젝트 삭제
     removeApp(options);
     break;
-  case "zip":
+  case "zip": // 폴더 압축
     zip(options);
     break;
-  case "tree":
+  case "tree": // 폴더 트리
     tree(options);
+    break;
+  case "del": // 폴더 삭제
+    del(options);  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -x "node_modules/,package-lock.json,.next/"
     break;
   default:
     console.log("Invalid command");

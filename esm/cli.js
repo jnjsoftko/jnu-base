@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import Path from 'path';
-import { saveFile, substituteInFile } from './builtin.js';
+import { saveFile, deleteFilesInFolder, substituteInFile } from './builtin.js';
 import { findGithubAccount } from './git.js';
 const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? 'C:/JnJ-soft/Developments/Templates';
 const PLATFORM = process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : process.platform === 'linux' ? 'linux' : process.platform;
@@ -97,6 +97,9 @@ const initApp = (options)=>{
             break;
     }
 };
+const del = (options)=>{
+    deleteFilesInFolder(options.repoName ?? '', options.excluded ?? '', true);
+};
 const zip = (options)=>{
     switch(PLATFORM){
         case 'win':
@@ -179,6 +182,6 @@ const tree = (options)=>{
             }
     }
 };
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del };
 
 //# sourceMappingURL=cli.js.map

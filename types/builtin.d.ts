@@ -74,6 +74,14 @@ declare const moveFile: (srcFolderName: string, dstFolderName: string, srcFileNa
  */
 declare const moveFiles: (srcFolderName: string, dstFolderName: string, srcFileNames: string[], dstFileNames: string[]) => void;
 /**
+ * rename Files In Folder
+ * @param folder
+ * @param  filterCb
+ * @param  mapCb
+ */
+declare const renameFilesInFolder: (folder: string, filterCb: Function, mapCb: Function) => any[];
+declare const deleteFilesInFolder: (folderPath: string, pattern?: string, recursive?: boolean) => void;
+/**
  * substitute in file
  * @param filePath
  * @param replacements {k1: v1, k2: v2, ...} ("search" -> "replace")
@@ -93,5 +101,5 @@ findFolders, // 하위 folder 목록
 existsFolder, // 폴더 존재여부
 existsFile, // 파일 존재여부
 exists, // 존재여부
-moveFile, moveFiles, substituteInFile };
+moveFile, moveFiles, renameFilesInFolder, deleteFilesInFolder, substituteInFile };
 //# sourceMappingURL=builtin.d.ts.map

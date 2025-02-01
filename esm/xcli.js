@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import yargs from "yargs";
-import { initApp, removeApp, zip, tree } from "./cli.js";
+import { initApp, removeApp, zip, tree, del } from "./cli.js";
 const argv = yargs.usage("Usage: -e <command> -u <userName> -t <template> -n <repoName> -d <description> -g").option("e", {
     alias: "exec",
     describe: "Execute Command",
@@ -56,6 +56,9 @@ switch(options.exec){
         break;
     case "tree":
         tree(options);
+        break;
+    case "del":
+        del(options);
         break;
     default:
         console.log("Invalid command");

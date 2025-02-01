@@ -43,6 +43,8 @@ existsFile, // 파일 존재 여부 확인
 exists, // 파일/폴더 존재 여부 확인
 moveFile, // 파일 이동
 moveFiles, // 여러 파일 이동
+renameFilesInFolder, // 폴더 내 파일 이름 변경
+deleteFilesInFolder, // 폴더 내 파일 삭제
 substituteInFile, } from './builtin.js';
 export { TEMPLATES_ROOT, PLATFORM, exec, // 단일 명령어 실행
 exe, // 여러 명령어 순차 실행
