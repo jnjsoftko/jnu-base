@@ -306,7 +306,7 @@ const unzip = (folderPath: string, excluded: string = '__MACOSX/,node_modules/,.
       execSync(command);
       console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
       const subFolders = findFolders(extractPath).filter(folder => !folder.includes('__MACOSX'));
-      console.log(`### subFolders: ${subFolders}`);
+      console.log(`### subFolders: ${subFolders}, subFolders.length: ${subFolders.length}, ${subFolders[0]}`);
       if (subFolders.length === 1 && subFolders[0].replace(extractPath, '') == Path.parse(zipPath).name) {
         console.log(`### 중복 폴더 처리 필요: ${subFolders}`);
         // 중복 폴더명 처리
