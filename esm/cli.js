@@ -162,10 +162,10 @@ const unzip = (folderPath, excluded = '__MACOSX/,node_modules/,.DS_Store,.git/')
             }
             execSync(command);
             console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
-            const subFolders = findFolders(extractPath);
+            const subFolders = findFolders(extractPath).filter((folder)=>!folder.includes('__MACOSX'));
             console.log(`### subFolders: ${subFolders}`);
-            if (subFolders.length === 1 && subFolders.includes(Path.parse(zipPath).name)) {
-                console.log(`### subFolders: ${subFolders}`);
+            if (subFolders.length === 1 && subFolders[0].replace(extractPath, '') == Path.parse(zipPath).name) {
+                console.log(`### 중복 폴더 처리 필요: ${subFolders}`);
             }
             extractPaths.push(extractPath);
         } catch (err) {
