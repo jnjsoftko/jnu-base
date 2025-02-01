@@ -178,6 +178,17 @@ const initApp = (options: CliOptions) => {
 };
 
 /**
+ * 폴더, 파일 삭제
+ */
+const del = (options: CliOptions) => {
+  if (PLATFORM === 'win') {
+    execSync(`rmdir /s /q ${options.repoName}`, execOptions);
+  } else {
+    execSync(`rm -rf ${options.repoName}`, execOptions);
+  }
+};
+
+/**
  * 로컬 프로젝트 압축
  */
 const zip = (options: CliOptions) => {
