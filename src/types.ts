@@ -35,6 +35,7 @@ export interface CliOptions {
   description?: string;
   github?: boolean;
   excluded?: string;
+  save?: string;
 }
 
 /**

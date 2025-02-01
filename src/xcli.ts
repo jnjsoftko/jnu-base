@@ -20,6 +20,7 @@ interface CommandOptions {
   description?: string;
   github?: boolean;
   excluded?: string;
+  save?: string;
 }
 
 // & CONSTS / VARIABLES
@@ -70,6 +71,12 @@ const argv = yargs
     describe: "Excluded file/folder types For zip",
     type: "string",
   })
+  .option("s", {
+    alias: "save",
+    default: "",
+    describe: "Save file for result(return)",
+    type: "string",
+  })
   .parseSync();
 
 const options: CliOptions = {
@@ -100,15 +107,19 @@ switch (options.exec) {
   case "tree": // 폴더 트리
     tree(options); // ex) xcli -e tree -n "video-stream-app"
     break;
+  case "find": // 폴더 내에 있는 파일 찾기, xcli -e find -n "." -d "*.js"
+    const files = findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
+    if (options.save) {
+      saveFile(options.save, JSON.stringify(files));
+    }
+    console.log(`${JSON.stringify(files)}`);
   case "del": // 폴더 삭제
     deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -d "node_modules/,package-lock.json,.next/"
     break;
   case "unzip": // 폴더 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
     unzip(options.repoName ?? '');  // ex) xcli -e unzip -n "video-stream-app"
     break;
-  case "find": // 폴더 내에 있는 파일 찾기
-    const files = findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
-    console.log(`files: ${JSON.stringify(files)}`);
+
     break;
   default:
     console.log("Invalid command");

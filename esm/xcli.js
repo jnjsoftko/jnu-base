@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import yargs from "yargs";
-import { findFiles, deleteFilesInFolder } from './builtin.js';
+import { saveFile, findFiles, deleteFilesInFolder } from './builtin.js';
 import { initApp, removeApp, zip, tree, unzip } from "./cli.js";
 const argv = yargs.usage("Usage: -e <command> -u <userName> -t <template> -n <repoName> -d <description> -g").option("e", {
     alias: "exec",
@@ -35,6 +35,11 @@ const argv = yargs.usage("Usage: -e <command> -u <userName> -t <template> -n <re
     default: "node_modules/,package-lock.json,package.json",
     describe: "Excluded file/folder types For zip",
     type: "string"
+}).option("s", {
+    alias: "save",
+    default: "",
+    describe: "Save file for result(return)",
+    type: "string"
 }).parseSync();
 const options = {
     exec: argv.e,
@@ -58,15 +63,18 @@ switch(options.exec){
     case "tree":
         tree(options);
         break;
+    case "find":
+        const files = findFiles(options.repoName ?? '', options.description ?? '');
+        if (options.save) {
+            saveFile(options.save, JSON.stringify(files));
+        }
+        console.log(`${JSON.stringify(files)}`);
     case "del":
         deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);
         break;
     case "unzip":
         unzip(options.repoName ?? '');
         break;
-    case "find":
-        const files = findFiles(options.repoName ?? '', options.description ?? '');
-        console.log(`files: ${JSON.stringify(files)}`);
         break;
     default:
         console.log("Invalid command");
