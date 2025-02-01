@@ -51,9 +51,9 @@ const options = {
     excluded: argv.x,
     save: argv.s
 };
+let result = '';
 switch(options.exec){
     case "init":
-        let result = '';
         initApp(options);
         if (options.save) {
             console.log(`###inited Folder,File: ${options.save}`);
@@ -68,7 +68,7 @@ switch(options.exec){
         zip(options);
         break;
     case "tree":
-        tree(options);
+        result = tree(options);
         break;
     case "find":
         const files = findFiles(options.repoName ?? '', options.description ?? '');

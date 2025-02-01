@@ -93,11 +93,12 @@ const options: CliOptions = {
 // & FUNCTIONS
 //&============================================================================
 
+// 결과값을 저장할 변수 선언
+let result: string = '';
 
 // * exec
 switch (options.exec) {
   case "init":  // 프로젝트 초기화
-    let result: string = '';
     initApp(options); // ex) xcli -e init -t "node-simple" -n "video-stream-app" -u "jnjsoftko" -d "video stream app"
     if (options.save) {
       console.log(`###inited Folder,File: ${options.save}`);
@@ -112,7 +113,7 @@ switch (options.exec) {
     zip(options);  // ex) xcli -e zip -n "video-stream-app" -x "node_modules/,package-lock.json,.next/"
     break;
   case "tree": // 폴더 트리
-    tree(options); // ex) xcli -e tree -n "video-stream-app"
+    result = tree(options); // ex) xcli -e tree -n "video-stream-app"
     break;
   case "find": // 폴더 내에 있는 파일 찾기, xcli -e find -n "." -d "*.js"
     const files = findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"

@@ -16,6 +16,7 @@ import {
 } from './builtin.js';
 import { findGithubAccount } from './git.js';
 import type { ExecResult, ExecResults, CliOptions } from './types.js';
+import fs from 'fs';
 
 // & Variables AREA
 // &---------------------------------------------------------------------------
@@ -303,6 +304,35 @@ const unzip = (folderPath: string, excluded: string = '__MACOSX/,node_modules/,.
       // 압축 해제 실행
       execSync(command);
       console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
+
+      // 중복 폴더명 처리(!!!! 별도 함수처리 and 로직 단순화)
+      const items = fs.readdirSync(extractPath);
+      if (items.length === 1) {
+        const subPath = Path.join(extractPath, items[0]);
+        if (fs.statSync(subPath).isDirectory()) {
+          const subItems = fs.readdirSync(subPath);
+          // 하위 폴더명이 상위 폴더명과 같은 경우
+          if (items[0] === Path.parse(zipPath).name) {
+            // 하위 폴더의 내용을 상위 폴더로 이동
+            for (const item of subItems) {
+              const srcPath = Path.join(subPath, item);
+              const destPath = Path.join(extractPath, item);
+              if (process.platform === 'win32') {
+                execSync(`move "${srcPath}" "${destPath}"`, execOptions);
+              } else {
+                execSync(`mv "${srcPath}" "${destPath}"`, execOptions);
+              }
+            }
+            // 빈 하위 폴더 삭제
+            if (process.platform === 'win32') {
+              execSync(`rmdir /s /q "${subPath}"`, execOptions);
+            } else {
+              execSync(`rm -rf "${subPath}"`, execOptions);
+            }
+          }
+        }
+      }
+
       extractPaths.push(extractPath);
     } catch (err: any) {
       console.error(`'${zipPath}' 압축 해제 중 오류 발생:`, err.message);
