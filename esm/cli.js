@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import Path from 'path';
 import { makeDir, saveFile, findFiles, findFolders, deleteFilesInFolder, substituteInFile } from './builtin.js';
 import { findGithubAccount } from './git.js';
+import fs from 'fs';
 const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? 'C:/JnJ-soft/Developments/Templates';
 const PLATFORM = process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : process.platform === 'linux' ? 'linux' : process.platform;
 const execOptions = {
@@ -164,8 +165,23 @@ const unzip = (folderPath, excluded = '__MACOSX/,node_modules/,.DS_Store,.git/')
             console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
             const subFolders = findFolders(extractPath).filter((folder)=>!folder.includes('__MACOSX'));
             console.log(`### subFolders: ${subFolders}, subFolders.length: ${subFolders.length}, ${subFolders[0]}`);
-            if (subFolders.length === 1 && subFolders[0].replace(extractPath, '') == Path.parse(zipPath).name) {
+            if (subFolders.length === 1 && subFolders[0].replace(extractPath, '').includes(Path.parse(zipPath).name)) {
                 console.log(`### 중복 폴더 처리 필요: ${subFolders}`);
+                const subItems = fs.readdirSync(subFolders[0]);
+                for (const item of subItems){
+                    const srcPath = Path.join(subFolders[0], item);
+                    const destPath = Path.join(extractPath, item);
+                    if (process.platform === 'win32') {
+                        execSync(`move "${srcPath}" "${destPath}"`, execOptions);
+                    } else {
+                        execSync(`mv "${srcPath}" "${destPath}"`, execOptions);
+                    }
+                }
+                if (process.platform === 'win32') {
+                    execSync(`rmdir /s /q "${subFolders[0]}"`, execOptions);
+                } else {
+                    execSync(`rm -rf "${subFolders[0]}"`, execOptions);
+                }
             }
             extractPaths.push(extractPath);
         } catch (err) {

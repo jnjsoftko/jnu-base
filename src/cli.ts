@@ -307,16 +307,27 @@ const unzip = (folderPath: string, excluded: string = '__MACOSX/,node_modules/,.
       console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
       const subFolders = findFolders(extractPath).filter(folder => !folder.includes('__MACOSX'));
       console.log(`### subFolders: ${subFolders}, subFolders.length: ${subFolders.length}, ${subFolders[0]}`);
-      if (subFolders.length === 1 && subFolders[0].replace(extractPath, '') == Path.parse(zipPath).name) {
+      if (subFolders.length === 1 && subFolders[0].replace(extractPath, '').includes(Path.parse(zipPath).name)) {
         console.log(`### 중복 폴더 처리 필요: ${subFolders}`);
-        // 중복 폴더명 처리
-        // const subPath = Path.join(extractPath, subFolders[0]);
-        // const subItems = fs.readdirSync(subPath);
-        // for (const item of subItems) {
-        //   const srcPath = Path.join(subPath, item);
-        //   const destPath = Path.join(extractPath, item);
-        //   execSync(`move "${srcPath}" "${destPath}"`, execOptions);
-        // }
+        
+        // 하위 폴더의 모든 파일과 폴더를 상위 폴더로 이동
+        const subItems = fs.readdirSync(subFolders[0]);
+        for (const item of subItems) {
+          const srcPath = Path.join(subFolders[0], item);
+          const destPath = Path.join(extractPath, item);
+          if (process.platform === 'win32') {
+            execSync(`move "${srcPath}" "${destPath}"`, execOptions);
+          } else {
+            execSync(`mv "${srcPath}" "${destPath}"`, execOptions);
+          }
+        }
+        
+        // 빈 하위 폴더 삭제
+        if (process.platform === 'win32') {
+          execSync(`rmdir /s /q "${subFolders[0]}"`, execOptions);
+        } else {
+          execSync(`rm -rf "${subFolders[0]}"`, execOptions);
+        }
       }
 
       extractPaths.push(extractPath);
