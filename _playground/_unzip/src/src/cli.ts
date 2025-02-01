@@ -9,9 +9,6 @@ import {
   saveJson,
   loadFile,
   saveFile,
-  findFiles,
-  deleteFilesInFolder,
-  renameFilesInFolder,
   substituteInFile,
 } from './builtin.js';
 import { findGithubAccount } from './git.js';
@@ -100,9 +97,6 @@ const getParentDir = (): string => {
   }
 };
 
-
-// * Main Functions
-// &---------------------------------------------------------------------------
 /**
  * TypeScript + SWC + NPM 프로젝트 초기화
  */
@@ -183,23 +177,15 @@ const initApp = (options: CliOptions) => {
   }
 };
 
-// /**
-//  * 폴더, 파일 삭제
-//  */
-// const del = (options: CliOptions) => {
-//   if (PLATFORM === 'win') {
-//     execSync(`rmdir /s /q ${options.repoName}`, execOptions);
-//   } else {
-//     execSync(`rm -rf ${options.repoName}`, execOptions);
-//   }
-// };
-
-
 /**
  * 폴더, 파일 삭제
  */
 const del = (options: CliOptions) => {
-  deleteFilesInFolder(options.repoName ?? '', options.excluded ?? '', true);
+  if (PLATFORM === 'win') {
+    execSync(`rmdir /s /q ${options.repoName}`, execOptions);
+  } else {
+    execSync(`rm -rf ${options.repoName}`, execOptions);
+  }
 };
 
 /**
@@ -255,46 +241,6 @@ const zip = (options: CliOptions) => {
       execSync(`zip -r ${options.repoName}.zip ${options.repoName} -x ${excluded}`, execOptions);
       break;
   }
-};
-
-/**
- * 디렉토리 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
- * @param folderPath 압축 파일이 있는 폴더 경로
- * @example
- * ```ts
- * // 현재 폴더의 모든 zip 파일을 압축 해제
- * unzip('./');
- * ```
- */
-const unzip = (folderPath: string): string => {
-  // 각 zip 파일에 대해 처리
-  const currentDir = getCurrentDir();
-  const extractPaths: string[] = [];
-  for (const zipPath of findFiles(folderPath, '*.zip')) {
-    try {
-      const extractPath = `${currentDir}/_unzip/${Path.parse(zipPath).name}`;
-      makeDir(extractPath);
-
-      // 운영체제에 따른 명령어 설정
-      let command: string;
-      if (process.platform === 'win32') {
-        // Windows
-        command = `powershell -command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractPath}' -Force"`;
-      } else {
-        // macOS, Linux - __MACOSX 폴더 제외
-        command = `unzip -o "${zipPath}" -d "${extractPath}" -x "__MACOSX/*"`;
-      }
-
-      // 압축 해제 실행
-      execSync(command);
-      console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
-      extractPaths.push(extractPath);
-    } catch (err: any) {
-      console.error(`'${zipPath}' 압축 해제 중 오류 발생:`, err.message);
-    }
-  }
-  // deleteFilesInFolder(currentDir, '__MACOSX/', true);
-  return extractPaths.join(',');
 };
 
 /**
@@ -355,7 +301,7 @@ const tree = (options: CliOptions): string => {
 
 // & Export AREA
 // &---------------------------------------------------------------------------
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del, unzip };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree };
 
 // & Test AREA
 // &---------------------------------------------------------------------------

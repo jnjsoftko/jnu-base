@@ -147,7 +147,7 @@ const unzip = (folderPath)=>{
             if (process.platform === 'win32') {
                 command = `powershell -command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractPath}' -Force"`;
             } else {
-                command = `unzip -o "${zipPath}" -d "${extractPath}"`;
+                command = `unzip -o "${zipPath}" -d "${extractPath}" -x "__MACOSX/*"`;
             }
             execSync(command);
             console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
