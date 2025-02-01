@@ -48,7 +48,8 @@ const options = {
     repoName: argv.n,
     description: argv.d,
     github: argv.g,
-    excluded: argv.x
+    excluded: argv.x,
+    save: argv.s
 };
 switch(options.exec){
     case "init":
@@ -71,6 +72,7 @@ switch(options.exec){
             saveFile(options.save, JSON.stringify(files));
         }
         console.log(`${JSON.stringify(files)}`);
+        break;
     case "del":
         deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);
         break;

@@ -86,7 +86,8 @@ const options: CliOptions = {
   repoName: argv.n as string,
   description: argv.d,
   github: argv.g as boolean,
-  excluded: argv.x as string
+  excluded: argv.x as string,
+  save: argv.s as string,
 };
 
 // & FUNCTIONS
@@ -115,6 +116,7 @@ switch (options.exec) {
       saveFile(options.save, JSON.stringify(files));
     }
     console.log(`${JSON.stringify(files)}`);
+    break;
   case "del": // 폴더 삭제
     deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -d "node_modules/,package-lock.json,.next/"
     break;
