@@ -1,8 +1,7 @@
 import { execSync } from 'child_process';
 import Path from 'path';
-import { makeDir, saveFile, findFiles, deleteFilesInFolder, substituteInFile } from './builtin.js';
+import { makeDir, saveFile, findFiles, findFolders, deleteFilesInFolder, substituteInFile } from './builtin.js';
 import { findGithubAccount } from './git.js';
-import fs from 'fs';
 const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? 'C:/JnJ-soft/Developments/Templates';
 const PLATFORM = process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : process.platform === 'linux' ? 'linux' : process.platform;
 const execOptions = {
@@ -163,28 +162,10 @@ const unzip = (folderPath, excluded = '__MACOSX/,node_modules/,.DS_Store,.git/')
             }
             execSync(command);
             console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
-            const items = fs.readdirSync(extractPath);
-            if (items.length === 1) {
-                const subPath = Path.join(extractPath, items[0]);
-                if (fs.statSync(subPath).isDirectory()) {
-                    const subItems = fs.readdirSync(subPath);
-                    if (items[0] === Path.parse(zipPath).name) {
-                        for (const item of subItems){
-                            const srcPath = Path.join(subPath, item);
-                            const destPath = Path.join(extractPath, item);
-                            if (process.platform === 'win32') {
-                                execSync(`move "${srcPath}" "${destPath}"`, execOptions);
-                            } else {
-                                execSync(`mv "${srcPath}" "${destPath}"`, execOptions);
-                            }
-                        }
-                        if (process.platform === 'win32') {
-                            execSync(`rmdir /s /q "${subPath}"`, execOptions);
-                        } else {
-                            execSync(`rm -rf "${subPath}"`, execOptions);
-                        }
-                    }
-                }
+            const subFolders = findFolders(extractPath);
+            console.log(`### subFolders: ${subFolders}`);
+            if (subFolders.length === 1 && subFolders.includes(Path.parse(zipPath).name)) {
+                console.log(`### subFolders: ${subFolders}`);
             }
             extractPaths.push(extractPath);
         } catch (err) {
