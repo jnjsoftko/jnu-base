@@ -66,7 +66,7 @@ switch(options.exec){
         break;
     case "find":
         const files = findFiles(options.repoName ?? '', options.description ?? '');
-        console.log(`@@@save: ${options.save}`);
+        console.log(`@save File: ${options.save}`);
         if (options.save) {
             console.log(`###save File: ${options.save}`);
             saveFile(options.save, JSON.stringify(files));

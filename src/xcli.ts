@@ -110,7 +110,7 @@ switch (options.exec) {
     break;
   case "find": // 폴더 내에 있는 파일 찾기, xcli -e find -n "." -d "*.js"
     const files = findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
-    console.log(`@@@save: ${options.save}`);
+    console.log(`@save File: ${options.save}`);
     if (options.save) {
       console.log(`###save File: ${options.save}`);
       saveFile(options.save, JSON.stringify(files));
