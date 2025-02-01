@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import Path from 'path';
-import { saveFile, deleteFilesInFolder, substituteInFile } from './builtin.js';
+import { makeDir, saveFile, findFiles, deleteFilesInFolder, substituteInFile } from './builtin.js';
 import { findGithubAccount } from './git.js';
 const TEMPLATES_ROOT = `${process.env.DEV_CONFIG_ROOT}/Templates` ?? 'C:/JnJ-soft/Developments/Templates';
 const PLATFORM = process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : process.platform === 'linux' ? 'linux' : process.platform;
@@ -136,7 +136,28 @@ const zip = (options)=>{
             break;
     }
 };
-const unzip = (folderPath)=>{};
+const unzip = (folderPath)=>{
+    const currentDir = getCurrentDir();
+    const extractPaths = [];
+    for (const zipPath of findFiles(folderPath, '*.zip')){
+        try {
+            const extractPath = `${currentDir}/_unzip/${Path.parse(zipPath).name}`;
+            makeDir(extractPath);
+            let command;
+            if (process.platform === 'win32') {
+                command = `powershell -command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractPath}' -Force"`;
+            } else {
+                command = `unzip -o "${zipPath}" -d "${extractPath}"`;
+            }
+            execSync(command);
+            console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
+            extractPaths.push(extractPath);
+        } catch (err) {
+            console.error(`'${zipPath}' 압축 해제 중 오류 발생:`, err.message);
+        }
+    }
+    return extractPaths.join(',');
+};
 const tree = (options)=>{
     switch(PLATFORM){
         case 'win':

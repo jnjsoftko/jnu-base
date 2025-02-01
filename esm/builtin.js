@@ -177,8 +177,10 @@ const deleteFilesInFolder = (folderPath, pattern = 'node_modules/,.git/.DS_Store
                 continue;
             }
         }
+        return pattern;
     } catch (err) {
         console.error(`Error processing folder ${folderPath}: ${err.message}`);
+        return "";
     }
 };
 const substituteInFile = (filePath, replacements)=>{

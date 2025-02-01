@@ -80,7 +80,7 @@ declare const moveFiles: (srcFolderName: string, dstFolderName: string, srcFileN
  * @param  mapCb
  */
 declare const renameFilesInFolder: (folder: string, filterCb: Function, mapCb: Function) => any[];
-declare const deleteFilesInFolder: (folderPath: string, pattern?: string, recursive?: boolean) => void;
+declare const deleteFilesInFolder: (folderPath: string, pattern?: string, recursive?: boolean) => string | undefined;
 /**
  * substitute in file
  * @param filePath

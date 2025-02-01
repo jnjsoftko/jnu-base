@@ -353,8 +353,10 @@ const deleteFilesInFolder = (folderPath: string, pattern: string = 'node_modules
         continue;
       }
     }
+    return pattern
   } catch (err: any) {
     console.error(`Error processing folder ${folderPath}: ${err.message}`);
+    return "";
   }
 };
 

@@ -53,7 +53,13 @@ const options = {
 };
 switch(options.exec){
     case "init":
+        let result = '';
         initApp(options);
+        if (options.save) {
+            console.log(`###inited Folder,File: ${options.save}`);
+            saveFile(options.save, result);
+        }
+        console.log(`inited Folder,File: ${result}`);
         break;
     case "remove":
         removeApp(options);
@@ -66,19 +72,27 @@ switch(options.exec){
         break;
     case "find":
         const files = findFiles(options.repoName ?? '', options.description ?? '');
-        console.log(`@save File: ${options.save}`);
         if (options.save) {
             console.log(`###save File: ${options.save}`);
-            saveFile(options.save, JSON.stringify(files));
+            saveFile(options.save, files.join('\n'));
         }
-        console.log(`${JSON.stringify(files)}`);
+        console.log(JSON.stringify(files));
         break;
     case "del":
-        deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);
+        result = deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true) ?? '';
+        if (options.save) {
+            console.log(`###deleted Folder,File: ${options.save}`);
+            saveFile(options.save, result);
+        }
+        console.log(`deleted Folder,File: ${result}`);
         break;
     case "unzip":
-        unzip(options.repoName ?? '');
-        break;
+        result = unzip(options.repoName ?? '');
+        if (options.save) {
+            console.log(`###unziped Folder,File: ${options.save}`);
+            saveFile(options.save, result);
+        }
+        console.log(`unziped Folder,File: ${result}`);
         break;
     default:
         console.log("Invalid command");

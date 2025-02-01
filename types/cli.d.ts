@@ -62,7 +62,7 @@ declare const zip: (options: CliOptions) => void;
  * unzip('./');
  * ```
  */
-declare const unzip: (folderPath: string) => void;
+declare const unzip: (folderPath: string) => string;
 /**
  * 프로젝트 구조 분석
  */

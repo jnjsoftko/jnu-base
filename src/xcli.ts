@@ -97,7 +97,13 @@ const options: CliOptions = {
 // * exec
 switch (options.exec) {
   case "init":  // 프로젝트 초기화
+    let result: string = '';
     initApp(options); // ex) xcli -e init -t "node-simple" -n "video-stream-app" -u "jnjsoftko" -d "video stream app"
+    if (options.save) {
+      console.log(`###inited Folder,File: ${options.save}`);
+      saveFile(options.save, result);
+    }
+    console.log(`inited Folder,File: ${result}`);
     break;
   case "remove": // 프로젝트 삭제
     removeApp(options); // ex) xcli -e remove -n "video-stream-app" -u "jnjsoftko"
@@ -110,20 +116,27 @@ switch (options.exec) {
     break;
   case "find": // 폴더 내에 있는 파일 찾기, xcli -e find -n "." -d "*.js"
     const files = findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
-    console.log(`@save File: ${options.save}`);
     if (options.save) {
       console.log(`###save File: ${options.save}`);
-      saveFile(options.save, JSON.stringify(files));
+      saveFile(options.save, files.join('\n'));
     }
-    console.log(`${JSON.stringify(files)}`);
+    console.log(JSON.stringify(files));
     break;
   case "del": // 폴더 삭제
-    deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -d "node_modules/,package-lock.json,.next/"
+    result = deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true) ?? '';  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -d "node_modules/,package-lock.json,.next/"
+    if (options.save) {
+      console.log(`###deleted Folder,File: ${options.save}`);
+      saveFile(options.save, result);
+    }
+    console.log(`deleted Folder,File: ${result}`);
     break;
   case "unzip": // 폴더 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
-    unzip(options.repoName ?? '');  // ex) xcli -e unzip -n "video-stream-app"
-    break;
-
+    result = unzip(options.repoName ?? '');  // ex) xcli -e unzip -n "video-stream-app"
+    if (options.save) {
+      console.log(`###unziped Folder,File: ${options.save}`);
+      saveFile(options.save, result);
+    }
+    console.log(`unziped Folder,File: ${result}`);
     break;
   default:
     console.log("Invalid command");

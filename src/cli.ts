@@ -9,6 +9,7 @@ import {
   saveJson,
   loadFile,
   saveFile,
+  findFiles,
   deleteFilesInFolder,
   renameFilesInFolder,
   substituteInFile,
@@ -99,6 +100,9 @@ const getParentDir = (): string => {
   }
 };
 
+
+// * Main Functions
+// &---------------------------------------------------------------------------
 /**
  * TypeScript + SWC + NPM 프로젝트 초기화
  */
@@ -262,7 +266,36 @@ const zip = (options: CliOptions) => {
  * unzip('./');
  * ```
  */
-const unzip = (folderPath: string) => {
+const unzip = (folderPath: string): string => {
+  // 각 zip 파일에 대해 처리
+  const currentDir = getCurrentDir();
+  const extractPaths: string[] = [];
+  for (const zipPath of findFiles(folderPath, '*.zip')) {
+    try {
+      const extractPath = `${currentDir}/_unzip/${Path.parse(zipPath).name}`;
+      makeDir(extractPath);
+
+      // 운영체제에 따른 명령어 설정
+      let command: string;
+      if (process.platform === 'win32') {
+        // Windows
+        command = `powershell -command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractPath}' -Force"`;
+      } else {
+        // macOS, Linux
+        command = `unzip -o "${zipPath}" -d "${extractPath}"`;
+      }
+
+      // 압축 해제 실행
+      execSync(command);
+      console.log(`압축 해제 완료: ${zipPath} -> ${extractPath}`);
+      extractPaths.push(extractPath);
+    } catch (err: any) {
+      console.error(`'${zipPath}' 압축 해제 중 오류 발생:`, err.message);
+    }
+  }
+  return extractPaths.join(',');
+};
+
   // try {
   //   // 폴더가 존재하지 않으면 종료
   //   if (!fs.existsSync(folderPath)) {
@@ -311,7 +344,7 @@ const unzip = (folderPath: string) => {
   // } catch (err: any) {
   //   console.error('압축 해제 중 오류 발생:', err.message);
   // }
-};
+
 
 /**
  * 프로젝트 구조 분석
