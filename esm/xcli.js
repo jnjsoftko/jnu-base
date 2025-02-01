@@ -65,7 +65,8 @@ switch(options.exec){
         unzip(options.repoName ?? '');
         break;
     case "find":
-        findFiles(options.repoName ?? '', options.description ?? '');
+        const files = findFiles(options.repoName ?? '', options.description ?? '');
+        console.log(files);
         break;
     default:
         console.log("Invalid command");

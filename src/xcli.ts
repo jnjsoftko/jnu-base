@@ -107,7 +107,8 @@ switch (options.exec) {
     unzip(options.repoName ?? '');  // ex) xcli -e unzip -n "video-stream-app"
     break;
   case "find": // 폴더 내에 있는 파일 찾기
-    findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
+    const files = findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
+    console.log(files);
     break;
   default:
     console.log("Invalid command");
