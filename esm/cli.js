@@ -136,6 +136,7 @@ const zip = (options)=>{
             break;
     }
 };
+const unzip = (folderPath)=>{};
 const tree = (options)=>{
     switch(PLATFORM){
         case 'win':
@@ -182,6 +183,6 @@ const tree = (options)=>{
             }
     }
 };
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del, unzip };
 
 //# sourceMappingURL=cli.js.map

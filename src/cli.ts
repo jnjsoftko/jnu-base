@@ -254,6 +254,66 @@ const zip = (options: CliOptions) => {
 };
 
 /**
+ * 디렉토리 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
+ * @param folderPath 압축 파일이 있는 폴더 경로
+ * @example
+ * ```ts
+ * // 현재 폴더의 모든 zip 파일을 압축 해제
+ * unzip('./');
+ * ```
+ */
+const unzip = (folderPath: string) => {
+  // try {
+  //   // 폴더가 존재하지 않으면 종료
+  //   if (!fs.existsSync(folderPath)) {
+  //     console.error(`폴더가 존재하지 않습니다: ${folderPath}`);
+  //     return;
+  //   }
+
+  //   // zip 파일 찾기
+  //   const files = fs.readdirSync(folderPath);
+  //   const zipFiles = files.filter(file => file.toLowerCase().endsWith('.zip'));
+
+  //   if (zipFiles.length === 0) {
+  //     console.log('압축 파일이 없습니다.');
+  //     return;
+  //   }
+
+  //   // 각 zip 파일에 대해 처리
+  //   for (const zipFile of zipFiles) {
+  //     try {
+  //       const zipPath = Path.join(folderPath, zipFile);
+  //       const extractPath = Path.join(folderPath, Path.parse(zipFile).name);
+
+  //       // 압축 해제할 폴더 생성
+  //       if (!fs.existsSync(extractPath)) {
+  //         fs.mkdirSync(extractPath, { recursive: true });
+  //       }
+
+  //       // 운영체제에 따른 명령어 설정
+  //       let command: string;
+  //       if (process.platform === 'win32') {
+  //         // Windows
+  //         command = `powershell -command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractPath}' -Force"`;
+  //       } else {
+  //         // macOS, Linux
+  //         command = `unzip -o "${zipPath}" -d "${extractPath}"`;
+  //       }
+
+  //       // 압축 해제 실행
+  //       execSync(command);
+  //       console.log(`압축 해제 완료: ${zipFile} -> ${Path.parse(zipFile).name}`);
+
+  //     } catch (err: any) {
+  //       console.error(`'${zipFile}' 압축 해제 중 오류 발생:`, err.message);
+  //     }
+  //   }
+  // } catch (err: any) {
+  //   console.error('압축 해제 중 오류 발생:', err.message);
+  // }
+};
+
+/**
  * 프로젝트 구조 분석
  */
 const tree = (options: CliOptions): string => {
@@ -311,7 +371,7 @@ const tree = (options: CliOptions): string => {
 
 // & Export AREA
 // &---------------------------------------------------------------------------
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del, unzip };
 
 // & Test AREA
 // &---------------------------------------------------------------------------

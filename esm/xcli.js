@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import yargs from "yargs";
-import { initApp, removeApp, zip, tree, del } from "./cli.js";
+import { findFiles, deleteFilesInFolder } from './builtin.js';
+import { initApp, removeApp, zip, tree, unzip } from "./cli.js";
 const argv = yargs.usage("Usage: -e <command> -u <userName> -t <template> -n <repoName> -d <description> -g").option("e", {
     alias: "exec",
     describe: "Execute Command",
@@ -58,7 +59,13 @@ switch(options.exec){
         tree(options);
         break;
     case "del":
-        del(options);
+        deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);
+        break;
+    case "unzip":
+        unzip(options.repoName ?? '');
+        break;
+    case "find":
+        findFiles(options.repoName ?? '', options.description ?? '');
         break;
     default:
         console.log("Invalid command");

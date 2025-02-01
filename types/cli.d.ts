@@ -54,8 +54,18 @@ declare const del: (options: CliOptions) => void;
  */
 declare const zip: (options: CliOptions) => void;
 /**
+ * 디렉토리 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
+ * @param folderPath 압축 파일이 있는 폴더 경로
+ * @example
+ * ```ts
+ * // 현재 폴더의 모든 zip 파일을 압축 해제
+ * unzip('./');
+ * ```
+ */
+declare const unzip: (folderPath: string) => void;
+/**
  * 프로젝트 구조 분석
  */
 declare const tree: (options: CliOptions) => string;
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del };
+export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del, unzip };
 //# sourceMappingURL=cli.d.ts.map

@@ -5,9 +5,9 @@ import yargs from "yargs";
 import { execSync, ExecSyncOptionsWithStringEncoding } from "child_process";
 import Path from "path";
 import { sleep } from "./basic.js"
-import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, deleteFilesInFolder, substituteInFile } from './builtin.js'
+import { makeDir, copyDir, loadJson, saveJson, loadFile, saveFile, findFiles, deleteFilesInFolder, substituteInFile } from './builtin.js'
 import { findGithubAccount } from "./git.js";
-import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip, tree, del } from "./cli.js";
+import { TEMPLATES_ROOT, PLATFORM, execOptions, initApp, removeApp, zip, tree, del, unzip } from "./cli.js";
 import type { CliOptions } from './types.js';
 
 // & Types AREA
@@ -101,7 +101,13 @@ switch (options.exec) {
     tree(options); // ex) xcli -e tree -n "video-stream-app"
     break;
   case "del": // 폴더 삭제
-    del(options);  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -x "node_modules/,package-lock.json,.next/"
+    deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true);  // ex) xcli -e del -n "/Users/moon/JnJ-soft/Projects/internal/video-stream-app" -d "node_modules/,package-lock.json,.next/"
+    break;
+  case "unzip": // 폴더 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
+    unzip(options.repoName ?? '');  // ex) xcli -e unzip -n "video-stream-app"
+    break;
+  case "find": // 폴더 내에 있는 파일 찾기
+    findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
     break;
   default:
     console.log("Invalid command");
