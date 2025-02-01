@@ -108,7 +108,7 @@ switch (options.exec) {
     break;
   case "find": // 폴더 내에 있는 파일 찾기
     const files = findFiles(options.repoName ?? '', options.description ?? '');  // ex) xcli -e find -n "video-stream-app" -p "*.js"
-    console.log(files);
+    console.log(`files: ${JSON.stringify(files)}`);
     break;
   default:
     console.log("Invalid command");

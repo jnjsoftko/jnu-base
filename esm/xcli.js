@@ -66,7 +66,7 @@ switch(options.exec){
         break;
     case "find":
         const files = findFiles(options.repoName ?? '', options.description ?? '');
-        console.log(files);
+        console.log(`files: ${JSON.stringify(files)}`);
         break;
     default:
         console.log("Invalid command");
