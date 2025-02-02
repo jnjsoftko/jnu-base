@@ -135,6 +135,10 @@ const zip = (folderPath, excluded)=>{
             execSync(`zip -r ${folderPath}.zip ${folderPath} -x ${_excluded}`, execOptions);
             break;
     }
+    return {
+        folderPath,
+        excluded
+    };
 };
 const unzip = (folderPath, excluded = '__MACOSX/,node_modules/,.DS_Store,.git/')=>{
     const currentDir = getCurrentDir();

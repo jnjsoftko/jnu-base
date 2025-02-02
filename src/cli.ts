@@ -243,6 +243,8 @@ const zip = (folderPath, excluded) => {
       execSync(`zip -r ${folderPath}.zip ${folderPath} -x ${_excluded}`, execOptions);
       break;
   }
+
+  return {folderPath, excluded};
 };
 
 /**

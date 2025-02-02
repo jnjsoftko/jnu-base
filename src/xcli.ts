@@ -63,10 +63,12 @@ const optionalParameters = (optionalParameter: string) => {
   return JSON.parse(optionalParameter);
 }
 
-const saveResult = (result: string, _saveOption: string, defaultOption: string=`options.json||json||1`) => {
+const saveResult = (result: any, _saveOption: string, defaultOption: string=`options.json||json||1`) => {
   // * saveOption: ("path,type")
   const defaultOption2 = defaultOption.split('||').slice(1, 3).join('||');
   const saveOption = !_saveOption ? defaultOption : _saveOption.split('||').length > 1 ? _saveOption : `${_saveOption}||${defaultOption2}`;
+
+  console.log(`@@@saveOption: ${saveOption}`);
 
   const [path, type, view] = saveOption.split('||');
   switch (type) {
@@ -128,7 +130,8 @@ switch (options.exec) {
     saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
     break;
   case "unzip": // 폴더 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
-    result = unzip(options.requiredParameter ?? '');  // ex) xcli -e unzip -n "video-stream-app"
+    const [unzipFolder, unzipExcluded] = requiredParameters(options.requiredParameter ?? ",");
+    result = unzip(unzipFolder, unzipExcluded);  // ex) xcli -e unzip -n "video-stream-app"
     saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
     break;
   default:

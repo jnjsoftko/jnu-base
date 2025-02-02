@@ -42,6 +42,7 @@ const optionalParameters = (optionalParameter)=>{
 const saveResult = (result, _saveOption, defaultOption = `options.json||json||1`)=>{
     const defaultOption2 = defaultOption.split('||').slice(1, 3).join('||');
     const saveOption = !_saveOption ? defaultOption : _saveOption.split('||').length > 1 ? _saveOption : `${_saveOption}||${defaultOption2}`;
+    console.log(`@@@saveOption: ${saveOption}`);
     const [path, type, view] = saveOption.split('||');
     switch(type){
         case 'file':
@@ -96,7 +97,8 @@ switch(options.exec){
         saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
         break;
     case "unzip":
-        result = unzip(options.requiredParameter ?? '');
+        const [unzipFolder, unzipExcluded] = requiredParameters(options.requiredParameter ?? ",");
+        result = unzip(unzipFolder, unzipExcluded);
         saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
         break;
     default:
