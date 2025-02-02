@@ -9,6 +9,20 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
   },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
   "[javascript]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
@@ -32,5 +46,12 @@
   "prettier.semi": true,
   "prettier.singleQuote": true,
   "prettier.bracketSpacing": true,
-  "prettier.htmlWhitespaceSensitivity": "css"  
+  "prettier.htmlWhitespaceSensitivity": "css",
+  "json.format.enable": true,
+  "json.format.keepLines": true,
+  "files.associations": {
+    "*.json": "json"
+  },
+  "prettier.requireConfig": true,
+  "prettier.configPath": ".prettierrc"
 }

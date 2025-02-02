@@ -29,9 +29,13 @@ export type ExecResults = string[];
 
 export interface CliOptions {
   exec: string;
-  requiredParameter?: string;
-  optionalParameter?: string;
-  saveOption?: string;
+  userName?: string;
+  template?: string;
+  repoName?: string;
+  description?: string;
+  github?: boolean;
+  excluded?: string;
+  save?: string;
 }
 
 /**

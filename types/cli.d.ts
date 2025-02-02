@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { ExecSyncOptionsWithStringEncoding } from 'child_process';
-import type { ExecResult, ExecResults, CliOptions } from './types.js';
+import type { ExecResult, ExecResults } from './types.js';
 declare const TEMPLATES_ROOT: string;
 declare const PLATFORM: string;
 declare const execOptions: ExecSyncOptionsWithStringEncoding;
@@ -40,19 +40,15 @@ declare const getParentDir: () => string;
 /**
  * 앱 제거 (로컬 + 원격 저장소)
  */
-declare const removeApp: (options: CliOptions) => void;
+declare const removeApp: (options: any) => void;
 /**
  * 템플릿 기반 앱 초기화
  */
-declare const initApp: (options: CliOptions) => void;
-/**
- * 폴더, 파일 삭제
- */
-declare const del: (options: CliOptions) => void;
+declare const initApp: (options: any) => any;
 /**
  * 로컬 프로젝트 압축
  */
-declare const zip: (options: CliOptions) => void;
+declare const zip: (folderPath: any, excluded: any) => void;
 /**
  * 디렉토리 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)
  * @param folderPath 압축 파일이 있는 폴더 경로
@@ -66,6 +62,6 @@ declare const unzip: (folderPath: string, excluded?: string) => string;
 /**
  * 프로젝트 구조 분석
  */
-declare const tree: (options: CliOptions) => string;
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del, unzip };
+declare const tree: (excluded: string) => string;
+export { TEMPLATES_ROOT, PLATFORM, execOptions, exec, exe, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, unzip };
 //# sourceMappingURL=cli.d.ts.map

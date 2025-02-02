@@ -1,98 +1,103 @@
 #!/usr/bin/env node
 import yargs from "yargs";
-import { saveFile, findFiles, deleteFilesInFolder } from './builtin.js';
+import { saveJson, saveFile, findFiles, deleteFilesInFolder } from './builtin.js';
 import { initApp, removeApp, zip, tree, unzip } from "./cli.js";
-const argv = yargs.usage("Usage: -e <command> -u <userName> -t <template> -n <repoName> -d <description> -g").option("e", {
+const argv = yargs.usage("Usage: -e <command> -r <required> -o <optional>").option("e", {
     alias: "exec",
     describe: "Execute Command",
     type: "string",
     demandOption: true
-}).option("u", {
-    alias: "userName",
-    default: "mooninlearn",
-    describe: "Name of User",
+}).option("r", {
+    alias: "requiredParameter",
+    default: "",
+    describe: "Required Parameter",
     type: "string"
-}).option("t", {
-    alias: "template",
-    default: "node",
-    describe: "developemnt template(language)",
-    type: "string"
-}).option("n", {
-    alias: "repoName",
-    describe: "Repository Name(Project Name)",
-    type: "string"
-}).option("d", {
-    alias: "description",
-    describe: "ProjectDescription",
-    type: "string"
-}).option("g", {
-    alias: "github",
-    default: true,
-    describe: "Use Github Repository (--no-github: false)",
-    type: "boolean"
-}).option("x", {
-    alias: "excluded",
-    default: "node_modules/,package-lock.json,package.json",
-    describe: "Excluded file/folder types For zip",
+}).option("o", {
+    alias: "optionalParameter",
+    default: "{}",
+    describe: "Optional Parameter",
     type: "string"
 }).option("s", {
-    alias: "save",
+    alias: "saveOption",
     default: "",
     describe: "Save file for result(return)",
     type: "string"
 }).parseSync();
 const options = {
     exec: argv.e,
-    userName: argv.u,
-    template: argv.t,
-    repoName: argv.n,
-    description: argv.d,
-    github: argv.g,
-    excluded: argv.x,
-    save: argv.s
+    requiredParameter: argv.r,
+    optionalParameter: argv.o,
+    saveOption: argv.s
 };
-let result = '';
+const requiredParameters = (requiredParameter)=>{
+    const [param1 = '', param2 = ''] = requiredParameter.split(',');
+    return [
+        param1,
+        param2
+    ];
+};
+const optionalParameters = (optionalParameter)=>{
+    return JSON.parse(optionalParameter);
+};
+const saveResult = (result, _saveOption, defaultOption = `options.json||json||1`)=>{
+    const defaultOption2 = defaultOption.split('||').slice(1, 3).join('||');
+    const saveOption = !_saveOption ? defaultOption : _saveOption.split('||').length > 1 ? _saveOption : `${_saveOption}||${defaultOption2}`;
+    const [path, type, view] = saveOption.split('||');
+    switch(type){
+        case 'file':
+            saveFile(path, result);
+            if (view) {
+                console.log(`${result}`);
+            }
+            break;
+        case 'json':
+            saveJson(path, result);
+            if (view) {
+                console.log(`${JSON.stringify(result)}`);
+            }
+            break;
+        case 'sqlite':
+            console.log(`saveSqlite: ${path}, ${result}`);
+            if (view) {
+                console.log(`${JSON.stringify(result)}`);
+            }
+            break;
+        default:
+            console.log(`save type is not supported: ${type}`);
+    }
+};
+let result;
+let saveOption;
 switch(options.exec){
     case "init":
-        initApp(options);
-        if (options.save) {
-            console.log(`###inited Folder,File: ${options.save}`);
-            saveFile(options.save, result);
-        }
-        console.log(`inited Folder,File: ${result}`);
+        result = initApp(options);
+        saveResult(result, options.saveOption ?? '', `options.json||json||1`);
         break;
     case "remove":
         removeApp(options);
         break;
     case "zip":
-        zip(options);
+        const [zipFolder, zipExcluded] = requiredParameters(options.requiredParameter ?? ",");
+        result = zip(zipFolder, zipExcluded);
+        saveResult(result, options.saveOption ?? '', `options.json||json||1`);
         break;
     case "tree":
-        result = tree(options);
+        const treeResult = tree(options.requiredParameter ?? '');
+        saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
         break;
     case "find":
-        const files = findFiles(options.repoName ?? '', options.description ?? '');
-        if (options.save) {
-            console.log(`###save File: ${options.save}`);
-            saveFile(options.save, files.join('\n'));
-        }
-        console.log(JSON.stringify(files));
+        const [findFolder, findPattern] = requiredParameters(options.requiredParameter ?? ",");
+        const files = findFiles(findFolder, findPattern);
+        saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
         break;
     case "del":
-        result = deleteFilesInFolder(options.repoName ?? '', options.description ?? options.excluded ?? '', true) ?? '';
-        if (options.save) {
-            console.log(`###deleted Folder,File: ${options.save}`);
-            saveFile(options.save, result);
-        }
-        console.log(`deleted Folder,File: ${result}`);
+        const [delFolder, delExcluded] = requiredParameters(options.requiredParameter ?? ",");
+        result = deleteFilesInFolder(delFolder, delExcluded, true) ?? '';
+        saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
         break;
     case "unzip":
-        result = unzip(options.repoName ?? '');
-        if (options.save) {
-            console.log(`###unziped Folder,File: ${options.save}`);
-            saveFile(options.save, result);
-        }
-        console.log(`unziped Folder,File: ${result}`);
+        result = unzip(options.requiredParameter ?? '');
+        saveResult(result, options.saveOption ?? '', `result.txt||file||1`);
         break;
     default:
         console.log("Invalid command");

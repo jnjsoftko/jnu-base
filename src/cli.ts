@@ -108,7 +108,7 @@ const getParentDir = (): string => {
 /**
  * TypeScript + SWC + NPM 프로젝트 초기화
  */
-const initTsSwcNpm = (options: CliOptions) => {
+const initTsSwcNpm = (options: any) => {
   const account = findGithubAccount(options.userName ?? '');
   const parentDir = getParentDir();
   const currentDir = getCurrentDir();
@@ -159,7 +159,7 @@ const initTsSwcNpm = (options: CliOptions) => {
 /**
  * 앱 제거 (로컬 + 원격 저장소)
  */
-const removeApp = (options: CliOptions) => {
+const removeApp = (options: any) => {
   execSync(`xgit -e deleteRemoteRepo -u ${options.userName} -n ${options.repoName}`, execOptions);
   if (PLATFORM === 'win') {
     execSync(`rmdir /s /q ${options.repoName}`, execOptions);
@@ -171,8 +171,10 @@ const removeApp = (options: CliOptions) => {
 /**
  * 템플릿 기반 앱 초기화
  */
-const initApp = (options: CliOptions) => {
-  switch (options.template) {
+const initApp = (options: any) => {
+  const {template, repoName, userName, description} = options;
+
+  switch (template) {
     case 'node-simple':
       break;
     case 'ts-swc-npm':
@@ -183,41 +185,25 @@ const initApp = (options: CliOptions) => {
     case 'flutter':
       break;
   }
+  return options;
 };
 
-// /**
-//  * 폴더, 파일 삭제
-//  */
-// const del = (options: CliOptions) => {
-//   if (PLATFORM === 'win') {
-//     execSync(`rmdir /s /q ${options.repoName}`, execOptions);
-//   } else {
-//     execSync(`rm -rf ${options.repoName}`, execOptions);
-//   }
-// };
-
-
-/**
- * 폴더, 파일 삭제
- */
-const del = (options: CliOptions) => {
-  deleteFilesInFolder(options.repoName ?? '', options.excluded ?? '', true);
-};
 
 /**
  * 로컬 프로젝트 압축
  */
-const zip = (options: CliOptions) => {
+const zip = (folderPath, excluded) => {
+
   switch (PLATFORM) {
     case 'win':
       try {
         // 1. 임시 디렉토리 생성
-        const tempDir = `${options.repoName}_temp`;
-        execSync(`xcopy "${options.repoName}" "${tempDir}\\" /E /I /H /Y`, execOptions);
+        const tempDir = `${folderPath}_temp`;
+        execSync(`xcopy "${folderPath}" "${tempDir}\\" /E /I /H /Y`, execOptions);
 
         // 2. 제외할 파일/폴더 삭제
-        const excludedItems = options.excluded
-          ? options.excluded.split(',')
+        const excludedItems = excluded
+          ? excluded.split(',')
           : ['node_modules', 'package-lock.json', 'package.json'];
 
         for (const item of excludedItems) {
@@ -235,7 +221,7 @@ const zip = (options: CliOptions) => {
 
         // 3. 압축
         execSync(
-          `powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${options.repoName}.zip -Force"`,
+          `powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${folderPath}.zip -Force"`,
           execOptions
         );
 
@@ -248,13 +234,13 @@ const zip = (options: CliOptions) => {
       break;
 
     default:
-      const excluded = options.excluded
-        ? options.excluded
+      const _excluded = excluded
+        ? excluded
             .split(',')
             .map((item) => `"${item}"`)
             .join(' ')
         : '"*/node_modules/*" ".git/*"';
-      execSync(`zip -r ${options.repoName}.zip ${options.repoName} -x ${excluded}`, execOptions);
+      execSync(`zip -r ${folderPath}.zip ${folderPath} -x ${_excluded}`, execOptions);
       break;
   }
 };
@@ -274,6 +260,7 @@ const unzip = (folderPath: string, excluded: string = '__MACOSX/,node_modules/,.
   const extractPaths: string[] = [];
   for (const zipPath of findFiles(folderPath, '*.zip')) {
     try {
+      // * 하위 디렉토리 반영으로 변경???
       const extractPath = `${currentDir}/_unzip/${Path.parse(zipPath).name}`;
       console.log(`## extractPath: ${extractPath}`);
       makeDir(extractPath);
@@ -342,12 +329,10 @@ const unzip = (folderPath: string, excluded: string = '__MACOSX/,node_modules/,.
 /**
  * 프로젝트 구조 분석
  */
-const tree = (options: CliOptions): string => {
+const tree = (excluded: string): string => {
   switch (PLATFORM) {
     case 'win':
-      const excludedWin = options.excluded
-        ? options.excluded.split(',').join('|')
-        : 'node_modules|dist|_backups|_drafts|types|docs';
+      const excludedWin = excluded.split(',').join('|') || 'node_modules|dist|_backups|_drafts|types|docs';
 
       try {
         // PowerShell 실행 정책 우회 및 단순화된 명령어
@@ -371,11 +356,11 @@ const tree = (options: CliOptions): string => {
       }
 
     default:
-      const excluded = options.excluded
-        ? `"${options.excluded.split(',').join('|')}"`
+      const _excluded = excluded
+        ? `"${excluded.split(',').join('|')}"`
         : '"node_modules|dist|_backups|_drafts|types|docs"';
 
-      const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
+      const cmd = `tree -I ${_excluded} --dirsfirst -L 3`;
       try {
         console.log('Command: ', cmd);
         const result = execSync(cmd, {
@@ -397,7 +382,7 @@ const tree = (options: CliOptions): string => {
 
 // & Export AREA
 // &---------------------------------------------------------------------------
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del, unzip };
+export { TEMPLATES_ROOT, PLATFORM, execOptions, exec, exe, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, unzip };
 
 // & Test AREA
 // &---------------------------------------------------------------------------

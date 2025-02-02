@@ -86,7 +86,8 @@ const removeApp = (options)=>{
     }
 };
 const initApp = (options)=>{
-    switch(options.template){
+    const { template, repoName, userName, description } = options;
+    switch(template){
         case 'node-simple':
             break;
         case 'ts-swc-npm':
@@ -97,17 +98,15 @@ const initApp = (options)=>{
         case 'flutter':
             break;
     }
+    return options;
 };
-const del = (options)=>{
-    deleteFilesInFolder(options.repoName ?? '', options.excluded ?? '', true);
-};
-const zip = (options)=>{
+const zip = (folderPath, excluded)=>{
     switch(PLATFORM){
         case 'win':
             try {
-                const tempDir = `${options.repoName}_temp`;
-                execSync(`xcopy "${options.repoName}" "${tempDir}\\" /E /I /H /Y`, execOptions);
-                const excludedItems = options.excluded ? options.excluded.split(',') : [
+                const tempDir = `${folderPath}_temp`;
+                execSync(`xcopy "${folderPath}" "${tempDir}\\" /E /I /H /Y`, execOptions);
+                const excludedItems = excluded ? excluded.split(',') : [
                     'node_modules',
                     'package-lock.json',
                     'package.json'
@@ -124,7 +123,7 @@ const zip = (options)=>{
                         console.log(`Warning: Could not remove ${item}`);
                     }
                 }
-                execSync(`powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${options.repoName}.zip -Force"`, execOptions);
+                execSync(`powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${folderPath}.zip -Force"`, execOptions);
                 execSync(`rmdir /s /q "${tempDir}"`, execOptions);
             } catch (error) {
                 console.error('Error during zip operation:', error);
@@ -132,8 +131,8 @@ const zip = (options)=>{
             }
             break;
         default:
-            const excluded = options.excluded ? options.excluded.split(',').map((item)=>`"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
-            execSync(`zip -r ${options.repoName}.zip ${options.repoName} -x ${excluded}`, execOptions);
+            const _excluded = excluded ? excluded.split(',').map((item)=>`"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
+            execSync(`zip -r ${folderPath}.zip ${folderPath} -x ${_excluded}`, execOptions);
             break;
     }
 };
@@ -191,10 +190,10 @@ const unzip = (folderPath, excluded = '__MACOSX/,node_modules/,.DS_Store,.git/')
     deleteFilesInFolder(currentDir, '__MACOSX/', true);
     return extractPaths.join(',');
 };
-const tree = (options)=>{
+const tree = (excluded)=>{
     switch(PLATFORM){
         case 'win':
-            const excludedWin = options.excluded ? options.excluded.split(',').join('|') : 'node_modules|dist|_backups|_drafts|types|docs';
+            const excludedWin = excluded.split(',').join('|') || 'node_modules|dist|_backups|_drafts|types|docs';
             try {
                 const cmd = `powershell -NoProfile -ExecutionPolicy Bypass -Command "$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; tree /F /A | Select-String -NotMatch '${excludedWin}'"`;
                 console.log('Command: ', cmd);
@@ -216,8 +215,8 @@ const tree = (options)=>{
                 return '';
             }
         default:
-            const excluded = options.excluded ? `"${options.excluded.split(',').join('|')}"` : '"node_modules|dist|_backups|_drafts|types|docs"';
-            const cmd = `tree -I ${excluded} --dirsfirst -L 3`;
+            const _excluded = excluded ? `"${excluded.split(',').join('|')}"` : '"node_modules|dist|_backups|_drafts|types|docs"';
+            const cmd = `tree -I ${_excluded} --dirsfirst -L 3`;
             try {
                 console.log('Command: ', cmd);
                 const result = execSync(cmd, {
@@ -237,6 +236,6 @@ const tree = (options)=>{
             }
     }
 };
-export { TEMPLATES_ROOT, PLATFORM, exec, exe, execOptions, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, del, unzip };
+export { TEMPLATES_ROOT, PLATFORM, execOptions, exec, exe, getParentDir, getCurrentDir, initApp, removeApp, zip, tree, unzip };
 
 //# sourceMappingURL=cli.js.map
