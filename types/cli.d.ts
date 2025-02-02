@@ -48,9 +48,9 @@ declare const initApp: (options: any) => any;
 /**
  * 로컬 프로젝트 압축
  */
-declare const zip: (folderPath: any, excluded: any) => {
-    folderPath: any;
-    excluded: any;
+declare const zip: (folderPath: string, excluded: string) => {
+    folderPath: string;
+    excluded: string;
 };
 /**
  * 디렉토리 내에 있는 모든 압축 파일 해제(zip 파일 이름의 폴더에 압축 해제)

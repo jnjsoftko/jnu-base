@@ -192,59 +192,88 @@ const initApp = (options: any) => {
 /**
  * 로컬 프로젝트 압축
  */
-const zip = (folderPath, excluded) => {
+const zip = (folderPath: string, excluded: string) => {
+  try {
+    // 절대 경로로 변환
+    const absolutePath = Path.resolve(folderPath);
+    // 마지막 폴더명 추출
+    const folderName = Path.basename(absolutePath);
+    // 부모 디렉토리 경로
+    const parentDir = Path.dirname(absolutePath);
+    // 현재 디렉토리를 저장
+    const currentDir = process.cwd();
 
-  switch (PLATFORM) {
-    case 'win':
-      try {
-        // 1. 임시 디렉토리 생성
-        const tempDir = `${folderPath}_temp`;
-        execSync(`xcopy "${folderPath}" "${tempDir}\\" /E /I /H /Y`, execOptions);
+    switch (PLATFORM) {
+      case 'win':
+        try {
+          // 부모 디렉토리로 이동
+          process.chdir(parentDir);
 
-        // 2. 제외할 파일/폴더 삭제
-        const excludedItems = excluded
-          ? excluded.split(',')
-          : ['node_modules', 'package-lock.json', 'package.json'];
+          // 1. 임시 디렉토리 생성 (상대 경로 사용)
+          const tempDir = `${folderName}_temp`;
+          execSync(`xcopy "${folderName}" "${tempDir}\\" /E /I /H /Y`, execOptions);
 
-        for (const item of excludedItems) {
-          const itemPath = `${tempDir}/${item}`;
-          try {
-            if (item.includes('/')) {
-              execSync(`rmdir /s /q "${itemPath}"`, execOptions);
-            } else {
-              execSync(`del /q "${itemPath}"`, execOptions);
+          // 2. 제외할 파일/폴더 삭제
+          const excludedItems = excluded
+            ? excluded.split(',')
+            : ['node_modules', 'package-lock.json', 'package.json'];
+
+          for (const item of excludedItems) {
+            const itemPath = `${tempDir}/${item}`;
+            try {
+              if (item.includes('/')) {
+                execSync(`rmdir /s /q "${itemPath}"`, execOptions);
+              } else {
+                execSync(`del /q "${itemPath}"`, execOptions);
+              }
+            } catch (err) {
+              console.log(`Warning: Could not remove ${item}`);
             }
-          } catch (err) {
-            console.log(`Warning: Could not remove ${item}`);
           }
+
+          // 3. 압축 (상대 경로 사용)
+          execSync(
+            `powershell -Command "Compress-Archive -Path '${tempDir}/*' -DestinationPath '${folderName}.zip' -Force"`,
+            execOptions
+          );
+
+          // 4. 임시 디렉토리 삭제
+          execSync(`rmdir /s /q "${tempDir}"`, execOptions);
+        } catch (error) {
+          console.error('Error during zip operation:', error);
+          throw error;
+        } finally {
+          // 원래 디렉토리로 복귀
+          process.chdir(currentDir);
         }
+        break;
 
-        // 3. 압축
-        execSync(
-          `powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${folderPath}.zip -Force"`,
-          execOptions
-        );
+      default:
+        try {
+          // 부모 디렉토리로 이동
+          process.chdir(parentDir);
 
-        // 4. 임시 디렉토리 삭제
-        execSync(`rmdir /s /q "${tempDir}"`, execOptions);
-      } catch (error) {
-        console.error('Error during zip operation:', error);
-        throw error;
-      }
-      break;
+          const _excluded = excluded
+            ? excluded
+                .split(',')
+                .map((item) => `"${item}"`)
+                .join(' ')
+            : '"*/node_modules/*" ".git/*"';
+          
+          // 상대 경로로 압축
+          execSync(`zip -r "${folderName}.zip" "${folderName}" -x ${_excluded}`, execOptions);
+        } finally {
+          // 원래 디렉토리로 복귀
+          process.chdir(currentDir);
+        }
+        break;
+    }
 
-    default:
-      const _excluded = excluded
-        ? excluded
-            .split(',')
-            .map((item) => `"${item}"`)
-            .join(' ')
-        : '"*/node_modules/*" ".git/*"';
-      execSync(`zip -r ${folderPath}.zip ${folderPath} -x ${_excluded}`, execOptions);
-      break;
+    return {folderPath, excluded};
+  } catch (error) {
+    console.error('Error in zip function:', error);
+    throw error;
   }
-
-  return {folderPath, excluded};
 };
 
 /**

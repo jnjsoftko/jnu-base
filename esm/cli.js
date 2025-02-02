@@ -101,44 +101,61 @@ const initApp = (options)=>{
     return options;
 };
 const zip = (folderPath, excluded)=>{
-    switch(PLATFORM){
-        case 'win':
-            try {
-                const tempDir = `${folderPath}_temp`;
-                execSync(`xcopy "${folderPath}" "${tempDir}\\" /E /I /H /Y`, execOptions);
-                const excludedItems = excluded ? excluded.split(',') : [
-                    'node_modules',
-                    'package-lock.json',
-                    'package.json'
-                ];
-                for (const item of excludedItems){
-                    const itemPath = `${tempDir}/${item}`;
-                    try {
-                        if (item.includes('/')) {
-                            execSync(`rmdir /s /q "${itemPath}"`, execOptions);
-                        } else {
-                            execSync(`del /q "${itemPath}"`, execOptions);
+    try {
+        const absolutePath = Path.resolve(folderPath);
+        const folderName = Path.basename(absolutePath);
+        const parentDir = Path.dirname(absolutePath);
+        const currentDir = process.cwd();
+        switch(PLATFORM){
+            case 'win':
+                try {
+                    process.chdir(parentDir);
+                    const tempDir = `${folderName}_temp`;
+                    execSync(`xcopy "${folderName}" "${tempDir}\\" /E /I /H /Y`, execOptions);
+                    const excludedItems = excluded ? excluded.split(',') : [
+                        'node_modules',
+                        'package-lock.json',
+                        'package.json'
+                    ];
+                    for (const item of excludedItems){
+                        const itemPath = `${tempDir}/${item}`;
+                        try {
+                            if (item.includes('/')) {
+                                execSync(`rmdir /s /q "${itemPath}"`, execOptions);
+                            } else {
+                                execSync(`del /q "${itemPath}"`, execOptions);
+                            }
+                        } catch (err) {
+                            console.log(`Warning: Could not remove ${item}`);
                         }
-                    } catch (err) {
-                        console.log(`Warning: Could not remove ${item}`);
                     }
+                    execSync(`powershell -Command "Compress-Archive -Path '${tempDir}/*' -DestinationPath '${folderName}.zip' -Force"`, execOptions);
+                    execSync(`rmdir /s /q "${tempDir}"`, execOptions);
+                } catch (error) {
+                    console.error('Error during zip operation:', error);
+                    throw error;
+                } finally{
+                    process.chdir(currentDir);
                 }
-                execSync(`powershell -Command "Compress-Archive -Path ${tempDir}/* -DestinationPath ${folderPath}.zip -Force"`, execOptions);
-                execSync(`rmdir /s /q "${tempDir}"`, execOptions);
-            } catch (error) {
-                console.error('Error during zip operation:', error);
-                throw error;
-            }
-            break;
-        default:
-            const _excluded = excluded ? excluded.split(',').map((item)=>`"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
-            execSync(`zip -r ${folderPath}.zip ${folderPath} -x ${_excluded}`, execOptions);
-            break;
+                break;
+            default:
+                try {
+                    process.chdir(parentDir);
+                    const _excluded = excluded ? excluded.split(',').map((item)=>`"${item}"`).join(' ') : '"*/node_modules/*" ".git/*"';
+                    execSync(`zip -r "${folderName}.zip" "${folderName}" -x ${_excluded}`, execOptions);
+                } finally{
+                    process.chdir(currentDir);
+                }
+                break;
+        }
+        return {
+            folderPath,
+            excluded
+        };
+    } catch (error) {
+        console.error('Error in zip function:', error);
+        throw error;
     }
-    return {
-        folderPath,
-        excluded
-    };
 };
 const unzip = (folderPath, excluded = '__MACOSX/,node_modules/,.DS_Store,.git/')=>{
     const currentDir = getCurrentDir();
